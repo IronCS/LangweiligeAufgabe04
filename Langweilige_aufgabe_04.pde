@@ -38,7 +38,13 @@ final int TILE_WIDTH = 16;
 final int TILE_HEIGHT = 16;
 boolean menuopen;
 boolean wanttoexit;
+final int VIEW_MODE_2D = 0;
+final int VIEW_MODE_3D = 1;
+int viewMode = VIEW_MODE_2D;
+float alphaX = PI*2/360*45;
+float translateByZ = -400;
 String menuopenreason;
+Menu sysMenuObj;
 Location[] locations =
 {
   new Location(), new Location()
@@ -217,7 +223,7 @@ void initAnimals()
 }
 void setup()
 {
-  size(640, 320);
+  size(640, 320, P3D);
   theCave = createCave();
   locations[currentLocation].theMap = theSavanna; 
   locations[currentLocation].Hero_Position_Idx = 10;
@@ -312,9 +318,49 @@ void mousePressed()
     }
     else
     {
-      if(mouseX >= 60 && mouseX <= 280 && mouseY >= 100 && mouseY <= 240)
+      if (sysMenuObj != null)
       {
-        menuopen = false; //OK BUTTON PRESSED
+        int choice = sysMenuObj.hitTestAndGetChoice(mouseX, mouseY);
+        if (choice != -1)
+        {
+          // any hit to choice result with non-negative index inside string
+          // array of options
+          println("sysMenu choice="+choice);
+          // overwrite the reference to sys menu object with "null"
+          // so that garbage collector can destroy and free up memory taken by
+          // this object
+          if (choice == 0) // 3d view
+          {
+            viewMode = VIEW_MODE_3D;
+          }
+          if (choice == 1) // 2d view
+          {
+            viewMode = VIEW_MODE_2D;
+          }
+          // any other choice just closes sys menu at the moment
+          sysMenuObj = null;
+          menuopen = false;
+        }
+      }
+      else
+      {
+        if(mouseX >= 60 && mouseX <= 280 && mouseY >= 100 && mouseY <= 240)
+        {
+          menuopen = false; //OK BUTTON PRESSED
+        }
+        if(menuopenreason.startsWith("Inventory") && mouseX >= 290 && mouseX <= 510 && mouseY >= 100 && mouseY <= 240)
+        {
+          menuopen = true; //Second button "Open settings" pressed
+          // create instance of sys menu and set it up with possible options
+          sysMenuObj = new Menu();
+          sysMenuObj.options = new String[] {
+            "3D view",                                         // 0
+            "2D view",                                         // 1
+            "Change value of angle alpha ("+alphaX+")",        // 2
+            "Change value of translateByZ ("+translateByZ+")", // 3
+            "-- Exit sys menu without changes --"              // 4
+          };
+        }
       }
     }
   }
@@ -387,7 +433,28 @@ void draw()
 {
   if(!menuopen)
   {
+    if (viewMode == VIEW_MODE_3D)
+    {
+      pushMatrix();
+      /*
+      translate(MAP_WIDTH*TILE_WIDTH/2,MAP_HEIGHT*TILE_HEIGHT/2);
+      rotateZ(PI/3);
+      translate(-MAP_WIDTH*TILE_WIDTH/2,-MAP_HEIGHT*TILE_HEIGHT/2);
+      translate(0,MAP_HEIGHT*TILE_HEIGHT/2);
+      rotateX(PI/5);
+      translate(0,-MAP_HEIGHT*TILE_HEIGHT/2);
+      translate(0,0,-200);
+      */ 
+      rotateX(alphaX);
+      translate(0,0,translateByZ);
+    }
+
     locations[currentLocation].draw_savanna();
+
+    if (viewMode == VIEW_MODE_3D)
+    {
+      popMatrix();
+    }
   }
   else
   {
@@ -410,10 +477,24 @@ void drawmenu()
   }
   else
   {
-    rect(60, 100, 220, 140);
-    rect(290, 100, 220, 140);
-    fill(0,0,0);
-    text("O.K.", 170, 170);
-    text("Open Settings", 400, 170);
+    if (sysMenuObj == null)
+    {
+      fill(255,255,255);
+      rect(60, 100, 220, 140);
+      fill(0,0,0);
+      text("O.K.", 170, 170);
+      if (menuopenreason.startsWith("Inventory"))
+      {
+        fill(255,255,255);
+        rect(290, 100, 220, 140);
+        fill(0,0,0);
+        text("Open Settings", 400, 170);
+      }
+    }
+    else
+    {
+      // there is sys menu object exists, draw it
+      sysMenuObj.draw();
+    }
   }
 }
