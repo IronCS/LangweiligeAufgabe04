@@ -31,7 +31,8 @@ final byte MAP_LIGHT = 8;
 final byte MAP_SPIDER = 9;
 final byte MAP_SPIDERSLEEPING = 10;
 final byte MAP_VOID = 11;
-final byte MAP_TILE_NUM = 12;
+final byte MAP_BRIDGE = 12;
+final byte MAP_TILE_NUM = 13;
 final int MAP_WIDTH = 40;
 final int MAP_HEIGHT = 20;
 final int TILE_WIDTH = 16;
@@ -39,6 +40,12 @@ final int TILE_HEIGHT = 16;
 boolean menuopen;
 boolean wanttoexit;
 String menuopenreason;
+int stonecount = 0;
+int woodcount = 0;
+int gatheringIdx;
+boolean gatheringstones = false;
+boolean gatheringwood = false;
+boolean buildingbridge = false;
 Location[] locations =
 {
   new Location(), new Location()
@@ -236,6 +243,7 @@ void setup()
   tiles[i++] = loadImage("TileSpider.jpg");
   tiles[i++] = loadImage("TileSpiderSleeping.jpg");
   tiles[i++] = loadImage("TileVoid.jpg");
+  tiles[i++] = loadImage("TileBridge.jpg");
   i = 0;
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT); 
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
@@ -249,12 +257,13 @@ void setup()
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);  
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);   
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);  
   initAnimals();
 }
 void openInventoryMenu()
 {
   menuopen = true;
-  menuopenreason = "Inventory \n Rocks = 0 \n Wood = 0"; 
+  menuopenreason = "Inventory \n Stones = "+stonecount+" \n Wood = "+woodcount; 
 }
 void mousePressed()
 {
@@ -265,36 +274,39 @@ void mousePressed()
   boolean HeroWrongY = false;
   int mouseXC = mouseX/TILE_WIDTH;
   int mouseYC = mouseY/TILE_HEIGHT;
-  if(mouseXC > HeroX)
+  if(!menuopen)
   {
-    newHeroIdx++;
-    HeroYnew = newHeroIdx/MAP_WIDTH;
-    if(HeroYnew != HeroY)
+    if(mouseXC > HeroX)
     {
-      HeroWrongY = true;
+      newHeroIdx++;
+      HeroYnew = newHeroIdx/MAP_WIDTH;
+      if(HeroYnew != HeroY)
+      {
+        HeroWrongY = true;
+      }
     }
-  }
-  if(mouseXC < HeroX)
-  {
-    newHeroIdx--;
-    HeroYnew = newHeroIdx/MAP_WIDTH;
-    if(HeroYnew != HeroY)
+    if(mouseXC < HeroX)
     {
-      HeroWrongY = true;
+      newHeroIdx--;
+      HeroYnew = newHeroIdx/MAP_WIDTH;
+      if(HeroYnew != HeroY)
+      {
+        HeroWrongY = true;
+      }
     }
-  }
-  if(mouseYC < HeroY)
-  {
-    newHeroIdx = newHeroIdx - MAP_WIDTH;
-  }
-  if(mouseYC > HeroY)
-  {
-    newHeroIdx = newHeroIdx + MAP_WIDTH;
-  }
-  locations[currentLocation].heroMoveChecker(newHeroIdx, HeroWrongY);
-  if(mouseYC == HeroY && mouseXC == HeroX)
-  {
-    openInventoryMenu();
+    if(mouseYC < HeroY)
+    {
+      newHeroIdx = newHeroIdx - MAP_WIDTH;
+    }
+    if(mouseYC > HeroY)
+    {
+      newHeroIdx = newHeroIdx + MAP_WIDTH;
+    }
+    locations[currentLocation].heroMoveChecker(newHeroIdx, HeroWrongY);
+    if(mouseYC == HeroY && mouseXC == HeroX)
+    {
+      openInventoryMenu();
+    }
   }
   if(mousePressed)
   {
@@ -310,11 +322,49 @@ void mousePressed()
         menuopen = false;
       }
     }
-    else
+    if(mouseX >= 60 && mouseX <= 280 && mouseY >= 100 && mouseY <= 240)
+    {
+      menuopen = false;
+    }
+    if(gatheringwood || gatheringstones || buildingbridge)
     {
       if(mouseX >= 60 && mouseX <= 280 && mouseY >= 100 && mouseY <= 240)
       {
-        menuopen = false; //OK BUTTON PRESSED
+        if(gatheringwood)
+        {
+          woodcount++;
+          gatheringwood = false;
+          locations[currentLocation].theMap[gatheringIdx] = MAP_BLACK;
+        }
+        if(gatheringstones)
+        {
+          stonecount++;
+          gatheringstones = false;
+          locations[currentLocation].theMap[gatheringIdx] = MAP_BLACK;
+        }
+        if(buildingbridge)
+        {
+          if(stonecount >= 5 && woodcount >= 5)
+          {
+            stonecount = stonecount - 5;
+            woodcount = woodcount - 5;
+            buildingbridge = false;
+            locations[currentLocation].theMap[gatheringIdx] = MAP_BRIDGE;
+          }
+          else
+          {
+            menuopen = true;
+            buildingbridge = false;
+            menuopenreason = "Not enough Stones/Wood! \nYou need 5 of both, but you have \n"+stonecount+" Stones and "+woodcount+" Wood.";
+          }
+        }
+      }
+      if(mouseX >= 290 && mouseX <= 510 && mouseY >= 100 && mouseY <= 240)
+      {
+        menuopen = false;
+        gatheringstones = false;
+        gatheringwood = false;
+        buildingbridge = false;
       }
     }
   }
@@ -408,12 +458,27 @@ void drawmenu()
     text("Y", 170, 170);
     text("N", 400, 170);
   }
-  else
+  if(!wanttoexit && !gatheringwood && !gatheringstones && !buildingbridge)
   {
     rect(60, 100, 220, 140);
     rect(290, 100, 220, 140);
     fill(0,0,0);
     text("O.K.", 170, 170);
     text("Open Settings", 400, 170);
+  }
+  if(gatheringwood || gatheringstones || buildingbridge)
+  {
+    rect(60, 100, 220, 140);
+    rect(290, 100, 220, 140);
+    fill(0,0,0);
+    if(buildingbridge)
+    {
+      text("Build", 170, 170);
+    }
+    else
+    {
+      text("Gather", 170, 170);
+    }
+    text("Leave", 400, 170);
   }
 }

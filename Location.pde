@@ -3,18 +3,26 @@ class Location
   RailAnimal []animalInfo;
   byte[] theMap;
   int Hero_Position_Idx;
-  int Hero_Previous_Idx;
   void heroMoveChecker(int newHeroIdx, boolean HeroWrongY)
   {
     if(newHeroIdx == Hero_Position_Idx)
     {
       return;
     }
-      if(Hero_Position_Idx != newHeroIdx && newHeroIdx >= 0 && newHeroIdx < MAP_WIDTH * MAP_HEIGHT && !HeroWrongY && theMap[newHeroIdx] == MAP_BLACK)
+    if(Hero_Position_Idx != newHeroIdx && newHeroIdx >= 0 && newHeroIdx < MAP_WIDTH * MAP_HEIGHT && !HeroWrongY)
+    {
+      if(theMap[newHeroIdx] == MAP_BLACK || theMap[newHeroIdx] == MAP_BRIDGE)
       {
+        theMap[newHeroIdx] = MAP_HERO;
+        if(Hero_Position_Idx/MAP_WIDTH == 5 && currentLocation == LOCATION_CAVE)
+        {
+          theMap[Hero_Position_Idx] = MAP_BRIDGE;
+        }
+        else
+        {
           theMap[Hero_Position_Idx] = MAP_BLACK;
-          theMap[newHeroIdx] = MAP_HERO;
-          Hero_Position_Idx = newHeroIdx;
+        }
+        Hero_Position_Idx = newHeroIdx;
       }
       else
       {
@@ -30,11 +38,15 @@ class Location
         }
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_WOOD)
         {
-          menuopenreason = "This Tree is too high to climb.";
+          menuopenreason = "This Tree is too high to climb. \n Do you want to fell it?";
+          gatheringwood = true;
+          gatheringIdx = newHeroIdx;
         }
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_BRICK)
         {
-          menuopenreason = "This Wall is too high to climb.";
+          menuopenreason = "This Wall is too high to climb. \n Do you want to gather Stones from it?";
+          gatheringstones = true;
+          gatheringIdx = newHeroIdx;
         }
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_YELLOW)
         {
@@ -54,7 +66,9 @@ class Location
         }   
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_VOID)
         {
-          menuopenreason = "That looks pretty deep. \n You throw a rock down there, but it never returns a sound.";
+          menuopenreason = "That looks pretty deep. \n You throw a rock down there, but it never returns a sound. \nDo you want to build a bridge?";
+          buildingbridge = true;
+          gatheringIdx = newHeroIdx;
         }   
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_CAVE)
         {          
@@ -75,6 +89,7 @@ class Location
           locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
         }
       }
+    }
   }
   void draw_savanna()
   {
