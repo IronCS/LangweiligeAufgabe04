@@ -27,7 +27,7 @@ class Location
       else
       {
         menuopenreason = "";
-        menuopen = true;
+        menukind = MENUKIND_COLLISION;
         if(newHeroIdx < 0 || newHeroIdx >= MAP_WIDTH*MAP_HEIGHT || HeroWrongY && menuopenreason.equals(""))
         {
           menuopenreason = "End of the Map.";
@@ -39,13 +39,13 @@ class Location
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_WOOD)
         {
           menuopenreason = "This Tree is too high to climb. \n Do you want to fell it?";
-          gatheringwood = true;
+          menukind = MENUKIND_GATHERINGWOOD;
           gatheringIdx = newHeroIdx;
         }
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_BRICK)
         {
           menuopenreason = "This Wall is too high to climb. \n Do you want to gather Stones from it?";
-          gatheringstones = true;
+          menukind = MENUKIND_GATHERINGSTONES;
           gatheringIdx = newHeroIdx;
         }
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_YELLOW)
@@ -67,12 +67,12 @@ class Location
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_VOID)
         {
           menuopenreason = "That looks pretty deep. \n You throw a rock down there, but it never returns a sound. \nDo you want to build a bridge?";
-          buildingbridge = true;
+          menukind = MENUKIND_BUILDINGBRIDGE;
           gatheringIdx = newHeroIdx;
         }   
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_CAVE)
         {          
-          menuopen = true;
+          menukind = MENUKIND_COLLISION;
           menuopenreason = "You are entering the Cave.";
           currentLocation = LOCATION_CAVE;
           theMap[Hero_Position_Idx] = MAP_BLACK;
@@ -81,7 +81,7 @@ class Location
         }
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_LIGHT)
         {
-          menuopen = true;
+          menukind = MENUKIND_COLLISION;
           menuopenreason = "You are leaving the Cave.";
           currentLocation = LOCATION_SAVANNA;
           theMap[Hero_Position_Idx] = MAP_BLACK;
@@ -117,7 +117,7 @@ class Location
          }
          else
          {
-           menuopen = true;
+           menukind = MENUKIND_COLLISION;
            menuopenreason = "The Animal has caught you. You should go see a doctor.";
          }
          for(int i = 0; i < currentanimal.animalRoute.length; ++i)

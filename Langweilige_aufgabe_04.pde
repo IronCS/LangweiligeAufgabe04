@@ -1,3 +1,4 @@
+//Copyright Papa & Roman
 byte[]theSavanna =
 {1,1,2,0,0,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
  3,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -37,15 +38,19 @@ final int MAP_WIDTH = 40;
 final int MAP_HEIGHT = 20;
 final int TILE_WIDTH = 16;
 final int TILE_HEIGHT = 16;
-boolean menuopen;
-boolean wanttoexit;
 String menuopenreason;
 int stonecount = 0;
 int woodcount = 0;
 int gatheringIdx;
-boolean gatheringstones = false;
-boolean gatheringwood = false;
-boolean buildingbridge = false;
+int menukind;
+final int MENUKIND_NOMENU = 0;
+final int MENUKIND_WANTTOEXIT = 1;
+final int MENUKIND_GATHERINGSTONES = 2;
+final int MENUKIND_GATHERINGWOOD = 3;
+final int MENUKIND_BUILDINGBRIDGE = 4;
+final int MENUKIND_NOTENOUGHMATERIALS = 5;
+final int MENUKIND_INVENTORY = 6;
+final int MENUKIND_COLLISION = 7;
 Location[] locations =
 {
   new Location(), new Location()
@@ -225,6 +230,7 @@ void initAnimals()
 void setup()
 {
   size(640, 320);
+  menukind = MENUKIND_NOMENU;
   theCave = createCave();
   locations[currentLocation].theMap = theSavanna; 
   locations[currentLocation].Hero_Position_Idx = 10;
@@ -262,8 +268,8 @@ void setup()
 }
 void openInventoryMenu()
 {
-  menuopen = true;
-  menuopenreason = "Inventory \n Stones = "+stonecount+" \n Wood = "+woodcount; 
+  menukind = MENUKIND_INVENTORY;
+  menuopenreason = "Inventory \n Stones = "+stonecount+" \n Wood = "+woodcount;
 }
 void mousePressed()
 {
@@ -274,7 +280,7 @@ void mousePressed()
   boolean HeroWrongY = false;
   int mouseXC = mouseX/TILE_WIDTH;
   int mouseYC = mouseY/TILE_HEIGHT;
-  if(!menuopen)
+  if(menukind == MENUKIND_NOMENU)
   {
     if(mouseXC > HeroX)
     {
@@ -306,72 +312,71 @@ void mousePressed()
     if(mouseYC == HeroY && mouseXC == HeroX)
     {
       openInventoryMenu();
+      return;
     }
   }
-  if(mousePressed)
+  if(menukind == MENUKIND_WANTTOEXIT)
   {
-    if(wanttoexit)
-    {
-      if(mouseX >= 60 && mouseX <= 280 && mouseY >= 100 && mouseY <= 240)
-      {
-        exit();
-      }
-      if(mouseX >= 290 && mouseX <= 510 && mouseY >= 100 && mouseY <= 240)
-      {
-        wanttoexit = false;
-        menuopen = false;
-      }
-    }
     if(mouseX >= 60 && mouseX <= 280 && mouseY >= 100 && mouseY <= 240)
     {
-      menuopen = false;
+      exit();
     }
-    if(gatheringwood || gatheringstones || buildingbridge)
+    if(mouseX >= 290 && mouseX <= 510 && mouseY >= 100 && mouseY <= 240)
     {
-      if(mouseX >= 60 && mouseX <= 280 && mouseY >= 100 && mouseY <= 240)
+      menukind = MENUKIND_NOMENU;
+      return;
+    }
+  }
+  if(menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_BUILDINGBRIDGE)
+  {
+    if(mouseX >= 60 && mouseX <= 280 && mouseY >= 100 && mouseY <= 240)
+    {
+      if(menukind == MENUKIND_GATHERINGWOOD)
       {
-        if(gatheringwood)
-        {
-          woodcount++;
-          gatheringwood = false;
-          locations[currentLocation].theMap[gatheringIdx] = MAP_BLACK;
-        }
-        if(gatheringstones)
-        {
-          stonecount++;
-          gatheringstones = false;
-          locations[currentLocation].theMap[gatheringIdx] = MAP_BLACK;
-        }
-        if(buildingbridge)
-        {
-          if(stonecount >= 5 && woodcount >= 5)
-          {
-            stonecount = stonecount - 5;
-            woodcount = woodcount - 5;
-            buildingbridge = false;
-            locations[currentLocation].theMap[gatheringIdx] = MAP_BRIDGE;
-          }
-          else
-          {
-            menuopen = true;
-            buildingbridge = false;
-            menuopenreason = "Not enough Stones/Wood! \nYou need 5 of both, but you have \n"+stonecount+" Stones and "+woodcount+" Wood.";
-          }
-        }
+        woodcount++;
+        menukind = MENUKIND_NOMENU;
+        locations[currentLocation].theMap[gatheringIdx] = MAP_BLACK;
       }
-      if(mouseX >= 290 && mouseX <= 510 && mouseY >= 100 && mouseY <= 240)
+      if(menukind == MENUKIND_GATHERINGSTONES)
       {
-        menuopen = false;
-        gatheringstones = false;
-        gatheringwood = false;
-        buildingbridge = false;
+        stonecount++;
+        menukind = MENUKIND_NOMENU;
+        locations[currentLocation].theMap[gatheringIdx] = MAP_BLACK;
+        return;
+      }
+      if(menukind == MENUKIND_BUILDINGBRIDGE)
+      {
+        if(stonecount >= 5 && woodcount >= 5)
+        {
+          stonecount = stonecount - 5;
+          woodcount = woodcount - 5;
+          menukind = MENUKIND_NOMENU;
+          locations[currentLocation].theMap[gatheringIdx] = MAP_BRIDGE;
+          return;
+        }
+        else
+        {
+          menukind = MENUKIND_NOTENOUGHMATERIALS;
+          menuopenreason = "Not enough Stones/Wood! \nYou need 5 of both, but you have \n"+stonecount+" Stones and "+woodcount+" Wood.";
+          return;
+        }
       }
     }
+    if(mouseX >= 290 && mouseX <= 510 && mouseY >= 100 && mouseY <= 240)
+    {
+      menukind = MENUKIND_NOMENU;
+      return;
+    }
+  }
+  if(mouseX >= 60 && mouseX <= 280 && mouseY >= 100 && mouseY <= 240)
+  {
+    menukind = MENUKIND_NOMENU;
+    return;
   }
 }
 void keyPressed()
 {
-  menuopen = false;
+  menukind = MENUKIND_NOMENU;
   if(key == CODED)
   {
     int newHeroIdx = locations[currentLocation].Hero_Position_Idx;
@@ -408,24 +413,22 @@ void keyPressed()
   }
   if(key == 121 || key == 89)//Upper- & Lowercase Y
   {
-    if(wanttoexit)
+    if(menukind == MENUKIND_WANTTOEXIT)
     {
       exit();
     }
   }
   if(key == 110 || key == 78)//Upper- & Lowercase N
   {
-    if(wanttoexit)
+    if(menukind == MENUKIND_WANTTOEXIT)
     {
-      menuopen = false;
-      wanttoexit = false;
+      menukind = MENUKIND_NOMENU;
     }
   }
   if(key == 27) //ESC Key
   {
     key=0;
-    menuopen = true;
-    wanttoexit = true;
+    menukind = MENUKIND_WANTTOEXIT;
     menuopenreason = "Leave Game?";
   }
   if(key == 66 || key == 98) //Upper- & Lowercase B
@@ -435,7 +438,7 @@ void keyPressed()
 }
 void draw()
 {
-  if(!menuopen)
+  if(menukind == MENUKIND_NOMENU)
   {
     locations[currentLocation].draw_savanna();
   }
@@ -450,7 +453,7 @@ void drawmenu()
   rect(50, 50, 480, 200);
   fill(255,255,255);
   text(menuopenreason, 60, 70);
-  if(wanttoexit)
+  if(menukind == MENUKIND_WANTTOEXIT)
   {
     rect(60, 100, 220, 140);
     rect(290, 100, 220, 140);
@@ -458,20 +461,25 @@ void drawmenu()
     text("Y", 170, 170);
     text("N", 400, 170);
   }
-  if(!wanttoexit && !gatheringwood && !gatheringstones && !buildingbridge)
+  if(menukind == MENUKIND_INVENTORY || menukind == MENUKIND_COLLISION)
   {
     rect(60, 100, 220, 140);
-    rect(290, 100, 220, 140);
     fill(0,0,0);
     text("O.K.", 170, 170);
-    text("Open Settings", 400, 170);
+    if(menukind == MENUKIND_INVENTORY)
+    {
+      fill(255,255,255);
+      rect(290, 100, 220, 140);
+      fill(0,0,0);
+      text("Open Settings", 400, 170);      
+    }
   }
-  if(gatheringwood || gatheringstones || buildingbridge)
+  if(menukind == MENUKIND_BUILDINGBRIDGE || menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_GATHERINGWOOD)
   {
     rect(60, 100, 220, 140);
     rect(290, 100, 220, 140);
     fill(0,0,0);
-    if(buildingbridge)
+    if(menukind == MENUKIND_BUILDINGBRIDGE)
     {
       text("Build", 170, 170);
     }
