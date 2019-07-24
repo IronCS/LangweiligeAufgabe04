@@ -3,6 +3,11 @@ class Location
   RailAnimal []animalInfo;
   byte[] theMap;
   int Hero_Position_Idx;
+  byte Hero_Previous = MAP_BLACK;
+  byte snakeHeadPrevious = MAP_BLACK;
+  byte snakeTailPrevious = MAP_BLACK;
+  int snakeIdx = 1;
+  int snakeTailIdx = 0;  
   void heroMoveChecker(int newHeroIdx, boolean HeroWrongY)
   {
     if(newHeroIdx == Hero_Position_Idx)
@@ -13,15 +18,9 @@ class Location
     {
       if(theMap[newHeroIdx] == MAP_BLACK || theMap[newHeroIdx] == MAP_BRIDGE)
       {
+        theMap[Hero_Position_Idx] = Hero_Previous;
+        Hero_Previous = theMap[newHeroIdx];
         theMap[newHeroIdx] = MAP_HERO;
-        if(Hero_Position_Idx/MAP_WIDTH == 5 && currentLocation == LOCATION_CAVE)
-        {
-          theMap[Hero_Position_Idx] = MAP_BRIDGE;
-        }
-        else
-        {
-          theMap[Hero_Position_Idx] = MAP_BLACK;
-        }
         Hero_Position_Idx = newHeroIdx;
       }
       else
@@ -97,9 +96,68 @@ class Location
    int y0 = 0;
    int tileWidth = tiles[0].pixelWidth;
    int tileHeight = tiles[0].pixelHeight;
-  
+   int snakeNewIdx;
    if((frameCount%60) == 0)
    { 
+     if(currentLocation == LOCATION_CAVE)
+     {
+       int snakeTailPreviousIdx = snakeTailIdx;
+       int snakeNewTailIdx = snakeIdx;
+       snakeNewIdx = snakeIdx;
+       int snakeYC = snakeNewIdx / MAP_WIDTH;
+       int snakeXC = snakeNewIdx - (snakeYC*MAP_WIDTH);
+       int HeroYC = Hero_Position_Idx/MAP_WIDTH;
+       int HeroXC = Hero_Position_Idx-(HeroYC*MAP_WIDTH);
+       if(snakeYC > HeroYC)
+       {
+         snakeNewIdx = snakeNewIdx - MAP_WIDTH;
+       }
+       if(snakeYC < HeroYC)
+       {
+         snakeNewIdx = snakeNewIdx + MAP_WIDTH;
+       }
+       if(snakeXC > HeroXC)
+       {
+         snakeNewIdx = snakeNewIdx - 1;
+       }
+       if(snakeXC < HeroXC)
+       {
+         snakeNewIdx = snakeNewIdx + 1;
+       }
+       if(theMap[snakeNewIdx] == MAP_BLACK || theMap[snakeNewIdx] == MAP_BRIDGE)
+       {
+         theMap[snakeTailPreviousIdx] = snakeTailPrevious;         
+         snakeTailPrevious = snakeHeadPrevious;
+         snakeHeadPrevious = theMap[snakeNewIdx];
+         snakeIdx = snakeNewIdx;
+         snakeTailIdx = snakeNewTailIdx;
+         theMap[snakeIdx] = MAP_SNAKEHEAD;
+         theMap[snakeTailIdx] = MAP_SNAKETAIL;
+       }
+       else
+       {
+         if(theMap[snakeNewIdx] == MAP_HERO)
+         {
+           menukind = MENUKIND_COLLISION;
+           menuopenreason = "The Snake has caught you.";
+         }
+         if(theMap[snakeNewIdx] == MAP_VOID)
+         {
+           if(HeroXC > snakeXC)
+           {
+             snakeIdx++;
+           }
+           if(HeroXC < snakeXC)
+           {
+             snakeIdx--;
+           }
+           theMap[snakeIdx] = MAP_SNAKEHEAD;
+           snakeTailIdx = snakeNewTailIdx;
+           theMap[snakeTailIdx] = MAP_SNAKETAIL;
+           theMap[snakeTailPreviousIdx] = MAP_BLACK;
+         }
+       }
+     }
      for(int j = 0; j < animalInfo.length; ++j)
      {
        RailAnimal currentanimal = animalInfo[j];

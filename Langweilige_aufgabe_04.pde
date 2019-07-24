@@ -20,54 +20,13 @@ byte[]theSavanna =
  3,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
  2,3,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-final byte MAP_BLACK = 0;
-final byte MAP_BRICK = 1;
-final byte MAP_GREEN = 2;
-final byte MAP_WOOD = 3;
-final byte MAP_YELLOW = 4;
-final byte MAP_YELLOWSLEEPING = 5;
-final byte MAP_HERO = 6;
-final byte MAP_CAVE = 7;
-final byte MAP_LIGHT = 8;
-final byte MAP_SPIDER = 9;
-final byte MAP_SPIDERSLEEPING = 10;
-final byte MAP_VOID = 11;
-final byte MAP_BRIDGE = 12;
-final byte MAP_TILE_NUM = 13;
-final int MAP_WIDTH = 40;
-final int MAP_HEIGHT = 20;
-final int TILE_WIDTH = 16;
-final int TILE_HEIGHT = 16;
-String menuopenreason;
-int stonecount = 0;
-int woodcount = 0;
-int gatheringIdx;
-int menukind;
-final int MENUKIND_NOMENU = 0;
-final int MENUKIND_WANTTOEXIT = 1;
-final int MENUKIND_GATHERINGSTONES = 2;
-final int MENUKIND_GATHERINGWOOD = 3;
-final int MENUKIND_BUILDINGBRIDGE = 4;
-final int MENUKIND_NOTENOUGHMATERIALS = 5;
-final int MENUKIND_INVENTORY = 6;
-final int MENUKIND_COLLISION = 7;
-Location[] locations =
-{
-  new Location(), new Location()
-};
-final int LOCATION_SAVANNA = 0;
-final int LOCATION_CAVE = 1;
-int currentLocation;
-byte[] createCave()
-{
-  byte A = 11;
-  byte[]theCave = 
- {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+ byte[]theNest = 
+ {8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -82,6 +41,75 @@ byte[] createCave()
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+final byte MAP_BLACK = 0;
+final byte MAP_BRICK = 1;
+final byte MAP_GREEN = 2;
+final byte MAP_WOOD = 3;
+final byte MAP_YELLOW = 4;
+final byte MAP_YELLOWSLEEPING = 5;
+final byte MAP_HERO = 6;
+final byte MAP_CAVE = 7;
+final byte MAP_LIGHT = 8;
+final byte MAP_SPIDER = 9;
+final byte MAP_SPIDERSLEEPING = 10;
+final byte MAP_VOID = 11;
+final byte MAP_BRIDGE = 12;
+final byte MAP_NEST = 13;
+final byte MAP_SNAKEHEAD = 14;
+final byte MAP_SNAKEBODY = 15;
+final byte MAP_SNAKETAIL = 16;
+final byte MAP_TILE_NUM = 17;
+final int MAP_WIDTH = 40;
+final int MAP_HEIGHT = 20;
+final int TILE_WIDTH = 16;
+final int TILE_HEIGHT = 16;
+String menuopenreason;
+int stonecount = 0;
+int woodcount = 0;
+int gatheringIdx;
+int menukind;
+int snakeIdx;
+int snakeLocation;
+final int MENUKIND_NOMENU = 0;
+final int MENUKIND_WANTTOEXIT = 1;
+final int MENUKIND_GATHERINGSTONES = 2;
+final int MENUKIND_GATHERINGWOOD = 3;
+final int MENUKIND_BUILDINGBRIDGE = 4;
+final int MENUKIND_NOTENOUGHMATERIALS = 5;
+final int MENUKIND_INVENTORY = 6;
+final int MENUKIND_COLLISION = 7;
+Location[] locations =
+{
+  new Location(), new Location(), 
+};
+final int LOCATION_SAVANNA = 0;
+final int LOCATION_CAVE = 1;
+int currentLocation;
+byte[] createCave()
+{
+  byte A = MAP_VOID;
+  byte B = MAP_NEST;
+  byte[]theCave = 
+   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   return theCave;
 }
 byte[] theCave;
@@ -250,6 +278,10 @@ void setup()
   tiles[i++] = loadImage("TileSpiderSleeping.jpg");
   tiles[i++] = loadImage("TileVoid.jpg");
   tiles[i++] = loadImage("TileBridge.jpg");
+  tiles[i++] = loadImage("TileNest.jpg");
+  tiles[i++] = loadImage("TileSnakeHead.jpg");
+  tiles[i++] = loadImage("TileSnakeBody.jpg");
+  tiles[i++] = loadImage("TileSnakeTail.jpg");
   i = 0;
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT); 
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
@@ -263,7 +295,11 @@ void setup()
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);  
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);   
-  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);  
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   initAnimals();
 }
 void openInventoryMenu()
