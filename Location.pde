@@ -4,12 +4,8 @@ class Location
   byte[] theMap;
   int Hero_Position_Idx;
   byte Hero_Previous = MAP_BLACK;
-  byte snakeHeadPrevious = MAP_BLACK;
-  byte snakeTailPrevious = MAP_BLACK;
-  byte snakeBodyPrevious = MAP_BLACK;
-  int snakeIdx = 2;
-  int snakeTailIdx = 0; 
-  int snakeBodyIdx = 1;
+  int snakeIdx = 7;
+  int snakeTailPreviousIdx;
   void heroMoveChecker(int newHeroIdx, boolean HeroWrongY)
   {
     if(newHeroIdx == Hero_Position_Idx)
@@ -103,66 +99,88 @@ class Location
    { 
      if(currentLocation == LOCATION_CAVE)
      {
-       int snakeTailPreviousIdx = snakeTailIdx;
-       int snakeNewTailIdx = snakeBodyIdx;
-       snakeBodyIdx = snakeIdx;
-       snakeNewIdx = snakeIdx;
-       int snakeYC = snakeNewIdx / MAP_WIDTH;
-       int snakeXC = snakeNewIdx - (snakeYC*MAP_WIDTH);
-       int HeroYC = Hero_Position_Idx/MAP_WIDTH;
-       int HeroXC = Hero_Position_Idx-(HeroYC*MAP_WIDTH);
-       if(snakeYC > HeroYC)
-       {
-         snakeNewIdx = snakeNewIdx - MAP_WIDTH;
-       }
-       if(snakeYC < HeroYC)
-       {
-         snakeNewIdx = snakeNewIdx + MAP_WIDTH;
-       }
-       if(snakeXC > HeroXC)
-       {
-         snakeNewIdx = snakeNewIdx - 1;
-       }
-       if(snakeXC < HeroXC)
-       {
-         snakeNewIdx = snakeNewIdx + 1;
-       }
-       if(theMap[snakeNewIdx] == MAP_BLACK || theMap[snakeNewIdx] == MAP_BRIDGE)
-       {
-         theMap[snakeTailPreviousIdx] = snakeTailPrevious;
-         snakeTailPrevious = snakeBodyPrevious;
-         snakeBodyPrevious = snakeHeadPrevious;
-         snakeHeadPrevious = theMap[snakeNewIdx];
-         snakeIdx = snakeNewIdx;
-         snakeTailIdx = snakeNewTailIdx;
-         theMap[snakeIdx] = MAP_SNAKEHEAD;
-         theMap[snakeBodyIdx] = MAP_SNAKEBODY;
-         theMap[snakeTailIdx] = MAP_SNAKETAIL;
-       }
-       else
-       {
-         if(theMap[snakeNewIdx] == MAP_HERO)
+         snakeNewIdx = snakeIdx;
+         int snakeYC = snakeNewIdx / MAP_WIDTH;
+         int snakeXC = snakeNewIdx - (snakeYC*MAP_WIDTH);
+         int HeroYC = Hero_Position_Idx/MAP_WIDTH;
+         int HeroXC = Hero_Position_Idx-(HeroYC*MAP_WIDTH);
+         if(snakeYC > HeroYC)
          {
-           menukind = MENUKIND_COLLISION;
-           menuopenreason = "The Snake has caught you.";
+           snakeNewIdx = snakeNewIdx - MAP_WIDTH;
          }
-         if(theMap[snakeNewIdx] == MAP_VOID)
+         if(snakeYC < HeroYC)
          {
-           if(HeroXC > snakeXC)
-           {
-             snakeIdx++;
-           }
-           if(HeroXC < snakeXC)
-           {
-             snakeIdx--;
-           }
-           theMap[snakeIdx] = MAP_SNAKEHEAD;
-           snakeTailIdx = snakeNewTailIdx;
-           theMap[snakeBodyIdx] = MAP_SNAKEBODY;
-           theMap[snakeTailIdx] = MAP_SNAKETAIL;
-           theMap[snakeTailPreviousIdx] = MAP_BLACK;
+           snakeNewIdx = snakeNewIdx + MAP_WIDTH;
          }
-       }
+         if(snakeXC > HeroXC)
+         {
+           snakeNewIdx = snakeNewIdx - 1;
+         }
+         if(snakeXC < HeroXC)
+         {
+           snakeNewIdx= snakeNewIdx + 1;
+         }
+         if(theMap[snakeNewIdx] == MAP_BLACK || theMap[snakeNewIdx] == MAP_BRIDGE)
+         {
+           snakeIdx = snakeNewIdx;
+           for(int currentsnakepartIdx = 0; currentsnakepartIdx < theSnake.length; currentsnakepartIdx++)
+           {  
+              if(currentsnakepartIdx == 0)
+              {
+                theMap[theSnake[currentsnakepartIdx][SNAKEIDX]] = (byte)theSnake[currentsnakepartIdx][SNAKESTANDINGON];
+              }
+              if(currentsnakepartIdx < theSnake.length -1)
+              {
+                theSnake[currentsnakepartIdx][SNAKESTANDINGON] = theSnake[currentsnakepartIdx+1][SNAKESTANDINGON];
+                theSnake[currentsnakepartIdx][SNAKEIDX] = theSnake[currentsnakepartIdx+1][SNAKEIDX];
+              }
+              else
+              {
+                theSnake[currentsnakepartIdx][SNAKESTANDINGON] = theMap[snakeIdx];
+                theSnake[currentsnakepartIdx][SNAKEIDX] = snakeIdx;
+              }
+              theMap[theSnake[currentsnakepartIdx][SNAKEIDX]] = (byte)theSnake[currentsnakepartIdx][SNAKESPRITE];
+           }
+         }
+         else
+         {
+           if(theMap[snakeNewIdx] == MAP_VOID)
+           {
+             snakeNewIdx = snakeIdx;
+             if(snakeXC < HeroXC)
+             {
+               snakeNewIdx= snakeNewIdx + 1;
+             }
+             if(snakeXC > HeroXC)
+             {
+               snakeNewIdx= snakeNewIdx - 1;
+             }
+             snakeIdx = snakeNewIdx;
+             for(int currentsnakepartIdx = 0; currentsnakepartIdx < theSnake.length; currentsnakepartIdx++)
+             {  
+                if(currentsnakepartIdx == 0)
+                {
+                  theMap[theSnake[currentsnakepartIdx][SNAKEIDX]] = (byte)theSnake[currentsnakepartIdx][SNAKESTANDINGON];
+                }
+                if(currentsnakepartIdx < theSnake.length -1)
+                {
+                  theSnake[currentsnakepartIdx][SNAKESTANDINGON] = theSnake[currentsnakepartIdx+1][SNAKESTANDINGON];
+                  theSnake[currentsnakepartIdx][SNAKEIDX] = theSnake[currentsnakepartIdx+1][SNAKEIDX];
+                }
+                else
+                {
+                  theSnake[currentsnakepartIdx][SNAKESTANDINGON] = theMap[snakeIdx];
+                  theSnake[currentsnakepartIdx][SNAKEIDX] = snakeIdx;
+                }
+                theMap[theSnake[currentsnakepartIdx][SNAKEIDX]] = (byte)theSnake[currentsnakepartIdx][SNAKESPRITE];
+             }
+           }
+           if(theMap[snakeNewIdx] == MAP_HERO)
+           {
+             menukind = MENUKIND_COLLISION;
+             menuopenreason = "The Snake has caught you.";
+           }
+         }
      }
      for(int j = 0; j < animalInfo.length; ++j)
      {
