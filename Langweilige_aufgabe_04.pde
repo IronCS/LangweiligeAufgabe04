@@ -85,10 +85,10 @@ Location[] locations =
 final int LOCATION_SAVANNA = 0;
 final int LOCATION_CAVE = 1;
 int currentLocation;
+int currentSnakePart;
 byte[] createCave()
 {
   byte A = MAP_VOID;
-  byte B = MAP_NEST;
   byte[]theCave = 
    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

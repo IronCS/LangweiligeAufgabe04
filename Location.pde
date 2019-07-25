@@ -6,8 +6,10 @@ class Location
   byte Hero_Previous = MAP_BLACK;
   byte snakeHeadPrevious = MAP_BLACK;
   byte snakeTailPrevious = MAP_BLACK;
-  int snakeIdx = 1;
-  int snakeTailIdx = 0;  
+  byte snakeBodyPrevious = MAP_BLACK;
+  int snakeIdx = 2;
+  int snakeTailIdx = 0; 
+  int snakeBodyIdx = 1;
   void heroMoveChecker(int newHeroIdx, boolean HeroWrongY)
   {
     if(newHeroIdx == Hero_Position_Idx)
@@ -102,7 +104,8 @@ class Location
      if(currentLocation == LOCATION_CAVE)
      {
        int snakeTailPreviousIdx = snakeTailIdx;
-       int snakeNewTailIdx = snakeIdx;
+       int snakeNewTailIdx = snakeBodyIdx;
+       snakeBodyIdx = snakeIdx;
        snakeNewIdx = snakeIdx;
        int snakeYC = snakeNewIdx / MAP_WIDTH;
        int snakeXC = snakeNewIdx - (snakeYC*MAP_WIDTH);
@@ -126,12 +129,14 @@ class Location
        }
        if(theMap[snakeNewIdx] == MAP_BLACK || theMap[snakeNewIdx] == MAP_BRIDGE)
        {
-         theMap[snakeTailPreviousIdx] = snakeTailPrevious;         
-         snakeTailPrevious = snakeHeadPrevious;
+         theMap[snakeTailPreviousIdx] = snakeTailPrevious;
+         snakeTailPrevious = snakeBodyPrevious;
+         snakeBodyPrevious = snakeHeadPrevious;
          snakeHeadPrevious = theMap[snakeNewIdx];
          snakeIdx = snakeNewIdx;
          snakeTailIdx = snakeNewTailIdx;
          theMap[snakeIdx] = MAP_SNAKEHEAD;
+         theMap[snakeBodyIdx] = MAP_SNAKEBODY;
          theMap[snakeTailIdx] = MAP_SNAKETAIL;
        }
        else
@@ -153,6 +158,7 @@ class Location
            }
            theMap[snakeIdx] = MAP_SNAKEHEAD;
            snakeTailIdx = snakeNewTailIdx;
+           theMap[snakeBodyIdx] = MAP_SNAKEBODY;
            theMap[snakeTailIdx] = MAP_SNAKETAIL;
            theMap[snakeTailPreviousIdx] = MAP_BLACK;
          }
