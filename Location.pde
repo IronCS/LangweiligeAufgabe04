@@ -6,6 +6,7 @@ class Location
   byte Hero_Previous = MAP_BLACK;
   int snakeIdx = 7;
   int snakeTailPreviousIdx;
+  boolean c1 = false;
   void heroMoveChecker(int newHeroIdx, boolean HeroWrongY)
   {
     if(newHeroIdx == Hero_Position_Idx)
@@ -67,6 +68,12 @@ class Location
           menukind = MENUKIND_BUILDINGBRIDGE;
           gatheringIdx = newHeroIdx;
         }   
+        if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_SNAKEDEAD)
+        {
+          menuopenreason = "A giant Snakeskin. \nDo you want to gather it?";
+          menukind = MENUKIND_GATHERINGSNAKE;
+          gatheringIdx = newHeroIdx;
+        }
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_CAVE)
         {          
           menukind = MENUKIND_COLLISION;
@@ -97,6 +104,7 @@ class Location
    int snakeNewIdx;
    if((frameCount%60) == 0)
    { 
+     c1 = false;
      if(currentLocation == LOCATION_CAVE)
      {
          snakeNewIdx = snakeIdx;
@@ -125,21 +133,25 @@ class Location
            snakeIdx = snakeNewIdx;
            for(int currentsnakepartIdx = 0; currentsnakepartIdx < theSnake.length; currentsnakepartIdx++)
            {  
-              if(currentsnakepartIdx == 0)
-              {
-                theMap[theSnake[currentsnakepartIdx][SNAKEIDX]] = (byte)theSnake[currentsnakepartIdx][SNAKESTANDINGON];
-              }
-              if(currentsnakepartIdx < theSnake.length -1)
-              {
-                theSnake[currentsnakepartIdx][SNAKESTANDINGON] = theSnake[currentsnakepartIdx+1][SNAKESTANDINGON];
-                theSnake[currentsnakepartIdx][SNAKEIDX] = theSnake[currentsnakepartIdx+1][SNAKEIDX];
-              }
-              else
-              {
-                theSnake[currentsnakepartIdx][SNAKESTANDINGON] = theMap[snakeIdx];
-                theSnake[currentsnakepartIdx][SNAKEIDX] = snakeIdx;
-              }
-              theMap[theSnake[currentsnakepartIdx][SNAKEIDX]] = (byte)theSnake[currentsnakepartIdx][SNAKESPRITE];
+             if(theSnake[currentsnakepartIdx][SNAKESPRITE] != MAP_SNAKEDEAD && theSnake[currentsnakepartIdx][SNAKESPRITE] != MAP_BLACK)
+             {
+                if(!c1)
+                {
+                  theMap[theSnake[currentsnakepartIdx][SNAKEIDX]] = (byte)theSnake[currentsnakepartIdx][SNAKESTANDINGON];
+                  c1 = true;
+                }
+                if(currentsnakepartIdx < theSnake.length -1)
+                {
+                  theSnake[currentsnakepartIdx][SNAKESTANDINGON] = theSnake[currentsnakepartIdx+1][SNAKESTANDINGON];
+                  theSnake[currentsnakepartIdx][SNAKEIDX] = theSnake[currentsnakepartIdx+1][SNAKEIDX];
+                }
+                else
+                {
+                  theSnake[currentsnakepartIdx][SNAKESTANDINGON] = theMap[snakeIdx];
+                  theSnake[currentsnakepartIdx][SNAKEIDX] = snakeIdx;
+                }
+             }             
+             theMap[theSnake[currentsnakepartIdx][SNAKEIDX]] = (byte)theSnake[currentsnakepartIdx][SNAKESPRITE];
            }
          }
          else
@@ -158,21 +170,25 @@ class Location
              snakeIdx = snakeNewIdx;
              for(int currentsnakepartIdx = 0; currentsnakepartIdx < theSnake.length; currentsnakepartIdx++)
              {  
-                if(currentsnakepartIdx == 0)
-                {
-                  theMap[theSnake[currentsnakepartIdx][SNAKEIDX]] = (byte)theSnake[currentsnakepartIdx][SNAKESTANDINGON];
-                }
-                if(currentsnakepartIdx < theSnake.length -1)
-                {
-                  theSnake[currentsnakepartIdx][SNAKESTANDINGON] = theSnake[currentsnakepartIdx+1][SNAKESTANDINGON];
-                  theSnake[currentsnakepartIdx][SNAKEIDX] = theSnake[currentsnakepartIdx+1][SNAKEIDX];
-                }
-                else
-                {
-                  theSnake[currentsnakepartIdx][SNAKESTANDINGON] = theMap[snakeIdx];
-                  theSnake[currentsnakepartIdx][SNAKEIDX] = snakeIdx;
-                }
-                theMap[theSnake[currentsnakepartIdx][SNAKEIDX]] = (byte)theSnake[currentsnakepartIdx][SNAKESPRITE];
+               if(theSnake[currentsnakepartIdx][SNAKESPRITE] != MAP_SNAKEDEAD && theSnake[currentsnakepartIdx][SNAKESPRITE] != MAP_BLACK)
+               {
+                  if(!c1)
+                  {
+                    theMap[theSnake[currentsnakepartIdx][SNAKEIDX]] = (byte)theSnake[currentsnakepartIdx][SNAKESTANDINGON];
+                    c1 = true;
+                  }
+                  if(currentsnakepartIdx < theSnake.length -1)
+                  {
+                    theSnake[currentsnakepartIdx][SNAKESTANDINGON] = theSnake[currentsnakepartIdx+1][SNAKESTANDINGON];
+                    theSnake[currentsnakepartIdx][SNAKEIDX] = theSnake[currentsnakepartIdx+1][SNAKEIDX];
+                  }
+                  else
+                  {
+                    theSnake[currentsnakepartIdx][SNAKESTANDINGON] = theMap[snakeIdx];
+                    theSnake[currentsnakepartIdx][SNAKEIDX] = snakeIdx;
+                  }
+               }             
+               theMap[theSnake[currentsnakepartIdx][SNAKEIDX]] = (byte)theSnake[currentsnakepartIdx][SNAKESPRITE];
              }
            }
            if(theMap[snakeNewIdx] == MAP_HERO)
@@ -193,20 +209,56 @@ class Location
          {
             newanimalRouteIdx = 0;
          }
-         if(locations[currentLocation].theMap[currentanimal.animalRoute[newanimalRouteIdx][1] * MAP_WIDTH + currentanimal.animalRoute[newanimalRouteIdx][0]] != MAP_HERO)
+         byte atNextRailAnimalPosition = locations[currentLocation].theMap[currentanimal.animalRoute[newanimalRouteIdx][1] * MAP_WIDTH + currentanimal.animalRoute[newanimalRouteIdx][0]];
+         int NextAnimalIdx = currentanimal.animalRoute[newanimalRouteIdx][1] * MAP_WIDTH + currentanimal.animalRoute[newanimalRouteIdx][0];
+         if(   atNextRailAnimalPosition != MAP_HERO
+            && atNextRailAnimalPosition != MAP_SNAKETAIL
+            && atNextRailAnimalPosition != MAP_SNAKEBODY 
+            && atNextRailAnimalPosition != MAP_SNAKEHEAD)
          {
            currentanimal.animalRouteIdx = newanimalRouteIdx;
          }
          else
          {
-           menukind = MENUKIND_COLLISION;
-           menuopenreason = "The Animal has caught you. You should go see a doctor.";
+           if(atNextRailAnimalPosition == MAP_HERO)
+           {
+             menukind = MENUKIND_COLLISION;
+             menuopenreason = "The Animal has caught you. You should go see a doctor.";
+           }
+           if(  atNextRailAnimalPosition == MAP_SNAKETAIL 
+             || atNextRailAnimalPosition == MAP_SNAKEBODY 
+             || atNextRailAnimalPosition == MAP_SNAKEHEAD)
+           {
+             for(int i = 0; i < theSnake.length; i++)
+             {
+               if(theSnake[i][SNAKEIDX] == NextAnimalIdx)
+               {
+                 for(int o = i; o >= 0; o--)
+                 {
+                   if(o == i)
+                   {
+                     theSnake[o][SNAKESPRITE] = MAP_BLACK;
+                   }
+                   else
+                   {
+                     if(theSnake[o][SNAKEALREADYGATHERED] == 0)
+                     {
+                       theSnake[o][SNAKESPRITE] = MAP_SNAKEDEAD;
+                     }
+                   }              
+                 }
+                 menukind = MENUKIND_COLLISION;
+                 menuopenreason = "You see a Spider biting the Snake.";
+                 break;
+               }
+             }
+           }
          }
          for(int i = 0; i < currentanimal.animalRoute.length; ++i)
          {
              int LRX = currentanimal.animalRoute[i][0];
              int LRY = currentanimal.animalRoute[i][1];
-             if(locations[currentLocation].theMap[LRY*MAP_WIDTH+LRX] != MAP_HERO)
+             if(locations[currentLocation].theMap[LRY*MAP_WIDTH+LRX] != MAP_HERO && locations[currentLocation].theMap[LRY*MAP_WIDTH+LRX] != MAP_SNAKETAIL && locations[currentLocation].theMap[LRY*MAP_WIDTH+LRX] != MAP_SNAKEBODY && locations[currentLocation].theMap[LRY*MAP_WIDTH+LRX] != MAP_SNAKEHEAD)
              {
                locations[currentLocation].theMap[LRY*MAP_WIDTH+LRX] = MAP_BLACK;
              }

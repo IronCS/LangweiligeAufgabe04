@@ -58,7 +58,10 @@ final byte MAP_NEST = 13;
 final byte MAP_SNAKEHEAD = 14;
 final byte MAP_SNAKEBODY = 15;
 final byte MAP_SNAKETAIL = 16;
-final byte MAP_TILE_NUM = 17;
+final byte MAP_SNAKEDEAD = 17;
+final byte MAP_SAVANNA1 = 18;
+final byte MAP_SAVANNA2 = 19;
+final byte MAP_TILE_NUM = 20;
 final int MAP_WIDTH = 40;
 final int MAP_HEIGHT = 20;
 final int TILE_WIDTH = 16;
@@ -66,10 +69,12 @@ final int TILE_HEIGHT = 16;
 final int SNAKESPRITE = 0;
 final int SNAKESTANDINGON = 1;
 final int SNAKEIDX = 2;
-int[][]theSnake = {{MAP_SNAKETAIL, MAP_BLACK, 0}, {MAP_SNAKEBODY, MAP_BLACK, 1}, {MAP_SNAKEBODY, MAP_BLACK, 2}, {MAP_SNAKEBODY, MAP_BLACK, 3}, {MAP_SNAKEBODY, MAP_BLACK, 4}, {MAP_SNAKEBODY, MAP_BLACK, 5}, {MAP_SNAKEBODY, MAP_BLACK, 6}, {MAP_SNAKEHEAD, MAP_BLACK, 7}};
+final int SNAKEALREADYGATHERED = 3;
+int[][]theSnake = {{MAP_SNAKETAIL, MAP_BLACK, 0, 0}, {MAP_SNAKEBODY, MAP_BLACK, 1, 0}, {MAP_SNAKEBODY, MAP_BLACK, 2, 0}, {MAP_SNAKEBODY, MAP_BLACK, 3, 0}, {MAP_SNAKEBODY, MAP_BLACK, 4, 0}, {MAP_SNAKEBODY, MAP_BLACK, 5, 0}, {MAP_SNAKEBODY, MAP_BLACK, 6, 0}, {MAP_SNAKEHEAD, MAP_BLACK, 7, 0}};
 String menuopenreason;
 int stonecount = 0;
 int woodcount = 0;
+int snakecount = 0;
 int gatheringIdx;
 int menukind;
 int snakeIdx;
@@ -78,10 +83,11 @@ final int MENUKIND_NOMENU = 0;
 final int MENUKIND_WANTTOEXIT = 1;
 final int MENUKIND_GATHERINGSTONES = 2;
 final int MENUKIND_GATHERINGWOOD = 3;
-final int MENUKIND_BUILDINGBRIDGE = 4;
-final int MENUKIND_NOTENOUGHMATERIALS = 5;
-final int MENUKIND_INVENTORY = 6;
-final int MENUKIND_COLLISION = 7;
+final int MENUKIND_GATHERINGSNAKE = 4;
+final int MENUKIND_BUILDINGBRIDGE = 5;
+final int MENUKIND_NOTENOUGHMATERIALS = 6;
+final int MENUKIND_INVENTORY = 7;
+final int MENUKIND_COLLISION = 8;
 Location[] locations =
 {
   new Location(), new Location(), 
@@ -286,6 +292,9 @@ void setup()
   tiles[i++] = loadImage("TileSnakeHead.jpg");
   tiles[i++] = loadImage("TileSnakeBody.jpg");
   tiles[i++] = loadImage("TileSnakeTail.jpg");
+  tiles[i++] = loadImage("TileSnakeDead.jpg");
+  tiles[i++] = loadImage("TileSavanna1.jpg");
+  tiles[i++] = loadImage("TileSavanna2.jpg");
   i = 0;
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT); 
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
@@ -304,12 +313,15 @@ void setup()
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   initAnimals();
 }
 void openInventoryMenu()
 {
   menukind = MENUKIND_INVENTORY;
-  menuopenreason = "Inventory \n Stones = "+stonecount+" \n Wood = "+woodcount;
+  menuopenreason = "Inventory \n Stones = "+stonecount+"  Snakeskins = " + snakecount + " \n Wood = "+woodcount;
 }
 void mousePressed()
 {
@@ -367,7 +379,7 @@ void mousePressed()
       return;
     }
   }
-  if(menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_BUILDINGBRIDGE)
+  if(menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_BUILDINGBRIDGE || menukind == MENUKIND_GATHERINGSNAKE)
   {
     if(mouseX >= 60 && mouseX <= 280 && mouseY >= 100 && mouseY <= 240)
     {
@@ -382,6 +394,20 @@ void mousePressed()
         stonecount++;
         menukind = MENUKIND_NOMENU;
         locations[currentLocation].theMap[gatheringIdx] = MAP_BLACK;
+        return;
+      }
+      if(menukind == MENUKIND_GATHERINGSNAKE)
+      {
+        snakecount++;
+        menukind = MENUKIND_NOMENU;
+        for(int i = 0; i < theSnake.length; i++)
+        {
+          if(theSnake[i][SNAKEIDX] == gatheringIdx)
+          {
+            theSnake[i][SNAKESPRITE] = theSnake[i][SNAKESTANDINGON];
+            break;
+          }
+        }
         return;
       }
       if(menukind == MENUKIND_BUILDINGBRIDGE)
@@ -514,7 +540,7 @@ void drawmenu()
       text("Open Settings", 400, 170);      
     }
   }
-  if(menukind == MENUKIND_BUILDINGBRIDGE || menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_GATHERINGWOOD)
+  if(menukind == MENUKIND_BUILDINGBRIDGE || menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSNAKE)
   {
     rect(60, 100, 220, 140);
     rect(290, 100, 220, 140);
