@@ -3,7 +3,7 @@ class Location
   RailAnimal []animalInfo;
   byte[] theMap;
   int Hero_Position_Idx;
-  byte Hero_Previous = MAP_BLACK;
+  byte Hero_Previous = MAP_SAVANNA1;
   int snakeIdx = 7;
   int snakeTailPreviousIdx;
   void heroMoveChecker(int newHeroIdx, boolean HeroWrongY)
@@ -14,7 +14,7 @@ class Location
     }
     if(Hero_Position_Idx != newHeroIdx && newHeroIdx >= 0 && newHeroIdx < MAP_WIDTH * MAP_HEIGHT && !HeroWrongY)
     {
-      if(theMap[newHeroIdx] == MAP_BLACK || theMap[newHeroIdx] == MAP_BRIDGE)
+      if(theMap[newHeroIdx] == MAP_BLACK || theMap[newHeroIdx] == MAP_BRIDGE || theMap[newHeroIdx] == MAP_SAVANNA1)
       {
         theMap[Hero_Position_Idx] = Hero_Previous;
         Hero_Previous = theMap[newHeroIdx];
@@ -81,6 +81,7 @@ class Location
           theMap[Hero_Position_Idx] = MAP_BLACK;
           locations[currentLocation].Hero_Position_Idx = 631;
           locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
+          Hero_Previous = MAP_BLACK;
         }
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_LIGHT)
         {
@@ -90,6 +91,7 @@ class Location
           theMap[Hero_Position_Idx] = MAP_BLACK;
           locations[currentLocation].Hero_Position_Idx = 4;
           locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
+          Hero_Previous = MAP_SAVANNA1;
         }
       }
     }
@@ -243,7 +245,14 @@ class Location
              int LRY = currentanimal.animalRoute[i][1];
              if(locations[currentLocation].theMap[LRY*MAP_WIDTH+LRX] != MAP_HERO && locations[currentLocation].theMap[LRY*MAP_WIDTH+LRX] != MAP_SNAKETAIL && locations[currentLocation].theMap[LRY*MAP_WIDTH+LRX] != MAP_SNAKEBODY && locations[currentLocation].theMap[LRY*MAP_WIDTH+LRX] != MAP_SNAKEHEAD)
              {
-               locations[currentLocation].theMap[LRY*MAP_WIDTH+LRX] = MAP_BLACK;
+               if(currentLocation == LOCATION_CAVE)
+               {
+                 locations[currentLocation].theMap[LRY*MAP_WIDTH+LRX] = MAP_BLACK;
+               }
+               else
+               {
+                 locations[currentLocation].theMap[LRY*MAP_WIDTH+LRX] = MAP_SAVANNA1;
+               }
              }
              //System.out.print(LRX + ", " + LRY + "; ");
          }
