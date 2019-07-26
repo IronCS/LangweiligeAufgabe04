@@ -72,6 +72,7 @@ final int SNAKEIDX = 2;
 final int SNAKEALREADYGATHERED = 3;
 int[][]theSnake = {{MAP_SNAKETAIL, MAP_BLACK, 0, 0}, {MAP_SNAKEBODY, MAP_BLACK, 1, 0}, {MAP_SNAKEBODY, MAP_BLACK, 2, 0}, {MAP_SNAKEBODY, MAP_BLACK, 3, 0}, {MAP_SNAKEBODY, MAP_BLACK, 4, 0}, {MAP_SNAKEBODY, MAP_BLACK, 5, 0}, {MAP_SNAKEBODY, MAP_BLACK, 6, 0}, {MAP_SNAKEHEAD, MAP_BLACK, 7, 0}};
 String menuopenreason;
+int supersecretcheatcode = 0;
 int stonecount = 0;
 int woodcount = 0;
 int snakecount = 0;
@@ -405,6 +406,7 @@ void mousePressed()
           if(theSnake[i][SNAKEIDX] == gatheringIdx)
           {
             theSnake[i][SNAKESPRITE] = theSnake[i][SNAKESTANDINGON];
+            theSnake[i][SNAKEALREADYGATHERED] = 1;
             break;
           }
         }
@@ -500,6 +502,61 @@ void keyPressed()
   if(key == 66 || key == 98) //Upper- & Lowercase B
   {
     openInventoryMenu();
+  }
+  if(supersecretcheatcode == 4)
+  {
+    if(key == 100 || key == 68)
+    {
+      supersecretcheatcode = 5;
+    }
+    else
+    {
+      supersecretcheatcode = 0;
+    }
+  }
+  if(supersecretcheatcode == 3)
+  {
+    if(key == 113 || key == 81)
+    {
+      supersecretcheatcode = 4;
+    }
+    else
+    {
+      supersecretcheatcode = 0;
+    }
+  }
+  if(supersecretcheatcode == 2)
+  {
+    if(key == 100 || key == 68)
+    {
+      supersecretcheatcode = 3; 
+    }
+    else
+    {
+      supersecretcheatcode = 0;
+    }
+  }
+  if(supersecretcheatcode == 1)
+  {
+    if(key == 100 || key == 68)
+    {
+      supersecretcheatcode = 2;  
+    }
+    else
+    {
+      supersecretcheatcode = 0;
+    }
+  }
+  if((key == 105 || key == 73) && supersecretcheatcode == 0)
+  {
+    supersecretcheatcode = 1;
+  }
+  if(supersecretcheatcode == 5)
+  {
+    woodcount = woodcount + 5;
+    stonecount = stonecount + 5;
+    snakecount = snakecount + 5;
+    supersecretcheatcode = 0;
   }
 }
 void draw()
