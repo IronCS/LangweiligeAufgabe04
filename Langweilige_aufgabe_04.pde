@@ -34,15 +34,20 @@ final byte MAP_VOID = 11;
 final byte MAP_TILE_NUM = 12;
 final int MAP_WIDTH = 40;
 final int MAP_HEIGHT = 20;
-final int TILE_WIDTH = 16;
-final int TILE_HEIGHT = 16;
+int TILE_WIDTH = 16;
+int TILE_HEIGHT = 16;
 boolean menuopen;
 boolean wanttoexit;
 final int VIEW_MODE_2D = 0;
 final int VIEW_MODE_3D = 1;
-int viewMode = VIEW_MODE_2D;
-float alphaX = PI*2/360*45;
-float translateByZ = -400;
+int viewMode = VIEW_MODE_3D;
+boolean guessProjectionParams = false;
+float alphaX = PI*2/360*20;
+float translateByZ = -227;
+//float zProjectionPoint = 272; // for screen size 640
+//float zProjectionPoint = 544; // for screen size 1280
+float zProjectionPoint = 0;
+PVector []modelPoints = null; // corners of the "board"
 String menuopenreason;
 Menu sysMenuObj;
 Location[] locations =
@@ -223,7 +228,11 @@ void initAnimals()
 }
 void setup()
 {
-  size(640, 320, P3D);
+//size(640, 320, P3D);
+  size(1280, 640, P3D);
+  zProjectionPoint = pixelWidth/(2*cos(40*PI/180))*sin(40*PI/180);
+  TILE_WIDTH*=2;
+  TILE_HEIGHT*=2;
   theCave = createCave();
   locations[currentLocation].theMap = theSavanna; 
   locations[currentLocation].Hero_Position_Idx = 10;
@@ -262,6 +271,14 @@ void openInventoryMenu()
   menuopen = true;
   menuopenreason = "Inventory \n Rocks = 0 \n Wood = 0"; 
 }
+
+/////////////////////////////////////////
+PVector computeMouseCellCoords3D(int z0x, int z0y)
+{
+  PVector ppoint = new PVector(pixelWidth/2, pixelHeight/2, zProjectionPoint);
+  PVector pZ0 = new PVector(z0x, z0y, 0);
+}
+
 void mousePressed()
 {
   int newHeroIdx = locations[currentLocation].Hero_Position_Idx;
@@ -271,6 +288,12 @@ void mousePressed()
   boolean HeroWrongY = false;
   int mouseXC = mouseX/TILE_WIDTH;
   int mouseYC = mouseY/TILE_HEIGHT;
+  if (viewMode == VIEW_MODE_3D)
+  {
+    PVector mouseCellCoords = computeMouseCellCoords3D(mouseX, mouseY);
+    mouseXC = (int) mouseCellCoords.x;
+    mouseYC = (int) mouseCellCoords.y;
+  }
   if(mouseXC > HeroX)
   {
     newHeroIdx++;
@@ -428,7 +451,56 @@ void keyPressed()
   {
     openInventoryMenu();
   }
+  if (guessProjectionParams && key == 'z')
+  {
+    zProjectionPoint+=1;
+  }
+  if (guessProjectionParams && key == 'Z')
+  {
+    zProjectionPoint-=1;
+  }
 }
+
+/////////////////////////////////////////
+// intersect of line given by two points a-b with plane Z=0
+PVector intersectionWithZ0(PVector a, PVector b)
+{
+  // bad: (-y1 - dz/dy*y1) * dy/dz
+  // bad: (y - x1 - dy/dx*x1) * dx/dy
+  // z = dz/dy * y + z1 - dz/dy*y1 -> y = (-z1 + dz/dy*y1) * dy/dz
+  // y = dy/dx * x + y1 - dy/dx*x1 -> x = (y - y1 + dy/dx*x1) * dx/dy
+  float dz = a.z - b.z;
+  float dy = a.y - b.y;
+  float dx = a.x - b.x;
+  float y = (-b.z + dz/dy*b.y) * dy/dz;
+  float x = (y - b.y + dy/dx*b.x) * dx/dy;
+  return new PVector(x, y, 0);
+}
+
+/////////////////////////////////////////
+void doGuessProjectionParams(PVector []modelPoints)
+{
+  // driven by the assumption that projection center is located on x,y = middle
+  // of the window and assuming some reasonable z for it, let us try to compute
+  // projection of all 4 corners (modelPoints) to the plane z=0 (screen plane)
+
+  // guess some value of projection point
+  PVector ppoint = new PVector(pixelWidth/2, pixelHeight/2, zProjectionPoint);
+
+  // line ppoint - corner, crossing plane z=0 at...
+  for (int i = 0; i < modelPoints.length; ++i)
+  {
+    PVector c = modelPoints[i]; // corner
+    PVector isectZ0 = intersectionWithZ0(c, ppoint);
+    float x = isectZ0.x;
+    float y = isectZ0.y;
+    fill(255,0,0);
+    ellipseMode(CORNERS);
+    ellipse(x-6,y-6,x+6,y+6);
+    println("corner "+c+" ppoint "+ppoint+" x="+x+" y="+y);
+  }
+}
+
 void draw()
 {
   if(!menuopen)
@@ -445,15 +517,55 @@ void draw()
       translate(0,-MAP_HEIGHT*TILE_HEIGHT/2);
       translate(0,0,-200);
       */ 
+      //translate(0,0,translateByZ);
+      translate(0, MAP_HEIGHT*TILE_HEIGHT,0);
       rotateX(alphaX);
-      translate(0,0,translateByZ);
+      translate(0,-MAP_HEIGHT*TILE_HEIGHT,0);
     }
 
     locations[currentLocation].draw_savanna();
 
     if (viewMode == VIEW_MODE_3D)
     {
+      if (modelPoints == null) {
+        modelPoints = new PVector[4]; // lt, rt, lb, rb
+        int i = 0;
+        float x;
+        float y;
+        float z;
+
+        x = 0; y = 0; z = 0;
+        modelPoints[i] = new PVector(modelX(x, y, z),modelY(x, y, z), modelZ(x,y,z));
+        println("LeftTop: ("+modelPoints[i]+")");
+        i++;
+
+        x = MAP_WIDTH*TILE_WIDTH;
+        y = 0;
+        z = 0;
+        modelPoints[i] = new PVector(modelX(x, y, z),modelY(x, y, z), modelZ(x,y,z));
+        println("RightTop: ("+modelPoints[i]+")");
+        i++;
+
+        x = 0;
+        y = MAP_HEIGHT*TILE_HEIGHT;
+        z = 0;
+        modelPoints[i] = new PVector(modelX(x, y, z),modelY(x, y, z), modelZ(x,y,z));
+        println("LeftBottom: ("+modelPoints[i]+")");
+        i++;
+
+        x = MAP_WIDTH*TILE_WIDTH;
+        y = MAP_HEIGHT*TILE_HEIGHT;
+        z = 0;
+        modelPoints[i] = new PVector(modelX(x, y, z),modelY(x, y, z), modelZ(x,y,z));
+        println("RightBottom: ("+modelPoints[i]+")");
+      }
+
       popMatrix();
+
+      if (guessProjectionParams)
+      {
+        doGuessProjectionParams(modelPoints);
+      }
     }
   }
   else
