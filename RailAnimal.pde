@@ -15,4 +15,5 @@ class RailAnimal
   int getanimalCY(){return animalRoute[animalRouteIdx][1];}
   int getanimalX(){return getanimalCX() * TILE_WIDTH;}
   int getanimalY(){return getanimalCY() * TILE_HEIGHT;}
+  byte animalSteppedOn;
 }

@@ -2,30 +2,59 @@
 byte[] createSavanna()
 {
   byte A = MAP_SAVANNA1;
+  byte B = MAP_SAVANNA2;
   byte[]theSavanna =
-  {1,1,2,A,A,7,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   3,0,2,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   1,1,2,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   3,0,2,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   1,1,2,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   3,0,2,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   1,1,2,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   3,0,2,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   1,1,2,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   3,0,2,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   1,1,2,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   3,0,2,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   1,1,2,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
-   3,0,2,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,};
+  {1,1,2,B,A,7,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
+   3,B,2,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,
+   A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
+   1,1,2,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,
+   3,B,2,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
+   B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,
+   1,1,2,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
+   3,B,2,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,
+   A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
+   1,1,2,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,
+   3,B,2,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
+   B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,
+   1,1,2,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
+   3,B,2,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,
+   A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
+   1,1,2,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,
+   3,B,2,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
+   B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,
+   1,1,2,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
+   3,B,2,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,};
   return theSavanna;
 }
 byte[]theSavanna;
+byte[] createBeach()
+{
+  byte S = MAP_SAND;
+  byte W = MAP_WATER;
+  byte[]thelocalBeach = 
+  {S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+   S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+   W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+   W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+   W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+   W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+   W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+   W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+   W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+   W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+   W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+   W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+   W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+   W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+   W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+   W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+   W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+   W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,W,
+   S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,
+   7,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,};
+  return thelocalBeach;
+}
+byte[]theBeach;
 final byte MAP_BLACK = 0;
 final byte MAP_BRICK = 1;
 final byte MAP_GREEN = 2;
@@ -46,7 +75,12 @@ final byte MAP_SNAKETAIL = 16;
 final byte MAP_SNAKEDEAD = 17;
 final byte MAP_SAVANNA1 = 18;
 final byte MAP_SAVANNA2 = 19;
-final byte MAP_TILE_NUM = 20;
+final byte MAP_SAND = 20;
+final byte MAP_WATER = 21;
+final byte MAP_WAVE = 22;
+final byte MAP_SANDTRANSFER = 23;
+final byte MAP_BOAT = 24;
+final byte MAP_TILE_NUM = 25;
 final int MAP_WIDTH = 40;
 final int MAP_HEIGHT = 20;
 final int TILE_WIDTH = 16;
@@ -56,6 +90,10 @@ final int SNAKESTANDINGON = 1;
 final int SNAKEIDX = 2;
 final int SNAKEALREADYGATHERED = 3;
 int[][]theSnake = {{MAP_SNAKETAIL, MAP_BLACK, 0, 0}, {MAP_SNAKEBODY, MAP_BLACK, 1, 0}, {MAP_SNAKEBODY, MAP_BLACK, 2, 0}, {MAP_SNAKEBODY, MAP_BLACK, 3, 0}, {MAP_SNAKEBODY, MAP_BLACK, 4, 0}, {MAP_SNAKEBODY, MAP_BLACK, 5, 0}, {MAP_SNAKEBODY, MAP_BLACK, 6, 0}, {MAP_SNAKEHEAD, MAP_BLACK, 7, 0}};
+final int WAVEX = 0;
+final int WAVEY = 1;
+final int WAVEDIRECTION = 2; //Up = 0, Right = 1, Down = 2, Left = 3;
+int[]theWave = {0,0,2};
 String menuopenreason;
 int supersecretcheatcode = 0;
 int stonecount = 0;
@@ -65,31 +103,38 @@ int gatheringIdx;
 int menukind;
 int snakeIdx;
 int snakeLocation;
+int boatIdx;
+boolean inBoat = false;
 final int MENUKIND_NOMENU = 0;
 final int MENUKIND_WANTTOEXIT = 1;
 final int MENUKIND_GATHERINGSTONES = 2;
 final int MENUKIND_GATHERINGWOOD = 3;
 final int MENUKIND_GATHERINGSNAKE = 4;
 final int MENUKIND_BUILDINGBRIDGE = 5;
+final int MENUKIND_BUILDINGBOAT = 6;
 final int MENUKIND_NOTENOUGHMATERIALS = 6;
 final int MENUKIND_INVENTORY = 7;
 final int MENUKIND_COLLISION = 8;
+final int MENUKIND_ENTERINGBOAT = 9;
+final int MENUKIND_LEAVINGBOAT = 10;
 Location[] locations =
 {
-  new Location(), new Location(), 
+  new Location(), new Location(), new Location()
 };
 final int LOCATION_SAVANNA = 0;
 final int LOCATION_CAVE = 1;
+final int LOCATION_BEACH = 2;
 int currentLocation;
 int currentSnakePart;
 byte[] createCave()
 {
   byte A = MAP_VOID;
-  byte B = MAP_SAVANNA1;
+  byte S = MAP_SAND;
+  byte T = MAP_SANDTRANSFER;
   byte[]theCave = 
-   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,S,S,T,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,S,S,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,S,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,A,
@@ -102,7 +147,7 @@ byte[] createCave()
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,B,8,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -144,6 +189,9 @@ void initAnimals()
   l.animalInfo[0].animalName = "Dimitrii";
   l.animalInfo[0].animal_sprite_number_awake = MAP_YELLOW;
   l.animalInfo[0].animal_sprite_number_sleeping = MAP_YELLOWSLEEPING;
+  byte animalX = (byte)l.animalInfo[0].animalRoute[0][0];
+  byte animalY = (byte)l.animalInfo[0].animalRoute[0][1];
+  l.animalInfo[0].animalSteppedOn = locations[currentLocation].getByteOn(animalX, animalY);
   //Animal 2
   l.animalInfo[1].animal_sprite_number = MAP_YELLOW;
   l.animalInfo[1].animalRoute = new int [][]
@@ -182,6 +230,9 @@ void initAnimals()
   l.animalInfo[1].animalName = "Slavik";
   l.animalInfo[1].animal_sprite_number_awake = MAP_YELLOW;
   l.animalInfo[1].animal_sprite_number_sleeping = MAP_YELLOWSLEEPING;
+  animalX = (byte)l.animalInfo[1].animalRoute[0][0];
+  animalY = (byte)l.animalInfo[1].animalRoute[0][1];
+  l.animalInfo[1].animalSteppedOn = locations[currentLocation].getByteOn(animalX, animalY);
   l = locations[LOCATION_CAVE];
   l.animalInfo = new RailAnimal[] 
   {
@@ -213,6 +264,9 @@ void initAnimals()
   l.animalInfo[0].animalName = "Stanislav";
   l.animalInfo[0].animal_sprite_number_awake = MAP_SPIDER;
   l.animalInfo[0].animal_sprite_number_sleeping = MAP_SPIDERSLEEPING;
+  animalX = (byte)l.animalInfo[0].animalRoute[0][0];
+  animalY = (byte)l.animalInfo[0].animalRoute[0][1];
+  l.animalInfo[0].animalSteppedOn = locations[LOCATION_CAVE].getByteOn(animalX, animalY);
   //Spider 2
   l.animalInfo[1].animal_sprite_number = MAP_SPIDER;
   l.animalInfo[1].animalRoute = new int [][]
@@ -251,6 +305,9 @@ void initAnimals()
   l.animalInfo[1].animalName = "Vladimir";
   l.animalInfo[1].animal_sprite_number_awake = MAP_SPIDER;
   l.animalInfo[1].animal_sprite_number_sleeping = MAP_SPIDERSLEEPING;
+  animalX = (byte)l.animalInfo[1].animalRoute[0][0];
+  animalY = (byte)l.animalInfo[1].animalRoute[0][1];
+  l.animalInfo[1].animalSteppedOn = locations[LOCATION_CAVE].getByteOn(animalX, animalY);
 }
 void setup()
 {
@@ -258,10 +315,12 @@ void setup()
   menukind = MENUKIND_NOMENU;
   theCave = createCave();
   theSavanna = createSavanna();
+  theBeach = createBeach();
   locations[currentLocation].theMap = theSavanna; 
   locations[currentLocation].Hero_Position_Idx = 10;
   locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
   locations[LOCATION_CAVE].theMap = theCave;
+  locations[LOCATION_BEACH].theMap = theBeach;
   int i = 0;
   tiles[i++] = loadImage("TileBlack.jpg");
   tiles[i++] = loadImage("TileBrick.jpg");
@@ -283,6 +342,11 @@ void setup()
   tiles[i++] = loadImage("TileSnakeDead.jpg");
   tiles[i++] = loadImage("TileSavanna1.jpg");
   tiles[i++] = loadImage("TileSavanna2.jpg");
+  tiles[i++] = loadImage("TileSand.jpg");
+  tiles[i++] = loadImage("TileWater.jpg");
+  tiles[i++] = loadImage("TileWave.jpg");
+  tiles[i++] = loadImage("TileSand.jpg");
+  tiles[i++] = loadImage("TileBoat.jpg");
   i = 0;
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT); 
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
@@ -296,6 +360,11 @@ void setup()
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);  
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);   
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
@@ -367,7 +436,7 @@ void mousePressed()
       return;
     }
   }
-  if(menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_BUILDINGBRIDGE || menukind == MENUKIND_GATHERINGSNAKE)
+  if(menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_BUILDINGBRIDGE || menukind == MENUKIND_GATHERINGSNAKE || menukind == MENUKIND_BUILDINGBOAT || menukind == MENUKIND_ENTERINGBOAT)
   {
     if(mouseX >= 60 && mouseX <= 280 && mouseY >= 100 && mouseY <= 240)
     {
@@ -415,6 +484,36 @@ void mousePressed()
           menuopenreason = "Not enough Stones/Wood! \nYou need 5 of both, but you have \n"+stonecount+" Stones and "+woodcount+" Wood.";
           return;
         }
+      }
+      if(menukind == MENUKIND_BUILDINGBOAT)
+      {
+        if(snakecount >= 5 && woodcount >= 5)
+        {
+          snakecount = snakecount - 5;
+          woodcount = woodcount - 5;
+          menukind = MENUKIND_NOMENU;
+          locations[currentLocation].theMap[gatheringIdx] = MAP_BOAT;
+          return;
+        }
+        else
+        {
+          menukind = MENUKIND_NOTENOUGHMATERIALS;
+          menuopenreason = "Not enough Snakeskins/Wood! \nYou need 5 of both, but you have \n"+snakecount+" Snakeskins and "+woodcount+" Wood.";
+          return;
+        }
+      }
+      if(menukind == MENUKIND_ENTERINGBOAT)
+      {
+        inBoat = true;
+        locations[currentLocation].theMap[gatheringIdx] = MAP_SAND;
+        locations[currentLocation].Hero_Position_Idx = boatIdx;
+        locations[currentLocation].Hero_Previous = MAP_BOAT;
+      }
+      if(menukind == MENUKIND_LEAVINGBOAT)
+      {
+        inBoat = false;
+        locations[currentLocation].theMap[gatheringIdx] = MAP_HERO;
+        locations[currentLocation].Hero_Position_Idx = gatheringIdx;
       }
     }
     if(mouseX >= 290 && mouseX <= 510 && mouseY >= 100 && mouseY <= 240)
@@ -584,19 +683,34 @@ void drawmenu()
       text("Open Settings", 400, 170);      
     }
   }
-  if(menukind == MENUKIND_BUILDINGBRIDGE || menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSNAKE)
+  if(menukind == MENUKIND_BUILDINGBRIDGE || menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSNAKE || menukind == MENUKIND_BUILDINGBOAT || menukind == MENUKIND_ENTERINGBOAT || menukind == MENUKIND_LEAVINGBOAT)
   {
     rect(60, 100, 220, 140);
     rect(290, 100, 220, 140);
     fill(0,0,0);
-    if(menukind == MENUKIND_BUILDINGBRIDGE)
+    if(menukind == MENUKIND_BUILDINGBRIDGE || menukind == MENUKIND_BUILDINGBOAT)
     {
       text("Build", 170, 170);
     }
-    else
+    if(menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSNAKE)
     {
       text("Gather", 170, 170);
     }
-    text("Leave", 400, 170);
+    if(menukind == MENUKIND_ENTERINGBOAT)
+    {
+      text("Enter", 170, 170);
+    }
+    if(menukind == MENUKIND_LEAVINGBOAT)
+    {
+      text("Leave", 170, 170);
+    }
+    if(menukind != MENUKIND_LEAVINGBOAT)
+    {
+      text("Leave", 400, 170);
+    }
+    else
+    {
+      text("Stay", 400, 170);
+    }
   }
 }
