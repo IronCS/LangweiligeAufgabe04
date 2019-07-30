@@ -14,18 +14,51 @@ class Location
   };
   void heroMoveChecker(int newHeroIdx, boolean HeroWrongY)
   {
+    println(newHeroIdx + "; " + HeroWrongY + "; " + Hero_Position_Idx);
     if(newHeroIdx == Hero_Position_Idx)
     {
       return;
     }
     if(Hero_Position_Idx != newHeroIdx && newHeroIdx >= 0 && newHeroIdx < MAP_WIDTH * MAP_HEIGHT && !HeroWrongY)
     {
-      if(!inBoat && theMap[newHeroIdx] == MAP_BLACK || theMap[newHeroIdx] == MAP_BRIDGE || theMap[newHeroIdx] == MAP_SAVANNA1 || theMap[newHeroIdx] == MAP_SAVANNA2 || theMap[newHeroIdx] == MAP_SAND)
+      if(theMap[newHeroIdx] == MAP_BLACK
+      || theMap[newHeroIdx] == MAP_BRIDGE 
+      || theMap[newHeroIdx] == MAP_SAVANNA1 
+      || theMap[newHeroIdx] == MAP_SAVANNA2 
+      || theMap[newHeroIdx] == MAP_SAND 
+      || theBoat[INBOAT] == 1)
       {
-        theMap[Hero_Position_Idx] = Hero_Previous;
-        Hero_Previous = theMap[newHeroIdx];
-        theMap[newHeroIdx] = MAP_HERO;
-        Hero_Position_Idx = newHeroIdx;
+        if(theBoat[INBOAT] == 0)
+        {
+          theMap[Hero_Position_Idx] = Hero_Previous;
+          Hero_Previous = theMap[newHeroIdx];
+          theMap[newHeroIdx] = MAP_HERO;
+          Hero_Position_Idx = newHeroIdx;
+        }
+        else
+        {
+          if(((newHeroIdx - Hero_Position_Idx) == 1 || (newHeroIdx - Hero_Position_Idx) == -1) && (theMap[Hero_Position_Idx + MAP_WIDTH] == MAP_SAND || theMap[Hero_Position_Idx - MAP_WIDTH] == MAP_SAND))
+          {
+            menukind = MENUKIND_LEAVINGBOAT;
+            menuopenreason = "Do you want to leave the Boat?";
+            if(theMap[Hero_Position_Idx + MAP_WIDTH] == MAP_SAND)
+            {
+              gatheringIdx = Hero_Position_Idx + MAP_WIDTH;
+            }
+            else
+            {
+              gatheringIdx = Hero_Position_Idx - MAP_WIDTH;
+            }
+          }
+          if((newHeroIdx - Hero_Position_Idx) == MAP_WIDTH)
+          {
+            theBoat[BOATSPRITE] = MAP_BOATNOSAIL;
+          }
+          if((newHeroIdx - Hero_Position_Idx) == -MAP_WIDTH)
+          {
+            theBoat[BOATSPRITE] = MAP_BOAT;
+          }
+        }
       }
       else
       {
@@ -34,12 +67,6 @@ class Location
         if(newHeroIdx < 0 || newHeroIdx >= MAP_WIDTH*MAP_HEIGHT || HeroWrongY && menuopenreason.equals(""))
         {
           menuopenreason = "End of the Map.";
-        }
-        if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_SAND && inBoat)
-        {
-          menukind = MENUKIND_LEAVINGBOAT;
-          menuopenreason = "Do you want to leave the Boat?";
-          gatheringIdx = newHeroIdx;
         }
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_GREEN)
         {
@@ -115,7 +142,7 @@ class Location
           currentLocation = LOCATION_SAVANNA;
           theMap[Hero_Position_Idx] = MAP_BLACK;
           locations[currentLocation].Hero_Position_Idx = 4;
-          locations[currentLocation].Hero_Previous = MAP_BLACK;
+          locations[currentLocation].Hero_Previous = MAP_SAVANNA1;
           locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
         }
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_SANDTRANSFER)
@@ -134,12 +161,12 @@ class Location
           menuopenreason = "The Water is deep and Wavy. \nDo you want to build a boat?";
           gatheringIdx = newHeroIdx;
         }
-        if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_BOAT)
+        if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_BOAT || menuopenreason.equals("") && theMap[newHeroIdx] == MAP_BOATNOSAIL)
         {
           menukind = MENUKIND_ENTERINGBOAT;
           menuopenreason = "Do you want to enter the Boat and try to get to the other side of the Sea?";
           gatheringIdx = Hero_Position_Idx;
-          boatIdx = newHeroIdx;
+          theBoat[BOATIDX] = newHeroIdx;
         }
         if(menuopenreason.equals(""))
         {
@@ -195,11 +222,11 @@ class Location
      theWave[WAVEY] = o;
      for(int i = 0; i < MAP_WIDTH; i++)
      {
-       if(theMap[theWave[WAVEY] * MAP_WIDTH + i] != MAP_BOAT)
+       if(theMap[theWave[WAVEY] * MAP_WIDTH + i] != MAP_BOAT && theMap[theWave[WAVEY] * MAP_WIDTH + i] != MAP_BOATNOSAIL)
        {
          theMap[theWave[WAVEY] * MAP_WIDTH + i] = MAP_WAVE;
        }
-       if(theWave[WAVEY] + 1 < MAP_HEIGHT - 2 && theMap[(theWave[WAVEY] + 1) * MAP_WIDTH + i] != MAP_BOAT)
+       if(theWave[WAVEY] + 1 < MAP_HEIGHT - 2 && theMap[(theWave[WAVEY] + 1) * MAP_WIDTH + i] != MAP_BOAT  && theMap[theWave[WAVEY] * MAP_WIDTH + i] != MAP_BOATNOSAIL)
        {
          theMap[(theWave[WAVEY] + 1) * MAP_WIDTH + i] = MAP_WATER;
        }
@@ -208,7 +235,7 @@ class Location
      {
        for(int i = 0; i < MAP_WIDTH; i++)
        {
-         if(theMap[2 * MAP_WIDTH + i] != MAP_BOAT)
+         if(theMap[2 * MAP_WIDTH + i] != MAP_BOAT && theMap[2 * MAP_WIDTH + i]!= MAP_BOATNOSAIL)
          {
            theMap[2 * MAP_WIDTH + i] = MAP_WATER;
          }
@@ -232,11 +259,11 @@ class Location
      theWave[WAVEX] = o;
      for(int i = 2; i < MAP_HEIGHT - 2; i++)
      {        
-       if(theMap[i * MAP_WIDTH + theWave[WAVEX]] != MAP_BOAT)
+       if(theMap[i * MAP_WIDTH + theWave[WAVEX]] != MAP_BOAT && theMap[i * MAP_WIDTH + theWave[WAVEX]] != MAP_BOATNOSAIL)
        {
          theMap[i * MAP_WIDTH + theWave[WAVEX]] = MAP_WAVE;
        }
-       if(theWave[WAVEX] - 1 >= 0 && theMap[i * MAP_WIDTH + (theWave[WAVEX] - 1)] != MAP_BOAT)
+       if(theWave[WAVEX] - 1 >= 0 && theMap[i * MAP_WIDTH + (theWave[WAVEX] - 1)] != MAP_BOAT && theMap[i * MAP_WIDTH + (theWave[WAVEX] - 1)] != MAP_BOATNOSAIL)
        {         
          theMap[i * MAP_WIDTH + (theWave[WAVEX] - 1)] = MAP_WATER;
        }
@@ -245,7 +272,7 @@ class Location
      {
        for(int i = 2; i < MAP_HEIGHT - 2; i++)
        {
-         if(theMap[i * MAP_WIDTH + MAP_WIDTH-1] != MAP_BOAT)
+         if(theMap[i * MAP_WIDTH + MAP_WIDTH-1] != MAP_BOAT && theMap[i * MAP_WIDTH + MAP_WIDTH-1] != MAP_BOATNOSAIL)
          {
            theMap[i * MAP_WIDTH + MAP_WIDTH-1] = MAP_WATER;
          }
@@ -269,11 +296,11 @@ class Location
      theWave[WAVEY] = o;
      for(int i = 0; i < MAP_WIDTH; i++)
      {
-       if(theMap[theWave[WAVEY] * MAP_WIDTH + i] != MAP_BOAT)
+       if(theMap[theWave[WAVEY] * MAP_WIDTH + i] != MAP_BOAT && theMap[theWave[WAVEY] * MAP_WIDTH + i] != MAP_BOATNOSAIL)
        {
          theMap[theWave[WAVEY] * MAP_WIDTH + i] = MAP_WAVE;
        }
-       if(theWave[WAVEY] - 1 > 1 && theMap[(theWave[WAVEY] - 1) * MAP_WIDTH + i] != MAP_BOAT)
+       if(theWave[WAVEY] - 1 > 1 && theMap[(theWave[WAVEY] - 1) * MAP_WIDTH + i] != MAP_BOAT && theMap[(theWave[WAVEY] - 1) * MAP_WIDTH + i] != MAP_BOATNOSAIL)
        {
          theMap[(theWave[WAVEY] - 1) * MAP_WIDTH + i] = MAP_WATER;
        }
@@ -282,7 +309,7 @@ class Location
      {
        for(int i = 0; i < MAP_WIDTH; i++)
        {
-         if(theMap[(MAP_HEIGHT - 3) * MAP_WIDTH + i] != MAP_BOAT)
+         if(theMap[(MAP_HEIGHT - 3) * MAP_WIDTH + i] != MAP_BOAT && theMap[(MAP_HEIGHT - 3) * MAP_WIDTH + i] != MAP_BOATNOSAIL)
          {
            theMap[(MAP_HEIGHT - 3) * MAP_WIDTH + i] = MAP_WATER;
          }
@@ -306,11 +333,11 @@ class Location
      theWave[WAVEX] = o;
      for(int i = 2; i < MAP_HEIGHT - 2; i++)
      {              
-       if(theMap[i * MAP_WIDTH + theWave[WAVEX]] != MAP_BOAT)
+       if(theMap[i * MAP_WIDTH + theWave[WAVEX]] != MAP_BOAT && theMap[i * MAP_WIDTH + theWave[WAVEX]] != MAP_BOATNOSAIL)
        {
          theMap[i * MAP_WIDTH + theWave[WAVEX]] = MAP_WAVE;
        }
-       if(theWave[WAVEX] + 1 < MAP_WIDTH && theMap[i * MAP_WIDTH + (theWave[WAVEX] + 1)] != MAP_BOAT)
+       if(theWave[WAVEX] + 1 < MAP_WIDTH && theMap[i * MAP_WIDTH + (theWave[WAVEX] + 1)] != MAP_BOAT && theMap[i * MAP_WIDTH + (theWave[WAVEX] + 1)] != MAP_BOATNOSAIL)
        {         
          theMap[i * MAP_WIDTH + (theWave[WAVEX] + 1)] = MAP_WATER;
        }
@@ -319,7 +346,7 @@ class Location
      {
        for(int i = 2; i < MAP_HEIGHT-2; i++)
        {
-         if(theMap[i * MAP_WIDTH] != MAP_BOAT)
+         if(theMap[i * MAP_WIDTH] != MAP_BOAT && theMap[i * MAP_WIDTH] != MAP_BOAT)
          {
            theMap[i * MAP_WIDTH] = MAP_WATER;
          }
@@ -333,6 +360,42 @@ class Location
        o--;
        return;
      }
+   }   
+  }
+  void drawboat()
+  {
+    int oldboatidx = theBoat[BOATIDX];
+    if(theBoat[BOATSPRITE] == MAP_BOAT)
+    {
+     if(theWave[WAVEDIRECTION] == 0)
+     {
+       theBoat[BOATIDX] = theBoat[BOATIDX] - MAP_WIDTH;
+     }
+     if(theWave[WAVEDIRECTION] == 1)
+     {
+       theBoat[BOATIDX] = theBoat[BOATIDX] + 1;
+     }
+     if(theWave[WAVEDIRECTION] == 2)
+     {
+       theBoat[BOATIDX] = theBoat[BOATIDX] + MAP_WIDTH;
+     }
+     if(theWave[WAVEDIRECTION] == 3)
+     {
+       theBoat[BOATIDX] = theBoat[BOATIDX] - 1;
+     }
+   }
+   if(locations[currentLocation].theMap[theBoat[BOATIDX]] != MAP_SAND && locations[currentLocation].theMap[theBoat[BOATIDX]] != MAP_HERO)
+   {
+     locations[currentLocation].theMap[oldboatidx] = MAP_WATER;
+     locations[currentLocation].theMap[theBoat[BOATIDX]] = (byte)theBoat[BOATSPRITE];
+     if(theBoat[INBOAT] == 1)
+     {
+       locations[currentLocation].Hero_Position_Idx = theBoat[BOATIDX];
+     }
+   }
+   else
+   {
+     theBoat[BOATIDX] = oldboatidx;
    }
   }
   void draw_savanna()
@@ -342,9 +405,16 @@ class Location
    int tileWidth = tiles[0].pixelWidth;
    int tileHeight = tiles[0].pixelHeight;
    int snakeNewIdx;
-   if(currentLocation == LOCATION_BEACH && (frameCount%12) == 0)
+   if(currentLocation == LOCATION_BEACH)
    {
-     drawWave();
+     if((frameCount%12) == 0)
+     {
+       drawWave();
+     }
+     if((frameCount%30) == 0)
+     {
+       drawboat();
+     }
    }
    if((frameCount%60) == 0)
    { 

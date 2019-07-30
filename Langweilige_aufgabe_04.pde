@@ -80,7 +80,8 @@ final byte MAP_WATER = 21;
 final byte MAP_WAVE = 22;
 final byte MAP_SANDTRANSFER = 23;
 final byte MAP_BOAT = 24;
-final byte MAP_TILE_NUM = 25;
+final byte MAP_BOATNOSAIL = 25;
+final byte MAP_TILE_NUM = 26;
 final int MAP_WIDTH = 40;
 final int MAP_HEIGHT = 20;
 final int TILE_WIDTH = 16;
@@ -103,8 +104,10 @@ int gatheringIdx;
 int menukind;
 int snakeIdx;
 int snakeLocation;
-int boatIdx;
-boolean inBoat = false;
+final byte BOATIDX = 0;
+final byte INBOAT = 1;
+final byte BOATSPRITE = 2;
+int theBoat[] = {0, 0, MAP_SAND};
 final int MENUKIND_NOMENU = 0;
 final int MENUKIND_WANTTOEXIT = 1;
 final int MENUKIND_GATHERINGSTONES = 2;
@@ -347,6 +350,7 @@ void setup()
   tiles[i++] = loadImage("TileWave.jpg");
   tiles[i++] = loadImage("TileSand.jpg");
   tiles[i++] = loadImage("TileBoat.jpg");
+  tiles[i++] = loadImage("TileBoatNoSail.jpg");
   i = 0;
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT); 
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
@@ -360,6 +364,7 @@ void setup()
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);  
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);   
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
@@ -436,7 +441,13 @@ void mousePressed()
       return;
     }
   }
-  if(menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_BUILDINGBRIDGE || menukind == MENUKIND_GATHERINGSNAKE || menukind == MENUKIND_BUILDINGBOAT || menukind == MENUKIND_ENTERINGBOAT)
+  if(menukind == MENUKIND_GATHERINGWOOD 
+  || menukind == MENUKIND_GATHERINGSTONES 
+  || menukind == MENUKIND_BUILDINGBRIDGE 
+  || menukind == MENUKIND_GATHERINGSNAKE 
+  || menukind == MENUKIND_BUILDINGBOAT 
+  || menukind == MENUKIND_ENTERINGBOAT 
+  || menukind == MENUKIND_LEAVINGBOAT)
   {
     if(mouseX >= 60 && mouseX <= 280 && mouseY >= 100 && mouseY <= 240)
     {
@@ -492,7 +503,8 @@ void mousePressed()
           snakecount = snakecount - 5;
           woodcount = woodcount - 5;
           menukind = MENUKIND_NOMENU;
-          locations[currentLocation].theMap[gatheringIdx] = MAP_BOAT;
+          theBoat[BOATIDX] = gatheringIdx;
+          theBoat[BOATSPRITE] = MAP_BOATNOSAIL;
           return;
         }
         else
@@ -504,16 +516,16 @@ void mousePressed()
       }
       if(menukind == MENUKIND_ENTERINGBOAT)
       {
-        inBoat = true;
+        theBoat[INBOAT] = 1;
         locations[currentLocation].theMap[gatheringIdx] = MAP_SAND;
-        locations[currentLocation].Hero_Position_Idx = boatIdx;
-        locations[currentLocation].Hero_Previous = MAP_BOAT;
+        locations[currentLocation].Hero_Position_Idx = theBoat[BOATIDX];
       }
       if(menukind == MENUKIND_LEAVINGBOAT)
       {
-        inBoat = false;
-        locations[currentLocation].theMap[gatheringIdx] = MAP_HERO;
+        theBoat[INBOAT] = 0;
         locations[currentLocation].Hero_Position_Idx = gatheringIdx;
+        locations[currentLocation].Hero_Previous = locations[currentLocation].theMap[gatheringIdx];
+        locations[currentLocation].theMap[gatheringIdx] = MAP_HERO;
       }
     }
     if(mouseX >= 290 && mouseX <= 510 && mouseY >= 100 && mouseY <= 240)
