@@ -6,7 +6,6 @@ class Location
   byte Hero_Previous = MAP_SAVANNA1;
   int snakeIdx = 7;
   int snakeTailPreviousIdx;
-  int o = -1;
   byte getByteOn(byte X, byte Y)
   {
     byte ByteOn = theMap[Y * MAP_WIDTH + X];
@@ -211,154 +210,174 @@ class Location
       }
    }
   }
+  void drawhorizontalwave(int Y)
+  {
+    for(int i = 0; i < MAP_WIDTH; i++)
+    {
+      if(theMap[Y * MAP_WIDTH + i] != MAP_BOAT && theMap[Y * MAP_WIDTH + i] != MAP_BOATNOSAIL)
+      {
+        theMap[Y * MAP_WIDTH + i] = MAP_WAVE;
+      }      
+    }
+  }
+  void erasehorizontalwave(int Y)
+  {
+    for(int i = 0; i < MAP_WIDTH; i++)
+    {
+      if(Y < MAP_HEIGHT - 2 && theMap[Y * MAP_WIDTH + i] != MAP_BOAT  && theMap[Y * MAP_WIDTH + i] != MAP_BOATNOSAIL)
+      {
+        theMap[Y * MAP_WIDTH + i] = MAP_WATER;
+      }
+    }
+  }
+  void drawverticalwave(int X)
+  {
+    for(int i = 2; i < MAP_HEIGHT - 2; i++)
+    {        
+      if(theMap[i * MAP_WIDTH + X] != MAP_BOAT && theMap[i * MAP_WIDTH + X] != MAP_BOATNOSAIL)
+      {
+        theMap[i * MAP_WIDTH + X] = MAP_WAVE;
+      }
+    }
+  }
+  void eraseverticalwave(int X)
+  {
+    for(int i = 2; i < MAP_HEIGHT - 2; i++)
+    {  
+      if(X >= 0 && theMap[i * MAP_WIDTH + X] != MAP_BOAT && theMap[i * MAP_WIDTH + X] != MAP_BOATNOSAIL)
+      {         
+        theMap[i * MAP_WIDTH + X] = MAP_WATER;
+      }
+    }
+  }
   void drawWave()
   {
-   if(theWave[WAVEDIRECTION] == 0)
+   for(int o = 0; o < theWave.length; o++)
    {
-     if(o == -1)
+     if(theWave[0][WAVEDIRECTION] == 0)
      {
-       o = MAP_HEIGHT - 3;
-     }
-     theWave[WAVEY] = o;
-     for(int i = 0; i < MAP_WIDTH; i++)
-     {
-       if(theMap[theWave[WAVEY] * MAP_WIDTH + i] != MAP_BOAT && theMap[theWave[WAVEY] * MAP_WIDTH + i] != MAP_BOATNOSAIL)
+       if(theWave[o][WAVEY] == -1)
        {
-         theMap[theWave[WAVEY] * MAP_WIDTH + i] = MAP_WAVE;
-       }
-       if(theWave[WAVEY] + 1 < MAP_HEIGHT - 2 && theMap[(theWave[WAVEY] + 1) * MAP_WIDTH + i] != MAP_BOAT  && theMap[theWave[WAVEY] * MAP_WIDTH + i] != MAP_BOATNOSAIL)
-       {
-         theMap[(theWave[WAVEY] + 1) * MAP_WIDTH + i] = MAP_WATER;
-       }
-     }
-     if(o < 3)
-     {
-       for(int i = 0; i < MAP_WIDTH; i++)
-       {
-         if(theMap[2 * MAP_WIDTH + i] != MAP_BOAT && theMap[2 * MAP_WIDTH + i]!= MAP_BOATNOSAIL)
+         if(o == 0)
          {
-           theMap[2 * MAP_WIDTH + i] = MAP_WATER;
+           if(theWave[1][WAVEY] <= MAP_HEIGHT - 5)
+           {
+             theWave[o][WAVEY] = MAP_HEIGHT - 3;
+           }
+         }
+         else
+         {
+           theWave[o][WAVEY] = MAP_HEIGHT - 3;
          }
        }
-       o = -1;
-       theWave[WAVEDIRECTION] = (int)random(0, 4);
-       return;
-     }
-     else
-     {
-       o--;
-       return;
-     }
-   }
-   if(theWave[WAVEDIRECTION] == 1)
-   {
-     if(o == -1)
-     {
-       o = 0;
-     }
-     theWave[WAVEX] = o;
-     for(int i = 2; i < MAP_HEIGHT - 2; i++)
-     {        
-       if(theMap[i * MAP_WIDTH + theWave[WAVEX]] != MAP_BOAT && theMap[i * MAP_WIDTH + theWave[WAVEX]] != MAP_BOATNOSAIL)
+       drawhorizontalwave(theWave[o][WAVEY]);
+       erasehorizontalwave(theWave[o][WAVEY] + 1);
+       if(theWave[o][WAVEY] < 3)
        {
-         theMap[i * MAP_WIDTH + theWave[WAVEX]] = MAP_WAVE;
-       }
-       if(theWave[WAVEX] - 1 >= 0 && theMap[i * MAP_WIDTH + (theWave[WAVEX] - 1)] != MAP_BOAT && theMap[i * MAP_WIDTH + (theWave[WAVEX] - 1)] != MAP_BOATNOSAIL)
-       {         
-         theMap[i * MAP_WIDTH + (theWave[WAVEX] - 1)] = MAP_WATER;
-       }
-     }
-     if(o == MAP_WIDTH - 1)
-     {
-       for(int i = 2; i < MAP_HEIGHT - 2; i++)
-       {
-         if(theMap[i * MAP_WIDTH + MAP_WIDTH-1] != MAP_BOAT && theMap[i * MAP_WIDTH + MAP_WIDTH-1] != MAP_BOATNOSAIL)
+         erasehorizontalwave(theWave[o][WAVEY]);
+         if(o == 0)
          {
-           theMap[i * MAP_WIDTH + MAP_WIDTH-1] = MAP_WATER;
+           theWave[o][WAVEDIRECTION] = (int)random(0, 4);
+         }
+         theWave[o][WAVEY] = -1;
+       }
+       else
+       {
+         theWave[o][WAVEY]--;
+       }       
+     }
+     if(theWave[0][WAVEDIRECTION] == 1)
+     {
+       if(theWave[o][WAVEX] == -1)
+       {
+         if(o == 0)
+         {
+           if(theWave[1][WAVEX] >= 2)
+           {
+             theWave[o][WAVEX] = 0;
+           }
+         }
+         else
+         {
+           theWave[o][WAVEX] = 0;
          }
        }
-       o = -1;
-       theWave[WAVEDIRECTION] = (int)random(0, 4);
-       return;
-     }
-     else
-     {
-       o++;
-       return;
-     }
-   }
-   if(theWave[WAVEDIRECTION] == 2)
-   {
-     if(o == -1)
-     {
-       o = 2;
-     }
-     theWave[WAVEY] = o;
-     for(int i = 0; i < MAP_WIDTH; i++)
-     {
-       if(theMap[theWave[WAVEY] * MAP_WIDTH + i] != MAP_BOAT && theMap[theWave[WAVEY] * MAP_WIDTH + i] != MAP_BOATNOSAIL)
+       drawverticalwave(theWave[o][WAVEX]);
+       eraseverticalwave(theWave[o][WAVEX] - 1);
+       if(theWave[o][WAVEX] == MAP_WIDTH - 1)
        {
-         theMap[theWave[WAVEY] * MAP_WIDTH + i] = MAP_WAVE;
-       }
-       if(theWave[WAVEY] - 1 > 1 && theMap[(theWave[WAVEY] - 1) * MAP_WIDTH + i] != MAP_BOAT && theMap[(theWave[WAVEY] - 1) * MAP_WIDTH + i] != MAP_BOATNOSAIL)
-       {
-         theMap[(theWave[WAVEY] - 1) * MAP_WIDTH + i] = MAP_WATER;
-       }
-     }
-     if(o == MAP_HEIGHT - 3)
-     {
-       for(int i = 0; i < MAP_WIDTH; i++)
-       {
-         if(theMap[(MAP_HEIGHT - 3) * MAP_WIDTH + i] != MAP_BOAT && theMap[(MAP_HEIGHT - 3) * MAP_WIDTH + i] != MAP_BOATNOSAIL)
+         eraseverticalwave(theWave[o][WAVEX]);
+         if(o == 0)
          {
-           theMap[(MAP_HEIGHT - 3) * MAP_WIDTH + i] = MAP_WATER;
+           theWave[0][WAVEDIRECTION] = (int)random(0, 4);
+         }
+         theWave[o][WAVEX] = -1;
+       }
+       else
+       {
+         theWave[o][WAVEX]++;
+       }       
+     } 
+     if(theWave[0][WAVEDIRECTION] == 2)
+     {
+       if(theWave[o][WAVEY] == -1)
+       {
+         if(o == 0)
+         {
+           theWave[o][WAVEY] = 4;
+         }
+         else
+         {
+           theWave[o][WAVEY] = 2;
          }
        }
-       o = -1;
-       theWave[WAVEDIRECTION] = (int)random(0, 4);
-       return;
-     }
-     else
-     {
-       o++;
-       return;
-     }
-   }
-   if(theWave[WAVEDIRECTION] == 3)
-   {
-     if(o == -1)
-     {
-       o = MAP_WIDTH - 1;
-     }
-     theWave[WAVEX] = o;
-     for(int i = 2; i < MAP_HEIGHT - 2; i++)
-     {              
-       if(theMap[i * MAP_WIDTH + theWave[WAVEX]] != MAP_BOAT && theMap[i * MAP_WIDTH + theWave[WAVEX]] != MAP_BOATNOSAIL)
+       drawhorizontalwave(theWave[o][WAVEY]);
+       erasehorizontalwave(theWave[o][WAVEY] - 1);
+       if(theWave[o][WAVEY] == MAP_HEIGHT - 3)
        {
-         theMap[i * MAP_WIDTH + theWave[WAVEX]] = MAP_WAVE;
-       }
-       if(theWave[WAVEX] + 1 < MAP_WIDTH && theMap[i * MAP_WIDTH + (theWave[WAVEX] + 1)] != MAP_BOAT && theMap[i * MAP_WIDTH + (theWave[WAVEX] + 1)] != MAP_BOATNOSAIL)
-       {         
-         theMap[i * MAP_WIDTH + (theWave[WAVEX] + 1)] = MAP_WATER;
-       }
-     }
-     if(o == 0)
-     {
-       for(int i = 2; i < MAP_HEIGHT-2; i++)
-       {
-         if(theMap[i * MAP_WIDTH] != MAP_BOAT && theMap[i * MAP_WIDTH] != MAP_BOAT)
+         erasehorizontalwave(theWave[o][WAVEY]);
+         if(o == 0)
          {
-           theMap[i * MAP_WIDTH] = MAP_WATER;
+           theWave[o][WAVEDIRECTION] = (int)random(0, 4);
+         }
+         theWave[o][WAVEY] = -1;
+       }
+       else
+       {
+         theWave[o][WAVEY]++;
+       }       
+     }
+     if(theWave[0][WAVEDIRECTION] == 3)
+     {
+       if(theWave[o][WAVEX] == -1)
+       {
+         if(o == 0)
+         {
+           if(theWave[1][WAVEX] <= MAP_WIDTH - 3)
+           {
+             theWave[o][WAVEX] = MAP_WIDTH - 1;
+           }
+         }
+         else
+         {
+           theWave[o][WAVEX] = MAP_WIDTH - 1;
          }
        }
-       o = -1;
-       theWave[WAVEDIRECTION] = (int)random(0, 4);
-       return;
-     }
-     else
-     {
-       o--;
-       return;
+       drawverticalwave(theWave[o][WAVEX]);
+       eraseverticalwave(theWave[o][WAVEX] + 1);
+       if(theWave[o][WAVEX] == 0)
+       {
+         eraseverticalwave(theWave[o][WAVEX]);
+         theWave[o][WAVEX] = -1;
+         if(o == 0)
+         {
+           theWave[o][WAVEDIRECTION] = (int)random(0, 4);
+         }
+       }
+       else
+       {
+         theWave[o][WAVEX]--;
+       }       
      }
    }   
   }
@@ -367,19 +386,19 @@ class Location
     int oldboatidx = theBoat[BOATIDX];
     if(theBoat[BOATSPRITE] == MAP_BOAT)
     {
-     if(theWave[WAVEDIRECTION] == 0)
+     if(theWave[0][WAVEDIRECTION] == 0)
      {
        theBoat[BOATIDX] = theBoat[BOATIDX] - MAP_WIDTH;
      }
-     if(theWave[WAVEDIRECTION] == 1)
+     if(theWave[0][WAVEDIRECTION] == 1)
      {
        theBoat[BOATIDX] = theBoat[BOATIDX] + 1;
      }
-     if(theWave[WAVEDIRECTION] == 2)
+     if(theWave[0][WAVEDIRECTION] == 2)
      {
        theBoat[BOATIDX] = theBoat[BOATIDX] + MAP_WIDTH;
      }
-     if(theWave[WAVEDIRECTION] == 3)
+     if(theWave[0][WAVEDIRECTION] == 3)
      {
        theBoat[BOATIDX] = theBoat[BOATIDX] - 1;
      }
