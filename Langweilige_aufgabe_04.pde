@@ -94,7 +94,7 @@ int[][]theSnake = {{MAP_SNAKETAIL, MAP_BLACK, 0, 0}, {MAP_SNAKEBODY, MAP_BLACK, 
 final int WAVEX = 0;
 final int WAVEY = 1;
 final int WAVEDIRECTION = 2; //Up = 0, Right = 1, Down = 2, Left = 3;
-int[][]theWave = {{-1,-1,2}, {-1,-1,2}};
+int[][]theWave = {{-2,-2,2}, {-2,-2,2}};
 String menuopenreason;
 int supersecretcheatcode = 0;
 int stonecount = 0;
