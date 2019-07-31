@@ -84,13 +84,17 @@ final byte MAP_BOATNOSAIL = 25;
 final byte MAP_TILE_NUM = 26;
 final int MAP_WIDTH = 40;
 final int MAP_HEIGHT = 20;
-final int TILE_WIDTH = 16;
-final int TILE_HEIGHT = 16;
+int TILE_WIDTH = 16;
+int TILE_HEIGHT = 16;
 final int SNAKESPRITE = 0;
 final int SNAKESTANDINGON = 1;
 final int SNAKEIDX = 2;
 final int SNAKEALREADYGATHERED = 3;
 int[][]theSnake = {{MAP_SNAKETAIL, MAP_BLACK, 0, 0}, {MAP_SNAKEBODY, MAP_BLACK, 1, 0}, {MAP_SNAKEBODY, MAP_BLACK, 2, 0}, {MAP_SNAKEBODY, MAP_BLACK, 3, 0}, {MAP_SNAKEBODY, MAP_BLACK, 4, 0}, {MAP_SNAKEBODY, MAP_BLACK, 5, 0}, {MAP_SNAKEBODY, MAP_BLACK, 6, 0}, {MAP_SNAKEHEAD, MAP_BLACK, 7, 0}};
+final int DIR_UP = 0;
+final int DIR_RT = 1;
+final int DIR_DN = 2;
+final int DIR_LT = 3;
 final int WAVEX = 0;
 final int WAVEY = 1;
 final int WAVEDIRECTION = 2; //Up = 0, Right = 1, Down = 2, Left = 3;
@@ -127,7 +131,7 @@ Location[] locations =
 final int LOCATION_SAVANNA = 0;
 final int LOCATION_CAVE = 1;
 final int LOCATION_BEACH = 2;
-int currentLocation = LOCATION_BEACH;
+int currentLocation = LOCATION_SAVANNA;
 int currentSnakePart;
 byte[] createCave()
 {
@@ -314,7 +318,7 @@ void initAnimals()
 }
 void setup()
 {
-  size(640, 320);
+  size(1280, 640, P3D);
   menukind = MENUKIND_NOMENU;
   theCave = createCave();
   theSavanna = createSavanna();
@@ -324,6 +328,8 @@ void setup()
   locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
   locations[LOCATION_CAVE].theMap = theCave;
   locations[LOCATION_BEACH].theMap = theBeach;
+  TILE_WIDTH = width/MAP_WIDTH;
+  TILE_HEIGHT = height/MAP_HEIGHT;
   int i = 0;
   tiles[i++] = loadImage("TileBlack.jpg");
   tiles[i++] = loadImage("TileBrick.jpg");

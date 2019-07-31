@@ -219,7 +219,7 @@ class Location
     println("+"+where+"; Y = "+Y);
     for(int i = 0; i < MAP_WIDTH; i++)
     {
-      if(theMap[Y * MAP_WIDTH + i] != MAP_BOAT && theMap[Y * MAP_WIDTH + i] != MAP_BOATNOSAIL && theMap[Y * MAP_WIDTH + i] != MAP_SAND)
+      if(waveXYIsSuitableForHorizontalDrawErase(i, Y))
       {
         theMap[Y * MAP_WIDTH + i] = MAP_WAVE;
       }      
@@ -234,7 +234,7 @@ class Location
     println("-"+where+"; Y = "+Y);
     for(int i = 0; i < MAP_WIDTH; i++)
     {
-      if(Y < MAP_HEIGHT - 2 && theMap[Y * MAP_WIDTH + i] != MAP_BOAT  && theMap[Y * MAP_WIDTH + i] != MAP_BOATNOSAIL && theMap[Y * MAP_WIDTH + i] != MAP_SAND)
+      if(waveXYIsSuitableForHorizontalDrawErase(i, Y))
       {
         theMap[Y * MAP_WIDTH + i] = MAP_WATER;
       }
@@ -244,12 +244,20 @@ class Location
   {
     drawverticalwave(X, null);
   }
+  boolean waveXYIsSuitableForHorizontalDrawErase(int X, int Y)
+  {
+    return waveXYIsSuitableForVerticalDrawErase(X, Y);
+  }
+  boolean waveXYIsSuitableForVerticalDrawErase(int X, int Y)
+  {
+    return (Y < MAP_HEIGHT - 2 && X >= 0 && theMap[Y * MAP_WIDTH + X] != MAP_BOAT && theMap[Y * MAP_WIDTH + X] != MAP_BOATNOSAIL && theMap[Y * MAP_WIDTH + X] != MAP_SAND);
+  }
   void drawverticalwave(int X, String where)
   {
     println("+v."+where+"; X="+X);
     for(int i = 2; i < MAP_HEIGHT - 2; i++)
     {        
-      if(theMap[i * MAP_WIDTH + X] != MAP_BOAT && theMap[i * MAP_WIDTH + X] != MAP_BOATNOSAIL && theMap[i * MAP_WIDTH + X] != MAP_SAND)
+      if(waveXYIsSuitableForVerticalDrawErase(X, i))
       {
         theMap[i * MAP_WIDTH + X] = MAP_WAVE;
       }
@@ -264,7 +272,7 @@ class Location
     println("-"+where+"; X = "+X);
     for(int i = 2; i < MAP_HEIGHT - 2; i++)
     {  
-      if(X >= 0 && theMap[i * MAP_WIDTH + X] != MAP_BOAT && theMap[i * MAP_WIDTH + X] != MAP_BOATNOSAIL && theMap[i * MAP_WIDTH + X] != MAP_SAND)
+      if(waveXYIsSuitableForVerticalDrawErase(X, i))
       {         
         theMap[i * MAP_WIDTH + X] = MAP_WATER;
       }
@@ -277,79 +285,117 @@ class Location
   int waveGetXYI()
   {
 	  int waveXYI = -1;
-	  if(theWave[0][WAVEDIRECTION] == 2)
+	  if(  theWave[0][WAVEDIRECTION] == DIR_DN
+       ||theWave[0][WAVEDIRECTION] == DIR_UP)
 	  {
 		  waveXYI = WAVEY;
 	  }
-	  if (theWave[0][WAVEDIRECTION] == 3)
+	  if (  theWave[0][WAVEDIRECTION] == DIR_LT
+        ||theWave[0][WAVEDIRECTION] == DIR_RT)
 	  {
 		  waveXYI = WAVEX;
 	  }
     return waveXYI;
   }
+  // bottom to top (0): posNo = 0 for lowest from bottom, 1 for next from bottom
   // top to bottom (2): posNo = 0 for top from above, 1 = for next from above
   // right to left (3): posNo = 0 for rightmost start pos, 1 = for next after rightmost
+  // left to right (1): posNo = 0 for leftmost start pos, 1 = for next after leftmost
   void waveSetStartPosition(int waveIdx, int posNo)
   {	  
-	int waveXYI = waveGetXYI();
-	if(theWave[0][WAVEDIRECTION] == 2)
-	{
-		theWave[waveIdx][waveXYI] = (posNo == 0)? 2 : 4; 
+    int waveXYI = waveGetXYI();
+    if(theWave[0][WAVEDIRECTION] == DIR_UP)
+    {
+      theWave[waveIdx][waveXYI] = (posNo == 0)? MAP_HEIGHT - 3 : MAP_HEIGHT - 5; 
     }
-	if(theWave[0][WAVEDIRECTION] == 3)
-	{
-		theWave[waveIdx][waveXYI] = (posNo == 0)? MAP_WIDTH - 1 : MAP_WIDTH - 3;
-	}
-	  
+    if(theWave[0][WAVEDIRECTION] == DIR_DN)
+    {
+      theWave[waveIdx][waveXYI] = (posNo == 0)? 2 : 4; 
+    }
+    if(theWave[0][WAVEDIRECTION] == DIR_LT)
+    {
+      theWave[waveIdx][waveXYI] = (posNo == 0)? MAP_WIDTH - 1 : MAP_WIDTH - 3;
+    }
+    if(theWave[0][WAVEDIRECTION] == DIR_RT)
+    {
+      theWave[waveIdx][waveXYI] = (posNo == 0)? 0 : 2;
+    }
   }
   int waveGetDir()
   {
 	  return theWave[0][WAVEDIRECTION];
   }
+  void waveSetDir(int d)
+  {
+	  theWave[0][WAVEDIRECTION] = d;
+  }
   void waveDraw(int waveIdx)
   {
-	  if (waveGetDir() == 2)
+    int d = waveGetDir();
+	  if (  d == DIR_DN
+        ||d == DIR_UP)
 	  {
 		  drawhorizontalwave(theWave[waveIdx][WAVEY]);
 	  }
-	  if (waveGetDir() == 3)
+	  if (  d == DIR_LT
+        ||d == DIR_RT)
 	  {
 		  drawverticalwave(theWave[waveIdx][WAVEX], "w#"+waveIdx);
 	  }
   }
   void waveErase(int waveIdx, String where)
   {
-	  if (waveGetDir() == 2)
+    int d = waveGetDir();
+	  if (  d == DIR_DN
+        ||d == DIR_UP)
 	  {
 		  erasehorizontalwave(theWave[waveIdx][WAVEY], "-h"+where+",w#"+waveIdx);
 	  }
-	  if (waveGetDir() == 3)
+	  if (  d == DIR_LT
+        ||d == DIR_RT)
 	  {
 		  eraseverticalwave(theWave[waveIdx][WAVEX], "-v"+where+",w#"+waveIdx);
 	  }
   }
   void waveEraseAtPrev(int waveIdx)
   {
-	  if (waveGetDir() == 2)
+	  if (waveGetDir() == DIR_DN)
 	  {
 		  erasehorizontalwave(theWave[waveIdx][WAVEY] - 1, "-h(prv),w#"+waveIdx);
 	  }
-	  if (waveGetDir() == 3)
+	  if (waveGetDir() == DIR_UP)
+	  {
+		  erasehorizontalwave(theWave[waveIdx][WAVEY] + 1, "-h(prv),w#"+waveIdx);
+	  }
+	  if (waveGetDir() == DIR_LT)
 	  {
 		  eraseverticalwave(theWave[waveIdx][WAVEX] + 1, "-v(prv),w#"+waveIdx);
+	  }
+	  if (waveGetDir() == DIR_RT)
+	  {
+		  eraseverticalwave(theWave[waveIdx][WAVEX] - 1, "-v(prv),w#"+waveIdx);
 	  }
   } //<>//
   boolean waveIsOnAfterLastLocation(int waveIdx)
   {
-	  if (waveGetDir() == 2)
+    int d = waveGetDir();
+	  if (d == DIR_UP)
+	  {
+		  return (theWave[waveIdx][WAVEY] == 1);
+	  }
+	  if (d == DIR_DN)
 	  {
 		  return (theWave[waveIdx][WAVEY] == (MAP_HEIGHT - 2));
 	  }
-	  if (waveGetDir() == 3)
+	  if (d == DIR_LT)
 	  {
 		  return (theWave[waveIdx][WAVEX] == -1);
 	  }
-    throw new java.lang.UnsupportedOperationException("not yet implemented for "+waveGetDir());
+	  if (d == DIR_RT)
+	  {
+		  return (theWave[waveIdx][WAVEX] == MAP_WIDTH);
+	  }
+    throw new java.lang.UnsupportedOperationException("not yet implemented for "+d);
   }
   
   void waveMoveForward(int waveIdx)
@@ -360,13 +406,21 @@ class Location
   
   void waveMoveForward(int waveIdx, int increment)
   {
-	  if (waveGetDir() == 2)
+	  if (waveGetDir() == DIR_UP)
+	  {
+		  theWave[waveIdx][WAVEY] -= increment;
+	  }
+	  if (waveGetDir() == DIR_DN)
 	  {
 		  theWave[waveIdx][WAVEY] += increment;
 	  }
-	  if (waveGetDir() == 3)
+	  if (waveGetDir() == DIR_LT)
 	  {
 		  theWave[waveIdx][WAVEX] -= increment;
+	  }
+	  if (waveGetDir() == DIR_RT)
+	  {
+		  theWave[waveIdx][WAVEX] += increment;
 	  }
   }
 
@@ -380,9 +434,12 @@ class Location
   {
    for(int o = theWave.length - 1; o >= 0; o--)
    {
+     int d = waveGetDir();
      if (
-			(theWave[0][WAVEDIRECTION] == 2) // top to bottom //<>//
-		  ||(theWave[0][WAVEDIRECTION] == 3) // right to left
+			d == DIR_DN // top to bottom //<>//
+		  ||d == DIR_LT // right to left
+		  ||d == DIR_UP // bottom to top
+		  ||d == DIR_RT // left to right
 		)
      {
        if(!waveIsInitialized(o))
@@ -412,7 +469,25 @@ class Location
              theWave[i][WAVEX] = -2;
              theWave[i][WAVEY] = -2;
            }
-           theWave[o][WAVEDIRECTION] = (theWave[o][WAVEDIRECTION] == 2) ? 3 : 2; //<>//
+           // logic to set new wave direction
+           int newD = -1;
+           if (newD == -1 && d == DIR_DN)
+           {
+             newD = DIR_UP;
+           }
+           if (newD == -1 && d == DIR_UP)
+           {
+             newD = DIR_LT;
+           }
+           if (newD == -1 && d == DIR_LT)
+           {
+             newD = DIR_RT;
+           }
+           if (newD == -1 && d == DIR_RT)
+           {
+             newD = DIR_DN;
+           }
+           waveSetDir(newD);
          }        
          else
          {
@@ -426,70 +501,11 @@ class Location
 		     waveMoveForward(o);
        }       
      }
-     if(theWave[0][WAVEDIRECTION] == 1)
+     else
      {
-       if(theWave[o][WAVEX] == -1)
-       {
-         if(o == 0)
-         {
-           if(theWave[1][WAVEX] >= 2)
-           {
-             theWave[o][WAVEX] = 0;
-           }
-         }
-         else
-         {
-           theWave[o][WAVEX] = 0;
-         }
-       }
-       drawverticalwave(theWave[o][WAVEX]);
-       eraseverticalwave(theWave[o][WAVEX] - 1);
-       if(theWave[o][WAVEX] == MAP_WIDTH - 1)
-       {
-         eraseverticalwave(theWave[o][WAVEX]);
-         if(o == 0)
-         {
-           theWave[0][WAVEDIRECTION] = (int)random(0, 4);
-         }
-         theWave[o][WAVEX] = -1;
-       }
-       else
-       {
-         theWave[o][WAVEX]++;
-       }       
+       throw new java.lang.UnsupportedOperationException("not yet implemented for "+d);
      }
-     if(theWave[0][WAVEDIRECTION] == 0)
-     {
-       if(theWave[o][WAVEY] == -1)
-       {
-         if(o == 0)
-         {
-           if(theWave[1][WAVEY] <= MAP_HEIGHT - 5)
-           {
-             theWave[o][WAVEY] = MAP_HEIGHT - 3;
-           }
-         }
-         else
-         {
-           theWave[o][WAVEY] = MAP_HEIGHT - 3;
-         }
-       }
-       drawhorizontalwave(theWave[o][WAVEY]);
-       erasehorizontalwave(theWave[o][WAVEY] + 1);
-       if(theWave[o][WAVEY] < 3)
-       {
-         erasehorizontalwave(theWave[o][WAVEY]);
-         if(o == 0)
-         {
-           theWave[o][WAVEDIRECTION] = (int)random(0, 4);
-         }
-         theWave[o][WAVEY] = -1;
-       }
-       else
-       {
-         theWave[o][WAVEY]--;
-       }       
-     }           
+
    }   
   }
   void drawboat()
@@ -497,19 +513,19 @@ class Location
     int oldboatidx = theBoat[BOATIDX];
     if(theBoat[BOATSPRITE] == MAP_BOAT)
     {
-     if(theWave[0][WAVEDIRECTION] == 0)
+     if(theWave[0][WAVEDIRECTION] == DIR_UP)
      {
        theBoat[BOATIDX] = theBoat[BOATIDX] - MAP_WIDTH;
      }
-     if(theWave[0][WAVEDIRECTION] == 1)
+     if(theWave[0][WAVEDIRECTION] == DIR_RT)
      {
        theBoat[BOATIDX] = theBoat[BOATIDX] + 1;
      }
-     if(theWave[0][WAVEDIRECTION] == 2)
+     if(theWave[0][WAVEDIRECTION] == DIR_DN)
      {
        theBoat[BOATIDX] = theBoat[BOATIDX] + MAP_WIDTH;
      }
-     if(theWave[0][WAVEDIRECTION] == 3)
+     if(theWave[0][WAVEDIRECTION] == DIR_LT)
      {
        theBoat[BOATIDX] = theBoat[BOATIDX] - 1;
      }
