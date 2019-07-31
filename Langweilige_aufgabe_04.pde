@@ -127,7 +127,7 @@ Location[] locations =
 final int LOCATION_SAVANNA = 0;
 final int LOCATION_CAVE = 1;
 final int LOCATION_BEACH = 2;
-int currentLocation;
+int currentLocation = LOCATION_BEACH;
 int currentSnakePart;
 byte[] createCave()
 {
