@@ -115,7 +115,6 @@ class Location
         {
           if(currentLocation == LOCATION_SAVANNA)
           {
-            menukind = MENUKIND_COLLISION;
             menuopenreason = "You are entering the Cave.";
             currentLocation = LOCATION_CAVE;
             theMap[Hero_Position_Idx] = MAP_SAVANNA1;
@@ -125,7 +124,6 @@ class Location
           }
           if(currentLocation == LOCATION_BEACH)
           {
-            menukind = MENUKIND_COLLISION;
             menuopenreason = "You are entering the Cave.";
             currentLocation = LOCATION_CAVE;
             theMap[Hero_Position_Idx] = MAP_SAND;
@@ -136,7 +134,6 @@ class Location
         }
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_LIGHT)
         {          
-          menukind = MENUKIND_COLLISION;
           menuopenreason = "You are leaving the Cave.";
           currentLocation = LOCATION_SAVANNA;
           theMap[Hero_Position_Idx] = MAP_BLACK;
@@ -145,14 +142,25 @@ class Location
           locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
         }
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_SANDTRANSFER)
-        {          
-          menukind = MENUKIND_COLLISION;
-          menuopenreason = "You are leaving the Cave.";
-          currentLocation = LOCATION_BEACH;
-          theMap[Hero_Position_Idx] = MAP_SAND;
-          locations[currentLocation].Hero_Position_Idx = 761;
-          locations[currentLocation].Hero_Previous = MAP_SAND;
-          locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO; //<>// //<>// //<>// //<>// //<>//
+        {
+          if(currentLocation == LOCATION_CAVE)
+          {
+            menuopenreason = "You are leaving the Cave.";
+            currentLocation = LOCATION_BEACH;
+            theMap[Hero_Position_Idx] = MAP_SAND;
+            locations[currentLocation].Hero_Position_Idx = 761;
+            locations[currentLocation].Hero_Previous = MAP_SAND;
+            locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO; //<>// //<>// //<>// //<>// //<>//
+          }
+          if(currentLocation == LOCATION_CLIFF)
+          {
+            menuopenreason = "You are leaving the Cliff.";
+            currentLocation = LOCATION_BEACH;
+            theMap[Hero_Position_Idx] = MAP_SAND;
+            locations[currentLocation].Hero_Position_Idx = 38;
+            locations[currentLocation].Hero_Previous = MAP_SAND;
+            locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO; //<>// //<>// //<>// //<>//
+          }
         }
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_WATER)
         {
@@ -166,6 +174,37 @@ class Location
           menuopenreason = "Do you want to enter the Boat and try to get to the other side of the Sea?";
           gatheringIdx = Hero_Position_Idx;
           theBoat[BOATIDX] = newHeroIdx;
+        }
+        if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_CLIFFENTRY)
+        {
+          menuopenreason = "You are entering the Cliff.";
+          currentLocation = LOCATION_CLIFF;
+          theMap[Hero_Position_Idx] = MAP_SAND;
+          locations[currentLocation].Hero_Position_Idx = 761;
+          locations[currentLocation].Hero_Previous = MAP_SAND;
+          locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
+        }
+        if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_CLIFFSIDE)
+        {
+          menuopenreason = "This Cliffside is too high to climb, and made out of Rock too hard to gather.";
+        }
+        if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_BOULDER)
+        {
+          menukind = MENUKIND_NOMENU;
+          for(int i = 0; i < theBoulder.length; i++)
+          {
+            if(theBoulder[i][BOULDERIDX] == newHeroIdx)
+            {
+              theMap[Hero_Position_Idx] = Hero_Previous;
+              Hero_Previous = (byte)theBoulder[i][BOULDERSTANDINGON];
+              theMap[newHeroIdx] = MAP_HERO;
+              Hero_Position_Idx = newHeroIdx;
+              theBoulder[i][BOULDERIDX] = theBoulder[i][BOULDERIDX] + (newHeroIdx - locations[currentLocation].Hero_Position_Idx);
+              theBoulder[i][BOULDERSTANDINGON] = locations[currentLocation].theMap[theBoulder[i][BOULDERIDX]];
+              locations[currentLocation].theMap[theBoulder[i][BOULDERIDX]] = MAP_BOULDER;
+              break;
+            }
+          }
         }
         if(menuopenreason.equals(""))
         {
@@ -250,7 +289,7 @@ class Location
   }
   boolean waveXYIsSuitableForVerticalDrawErase(int X, int Y)
   {
-    return (Y < MAP_HEIGHT - 2 && X >= 0 && theMap[Y * MAP_WIDTH + X] != MAP_BOAT && theMap[Y * MAP_WIDTH + X] != MAP_BOATNOSAIL && theMap[Y * MAP_WIDTH + X] != MAP_SAND);
+    return (Y < MAP_HEIGHT - 2 && X >= 0 && theMap[Y * MAP_WIDTH + X] != MAP_BOAT && theMap[Y * MAP_WIDTH + X] != MAP_BOATNOSAIL && theMap[Y * MAP_WIDTH + X] != MAP_SAND && theMap[Y * MAP_WIDTH + X] != MAP_HERO);
   }
   void drawverticalwave(int X, String where)
   {
