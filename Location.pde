@@ -195,13 +195,20 @@ class Location
           {
             if(theBoulder[i][BOULDERIDX] == newHeroIdx)
             {
-              theMap[Hero_Position_Idx] = Hero_Previous;
-              Hero_Previous = (byte)theBoulder[i][BOULDERSTANDINGON];
-              theMap[newHeroIdx] = MAP_HERO;
-              Hero_Position_Idx = newHeroIdx;
-              theBoulder[i][BOULDERIDX] = theBoulder[i][BOULDERIDX] + (newHeroIdx - locations[currentLocation].Hero_Position_Idx);
-              theBoulder[i][BOULDERSTANDINGON] = locations[currentLocation].theMap[theBoulder[i][BOULDERIDX]];
-              locations[currentLocation].theMap[theBoulder[i][BOULDERIDX]] = MAP_BOULDER;
+              theBoulder[i][BOULDERIDX] = theBoulder[i][BOULDERIDX] + (newHeroIdx - Hero_Position_Idx);
+              if(theBoulder[i][BOULDERIDX] < 800 && theMap[theBoulder[i][BOULDERIDX]] == MAP_SAND)
+              {
+                theMap[Hero_Position_Idx] = Hero_Previous;
+                Hero_Previous = (byte)theBoulder[i][BOULDERSTANDINGON];
+                theMap[newHeroIdx] = MAP_HERO;                               
+                Hero_Position_Idx = newHeroIdx;
+                theBoulder[i][BOULDERSTANDINGON] = theMap[theBoulder[i][BOULDERIDX]];
+                theMap[theBoulder[i][BOULDERIDX]] = MAP_BOULDER;
+              }
+              else
+              {
+                theBoulder[i][BOULDERIDX] = theBoulder[i][BOULDERIDX] - (newHeroIdx - Hero_Position_Idx);
+              }
               break;
             }
           }
