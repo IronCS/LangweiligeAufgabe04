@@ -106,7 +106,7 @@ final int WAVEDIRECTION = 2; //Up = 0, Right = 1, Down = 2, Left = 3;
 int[][]theWave = {{-2,-2,2}, {-2,-2,2}};
 final int BOULDERIDX = 0;
 final int BOULDERSTANDINGON = 1;
-int[][]theBoulder = {{682, MAP_SAND}};
+int[][]theBoulder = {{682, MAP_SAND}, {602, MAP_SAND}, {522, MAP_SAND}, {442, MAP_SAND}, {362, MAP_SAND}};
 String menuopenreason;
 int supersecretcheatcode = 0;
 int stonecount = 0;
@@ -177,26 +177,27 @@ byte[] createCliff()
   byte S = MAP_SAND;
   byte T = MAP_SANDTRANSFER;
   byte B = MAP_BOULDER;
+  byte V = MAP_SAVANNA1;
   byte[]theCliff = 
    {C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,
-    C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
-    C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,C,
-    C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,C,
-    C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,C,
-    C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,C,
-    C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,C,
-    C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,C,
-    C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,C,
-    C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,C,
-    C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,C,
-    C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,C,
-    C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,C,
-    C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,S,C,S,S,C,
-    C,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,C,
-    C,S,B,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,C,
-    C,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,S,S,S,S,S,C,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,B,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,B,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,B,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,S,C,C,C,C,S,S,S,S,S,S,S,S,S,C,
+    C,S,B,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,V,V,S,S,S,S,C,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,V,S,S,S,C,S,C,S,S,S,S,S,S,S,S,S,C,
+    C,S,B,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,V,V,C,S,C,S,C,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,C,C,C,S,S,S,C,S,S,S,S,S,S,S,S,S,C,
     T,S,S,S,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C};
   return theCliff;
 }

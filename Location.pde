@@ -196,7 +196,7 @@ class Location
             if(theBoulder[i][BOULDERIDX] == newHeroIdx)
             {
               theBoulder[i][BOULDERIDX] = theBoulder[i][BOULDERIDX] + (newHeroIdx - Hero_Position_Idx);
-              if(theBoulder[i][BOULDERIDX] < 800 && theMap[theBoulder[i][BOULDERIDX]] == MAP_SAND)
+              if(theBoulder[i][BOULDERIDX] < 800 && (theMap[theBoulder[i][BOULDERIDX]] == MAP_SAND || theMap[theBoulder[i][BOULDERIDX]] == MAP_SAVANNA1))
               {
                 theMap[Hero_Position_Idx] = Hero_Previous;
                 Hero_Previous = (byte)theBoulder[i][BOULDERSTANDINGON];
@@ -208,6 +208,17 @@ class Location
               else
               {
                 theBoulder[i][BOULDERIDX] = theBoulder[i][BOULDERIDX] - (newHeroIdx - Hero_Position_Idx);
+              }
+              if(theMap[623] == MAP_BOULDER && theMap[624] == MAP_BOULDER && theMap[663] == MAP_BOULDER && theMap[703] == MAP_BOULDER && theMap[704] == MAP_BOULDER)
+              {
+                theMap[623] = MAP_SAND;
+                theMap[624] = MAP_SAND;
+                theMap[663] = MAP_SAND;
+                theMap[703] = MAP_SAND;
+                theMap[704] = MAP_SAND;
+                theMap[622] = MAP_SAND;
+                theMap[702] = MAP_SAND;
+                theMap[662] = MAP_SAND;
               }
               break;
             }
