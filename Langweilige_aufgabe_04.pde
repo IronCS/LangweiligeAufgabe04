@@ -3,9 +3,9 @@ byte[] createSavanna()
 {
   byte A = MAP_SAVANNA1;
   byte B = MAP_SAVANNA2;
-  byte C = MAP_CLIFFENTRY;
+  byte H = MAP_HIVETRANSFER;
   byte[]theSavanna =
-  {1,1,2,B,A,7,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
+  {1,1,2,B,A,7,A,B,A,B,A,B,A,B,A,H,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
    3,B,2,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,
    A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
    1,1,2,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,
@@ -86,7 +86,10 @@ final byte MAP_BOATNOSAIL = 25;
 final byte MAP_CLIFFENTRY = 26;
 final byte MAP_CLIFFSIDE = 27;
 final byte MAP_BOULDER = 28;
-final byte MAP_TILE_NUM = 29;
+final byte MAP_HIVETRANSFER = 29;
+final byte MAP_HIVE = 30;
+final byte MAP_BEE = 31;
+final byte MAP_TILE_NUM = 32;
 final int MAP_WIDTH = 40;
 final int MAP_HEIGHT = 20;
 int TILE_WIDTH = 16;
@@ -107,6 +110,9 @@ int[][]theWave = {{-2,-2,2}, {-2,-2,2}};
 final int BOULDERIDX = 0;
 final int BOULDERSTANDINGON = 1;
 int[][]theBoulder = {{682, MAP_SAND}, {602, MAP_SAND}, {522, MAP_SAND}, {442, MAP_SAND}, {362, MAP_SAND}};
+final int BEEX = 0;
+final int BEEY = 1;
+int[][]theBee = {{0,0}};
 String menuopenreason;
 int supersecretcheatcode = 0;
 int stonecount = 0;
@@ -134,12 +140,13 @@ final int MENUKIND_ENTERINGBOAT = 9;
 final int MENUKIND_LEAVINGBOAT = 10;
 Location[] locations =
 {
-  new Location(), new Location(), new Location(), new Location()
+  new Location(), new Location(), new Location(), new Location(), new Location()
 };
 final int LOCATION_SAVANNA = 0;
 final int LOCATION_CAVE = 1;
 final int LOCATION_BEACH = 2;
 final int LOCATION_CLIFF = 3;
+final int LOCATION_HIVE = 4;
 int currentLocation = LOCATION_SAVANNA;
 int currentSnakePart;
 byte[] createCave()
@@ -171,6 +178,35 @@ byte[] createCave()
   return theCave;
 }
 byte[] theCave;
+byte[] createHive()
+{
+  byte H = MAP_HIVE;
+  byte[]theHive = 
+   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,H,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  return theHive;
+}
+byte[] theHive;
+byte HiveY = 9;
+byte HiveX = 20;
 byte[] createCliff()
 {
   byte C = MAP_CLIFFSIDE;
@@ -178,6 +214,7 @@ byte[] createCliff()
   byte T = MAP_SANDTRANSFER;
   byte B = MAP_BOULDER;
   byte V = MAP_SAVANNA1;
+  byte H = MAP_HIVETRANSFER;
   byte[]theCliff = 
    {C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,
     C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
@@ -196,7 +233,7 @@ byte[] createCliff()
     C,S,S,S,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,S,C,C,C,C,S,S,S,S,S,S,S,S,S,C,
     C,S,B,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,V,V,S,S,S,S,C,S,S,S,S,S,S,S,S,S,C,
     C,S,S,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,V,S,S,S,C,S,C,S,S,S,S,S,S,S,S,S,C,
-    C,S,B,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,V,V,C,S,C,S,C,S,S,S,S,S,S,S,S,S,C,
+    C,S,B,S,C,H,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,V,V,C,S,C,S,C,S,S,S,S,S,S,S,S,S,C,
     C,S,S,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,C,C,C,S,S,S,C,S,S,S,S,S,S,S,S,S,C,
     T,S,S,S,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C};
   return theCliff;
@@ -364,12 +401,14 @@ void setup()
   theSavanna = createSavanna();
   theBeach = createBeach();
   theCliff = createCliff();
+  theHive = createHive();
   locations[currentLocation].theMap = theSavanna; 
   locations[currentLocation].Hero_Position_Idx = 10;
   locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
   locations[LOCATION_CAVE].theMap = theCave;
   locations[LOCATION_BEACH].theMap = theBeach;
   locations[LOCATION_CLIFF].theMap = theCliff;
+  locations[LOCATION_HIVE].theMap = theHive;
   TILE_WIDTH = width/MAP_WIDTH;
   TILE_HEIGHT = height/MAP_HEIGHT;
   int i = 0;
@@ -402,6 +441,9 @@ void setup()
   tiles[i++] = loadImage("TileCliffEntry.jpg");
   tiles[i++] = loadImage("TileCliffSide.jpg");
   tiles[i++] = loadImage("TileBoulder.jpg");
+  tiles[i++] = loadImage("TileHive.jpg");
+  tiles[i++] = loadImage("TileHive.jpg");
+  tiles[i++] = loadImage("TileBee.jpg");
   i = 0;
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT); 
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
@@ -415,6 +457,9 @@ void setup()
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);  
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);   
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
