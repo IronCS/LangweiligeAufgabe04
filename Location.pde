@@ -616,99 +616,65 @@ class Location
     for(int i = 0; i < theBee.length; i++)
     {
       int beepreviousidx = theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX];
+      int newBeeX = theBee[i][BEEX];
+      int newBeeY = theBee[i][BEEY];
       byte random = (byte)random(1, 7);
       println(random);
       if(random == 1)
-      {
-        theBee[i][BEEY]--;
-        if (((theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]) <= 0 
-        || (theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]) >= ((MAP_WIDTH) * (MAP_HEIGHT-1) - 1))
-        || theMap[theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]] != MAP_BLACK)
-        {
-          theBee[i][BEEY]++;
-        }
+      {        
+        newBeeY--;        
       }
       if(random == 2)
       {
-        theBee[i][BEEX]++;
-        if (((theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]) <= 0 
-        || (theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]) >= ((MAP_WIDTH) * (MAP_HEIGHT-1) - 1))
-        || theMap[theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]] != MAP_BLACK)
-        {
-          theBee[i][BEEX]--;
-        }
+        newBeeX++;
       }
       if(random == 3)
       {
-        theBee[i][BEEY]++;
-       if (((theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]) <= 0 
-        || (theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]) >= ((MAP_WIDTH) * (MAP_HEIGHT-1) - 1))
-        || theMap[theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]] != MAP_BLACK)
-        {
-          theBee[i][BEEY]--;
-        }
+        newBeeY++;
       }
       if(random == 4)
       {
-        theBee[i][BEEX]--;
-        if (((theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]) <= 0 
-        || (theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]) >= ((MAP_WIDTH) * (MAP_HEIGHT-1) - 1))
-        || theMap[theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]] != MAP_BLACK)
-        {
-          theBee[i][BEEX]++;
-        }
+        newBeeX--;
       }
       if(random == 5)
       {
-        if(theBee[i][BEEY] >= HiveY)
+        if(theBee[i][BEEY] > HiveY)
         {
-          theBee[i][BEEY]--;
+          newBeeY--;
         }
         if(theBee[i][BEEY] <= HiveY)
         {
-          theBee[i][BEEY]++;
-        }
-       if (((theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]) <= 0 
-        || (theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]) >= ((MAP_WIDTH) * (MAP_HEIGHT-1) - 1))
-        || theMap[theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]] != MAP_BLACK)
-        {
-          if(theBee[i][BEEY] >= HiveY)
-          {
-            theBee[i][BEEY]++;
-          }
-          if(theBee[i][BEEY] >= HiveY)
-          {
-            theBee[i][BEEY]--;
-          }
+          newBeeY++;
         }
       }
       if(random == 6)
       {
         if(theBee[i][BEEX] >= HiveX)
         {
-          theBee[i][BEEX]--;
+          newBeeX--;
         }
-        if(theBee[i][BEEX] <= HiveX)
+        if(theBee[i][BEEX] < HiveX)
         {
-          theBee[i][BEEX]++;
-        }
-        if (((theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]) <= 0 
-        || (theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]) >= ((MAP_WIDTH) * (MAP_HEIGHT-1) - 1))
-        || theMap[theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]] != MAP_BLACK)
-        {
-          if(theBee[i][BEEX] >= HiveX)
-          {
-            theBee[i][BEEX]++;
-          }
-          if(theBee[i][BEEX] >= HiveX)
-          {
-            theBee[i][BEEX]--;
-          }
+          newBeeX++;
         }
       }
-      beesteppedon = theMap[theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]];
-      theMap[beepreviousidx] = beesteppedon;
-      theMap[theBee[i][BEEY] * MAP_WIDTH + theBee[i][BEEX]] = MAP_BEE;
+      int newBeeIdx = newBeeY * MAP_WIDTH + newBeeX;
+      if(newBeeIdx == beepreviousidx)
+      {
+        throw new java.lang.UnsupportedOperationException("newBeeIdx == beepreviousidx"); //<>//
+      }
+      if (((newBeeIdx) <= 0
+        || (newBeeIdx) >= ((MAP_WIDTH) * (MAP_HEIGHT-1) - 1))
+        || theMap[newBeeIdx] != MAP_BLACK
+        || newBeeX < 0
+        || newBeeX > MAP_WIDTH-1)
+      {
+        continue;
+      }
+      theBee[i][BEEY] = newBeeY;
+      theBee[i][BEEX] = newBeeX;
+      theMap[beepreviousidx] = MAP_BLACK;
+      theMap[newBeeIdx] = MAP_BEE;
     }
   }
   void draw_savanna()

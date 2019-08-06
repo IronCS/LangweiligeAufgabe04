@@ -112,7 +112,7 @@ final int BOULDERSTANDINGON = 1;
 int[][]theBoulder = {{682, MAP_SAND}, {602, MAP_SAND}, {522, MAP_SAND}, {442, MAP_SAND}, {362, MAP_SAND}};
 final int BEEX = 0;
 final int BEEY = 1;
-int[][]theBee = {{0,0}};
+int[][]theBee = {{0,0}, {2,4}, {3,5}, {5,7}, {6,8}, {21, 18}};
 String menuopenreason;
 int supersecretcheatcode = 0;
 int stonecount = 0;
