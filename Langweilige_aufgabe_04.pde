@@ -87,7 +87,7 @@ final byte MAP_CLIFFENTRY = 26;
 final byte MAP_CLIFFSIDE = 27;
 final byte MAP_BOULDER = 28;
 final byte MAP_HIVETRANSFER = 29;
-final byte MAP_HIVE = 30;
+final byte MAP_FLOWER = 30;
 final byte MAP_BEE = 31;
 final byte MAP_TILE_NUM = 32;
 final int MAP_WIDTH = 40;
@@ -118,6 +118,7 @@ int supersecretcheatcode = 0;
 int stonecount = 0;
 int woodcount = 0;
 int snakecount = 0;
+int flowercount = 0;
 int gatheringIdx;
 int menukind;
 int snakeIdx;
@@ -138,6 +139,8 @@ final int MENUKIND_INVENTORY = 7;
 final int MENUKIND_COLLISION = 8;
 final int MENUKIND_ENTERINGBOAT = 9;
 final int MENUKIND_LEAVINGBOAT = 10;
+final int MENUKIND_GATHERINGFLOWER = 11;
+final int MENUKIND_PLACINGFLOWER = 12;
 Location[] locations =
 {
   new Location(), new Location(), new Location(), new Location(), new Location()
@@ -180,7 +183,7 @@ byte[] createCave()
 byte[] theCave;
 byte[] createHive()
 {
-  byte H = MAP_HIVE;
+  byte F = MAP_FLOWER;
   byte[]theHive = 
    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -191,7 +194,7 @@ byte[] createHive()
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,H,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,F,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -205,8 +208,8 @@ byte[] createHive()
   return theHive;
 }
 byte[] theHive;
-byte HiveY = 9;
-byte HiveX = 20;
+byte FlowerY = 9;
+byte FlowerX = 20;
 byte[] createCliff()
 {
   byte C = MAP_CLIFFSIDE;
@@ -442,7 +445,7 @@ void setup()
   tiles[i++] = loadImage("TileCliffSide.jpg");
   tiles[i++] = loadImage("TileBoulder.jpg");
   tiles[i++] = loadImage("TileHive.jpg");
-  tiles[i++] = loadImage("TileHive.jpg");
+  tiles[i++] = loadImage("TileFlower.jpg");
   tiles[i++] = loadImage("TileBee.jpg");
   i = 0;
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT); 
@@ -482,7 +485,7 @@ void setup()
 void openInventoryMenu()
 {
   menukind = MENUKIND_INVENTORY;
-  menuopenreason = "Inventory \n Stones = "+stonecount+"  Snakeskins = " + snakecount + " \n Wood = "+woodcount;
+  menuopenreason = "Inventory \n Stones = "+stonecount+"  Snakeskins = " + snakecount + " \n Wood = "+woodcount +"  Flowers = " + flowercount;
 }
 void mousePressed()
 {
@@ -546,7 +549,9 @@ void mousePressed()
   || menukind == MENUKIND_GATHERINGSNAKE 
   || menukind == MENUKIND_BUILDINGBOAT 
   || menukind == MENUKIND_ENTERINGBOAT 
-  || menukind == MENUKIND_LEAVINGBOAT)
+  || menukind == MENUKIND_LEAVINGBOAT
+  || menukind == MENUKIND_GATHERINGFLOWER
+  || menukind == MENUKIND_PLACINGFLOWER)
   {
     if(mouseX >= 60 && mouseX <= 280 && mouseY >= 100 && mouseY <= 240)
     {
@@ -555,6 +560,21 @@ void mousePressed()
         woodcount++;
         menukind = MENUKIND_NOMENU;
         locations[currentLocation].theMap[gatheringIdx] = MAP_BLACK;
+      }
+      if(menukind == MENUKIND_GATHERINGFLOWER)
+      {
+        flowercount++;
+        menukind = MENUKIND_NOMENU;
+        locations[currentLocation].theMap[gatheringIdx] = MAP_BLACK;
+      }
+      if(menukind == MENUKIND_PLACINGFLOWER)
+      {
+        flowercount--;
+        menukind = MENUKIND_NOMENU;
+        locations[currentLocation].Hero_Previous = MAP_FLOWER;
+        FlowerY = (byte)(locations[currentLocation].Hero_Position_Idx/MAP_WIDTH);
+        FlowerX = (byte)(locations[currentLocation].Hero_Position_Idx-(FlowerY*MAP_WIDTH));
+        println(FlowerX + " = X; " + FlowerY + " = Y;");
       }
       if(menukind == MENUKIND_GATHERINGSTONES)
       {
@@ -755,6 +775,11 @@ void keyPressed()
     snakecount = snakecount + 5;
     supersecretcheatcode = 0;
   }
+  if(key == 69 || key == 101) //Upper- & Lowercase E
+  {
+    menukind = MENUKIND_PLACINGFLOWER;
+    menuopenreason = "Do you want to leave the Flower lying on the floor?";
+  }
 }
 void draw()
 {
@@ -794,7 +819,7 @@ void drawmenu()
       text("Open Settings", 400, 170);      
     }
   }
-  if(menukind == MENUKIND_BUILDINGBRIDGE || menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSNAKE || menukind == MENUKIND_BUILDINGBOAT || menukind == MENUKIND_ENTERINGBOAT || menukind == MENUKIND_LEAVINGBOAT)
+  if(menukind == MENUKIND_BUILDINGBRIDGE || menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSNAKE || menukind == MENUKIND_BUILDINGBOAT || menukind == MENUKIND_ENTERINGBOAT || menukind == MENUKIND_LEAVINGBOAT || menukind == MENUKIND_GATHERINGFLOWER || menukind == MENUKIND_PLACINGFLOWER)
   {
     rect(60, 100, 220, 140);
     rect(290, 100, 220, 140);
@@ -803,7 +828,7 @@ void drawmenu()
     {
       text("Build", 170, 170);
     }
-    if(menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSNAKE)
+    if(menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSNAKE || menukind == MENUKIND_GATHERINGFLOWER)
     {
       text("Gather", 170, 170);
     }
@@ -811,17 +836,24 @@ void drawmenu()
     {
       text("Enter", 170, 170);
     }
-    if(menukind == MENUKIND_LEAVINGBOAT)
+    if(menukind == MENUKIND_LEAVINGBOAT|| menukind == MENUKIND_PLACINGFLOWER)
     {
       text("Leave", 170, 170);
     }
-    if(menukind != MENUKIND_LEAVINGBOAT)
+    if(menukind != MENUKIND_LEAVINGBOAT && menukind != MENUKIND_PLACINGFLOWER)
     {
       text("Leave", 400, 170);
     }
     else
     {
-      text("Stay", 400, 170);
+      if(menukind == MENUKIND_LEAVINGBOAT)
+      {
+        text("Stay", 400, 170);
+      }
+      if(menukind == MENUKIND_PLACINGFLOWER)
+      {
+        text("Keep", 400, 170);
+      }
     }
   }
 }

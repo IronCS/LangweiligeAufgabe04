@@ -234,6 +234,12 @@ class Location
           locations[currentLocation].Hero_Previous = MAP_BLACK;   
           locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
         }
+        if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_FLOWER)
+        {
+          menuopenreason = "The Bees seem to be circling around this flower.";
+          menukind = MENUKIND_GATHERINGFLOWER;
+          gatheringIdx = newHeroIdx;
+        }
         if(menuopenreason.equals(""))
         {
           menukind = MENUKIND_NOMENU;
@@ -524,7 +530,7 @@ class Location
 	     waveEraseAtPrev(o);
        if(waveIsOnAfterLastLocation(o))
        {         
-         if(o == 0) //<>// //<>//
+         if(o == 0) //<>//
          {
            for(int i = 0; i < theWave.length; i++)
            {
@@ -619,7 +625,6 @@ class Location
       int newBeeX = theBee[i][BEEX];
       int newBeeY = theBee[i][BEEY];
       byte random = (byte)random(1, 7);
-      println(random);
       if(random == 1)
       {        
         newBeeY--;        
@@ -638,22 +643,22 @@ class Location
       }
       if(random == 5)
       {
-        if(theBee[i][BEEY] > HiveY)
+        if(theBee[i][BEEY] > FlowerY)
         {
           newBeeY--;
         }
-        if(theBee[i][BEEY] <= HiveY)
+        if(theBee[i][BEEY] <= FlowerY)
         {
           newBeeY++;
         }
       }
       if(random == 6)
       {
-        if(theBee[i][BEEX] >= HiveX)
+        if(theBee[i][BEEX] >= FlowerX)
         {
           newBeeX--;
         }
-        if(theBee[i][BEEX] < HiveX)
+        if(theBee[i][BEEX] < FlowerX)
         {
           newBeeX++;
         }
@@ -661,7 +666,7 @@ class Location
       int newBeeIdx = newBeeY * MAP_WIDTH + newBeeX;
       if(newBeeIdx == beepreviousidx)
       {
-        throw new java.lang.UnsupportedOperationException("newBeeIdx == beepreviousidx"); //<>//
+        throw new java.lang.UnsupportedOperationException("newBeeIdx == beepreviousidx");
       }
       if (((newBeeIdx) <= 0
         || (newBeeIdx) >= ((MAP_WIDTH) * (MAP_HEIGHT-1) - 1))
