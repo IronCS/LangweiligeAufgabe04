@@ -7,6 +7,9 @@ class Location
   int snakeIdx = 7;
   int snakeTailPreviousIdx;
   byte beesteppedon = MAP_BLACK;
+  boolean functioncancelled = false;
+  int fires = 8;
+  byte firescalculated = 0;
   byte getByteOn(byte X, byte Y)
   {
     byte ByteOn = theMap[Y * MAP_WIDTH + X];
@@ -27,6 +30,9 @@ class Location
       || theMap[newHeroIdx] == MAP_SAVANNA2 
       || theMap[newHeroIdx] == MAP_SAND
       || theMap[newHeroIdx] == MAP_BURNABLE
+      || theMap[newHeroIdx] == MAP_EXTINGUISHED1
+      || theMap[newHeroIdx] == MAP_EXTINGUISHED2
+      || theMap[newHeroIdx] == MAP_EXTINGUISHED3
       || theBoat[INBOAT] == 1)
       {
         if(theBoat[INBOAT] == 0)
@@ -166,9 +172,28 @@ class Location
         }
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_WATER)
         {
-          menukind = MENUKIND_BUILDINGBOAT;
-          menuopenreason = "The Water is deep and Wavy. \nDo you want to build a boat?";
-          gatheringIdx = newHeroIdx;
+          if(currentLocation == LOCATION_BEACH)
+          {
+            menukind = MENUKIND_BUILDINGBOAT;
+            menuopenreason = "The Water is deep and Wavy. \nDo you want to build a boat?";
+            gatheringIdx = newHeroIdx;
+          }
+          if(currentLocation == LOCATION_FIRE)
+          {
+            if(bucketcount == 0)
+            {
+              menuopenreason = "A Lake that likely has been used as a Water Source to put out Fires. \nMaybe this might be useful.";
+            }
+            if(bucketcount == 1)
+            {
+              menukind = MENUKIND_FILLINGBUCKET;
+              menuopenreason = "Do you want to fill up your Bucket with Water?";
+            }
+            if(bucketcount == 2)
+            {
+              menuopenreason = "Your Bucket is full already.";
+            }
+          }
         }
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_BOAT || menuopenreason.equals("") && theMap[newHeroIdx] == MAP_BOATNOSAIL)
         {
@@ -245,7 +270,7 @@ class Location
         {
           if(currentLocation == LOCATION_FIRE)
           {
-            menuopenreason = "You are leaving the Fire.";   
+            menuopenreason = "You are leaving the Fire.";
             currentLocation = LOCATION_HIVE;
             theMap[Hero_Position_Idx] = MAP_BLACK;
             locations[currentLocation].Hero_Position_Idx = 761;
@@ -254,7 +279,7 @@ class Location
           }   
           if(currentLocation == LOCATION_HIVE)
           {
-            menuopenreason = "You are entering the Fire.";   
+            menuopenreason = "You are entering the Fire.";
             currentLocation = LOCATION_FIRE;
             theMap[Hero_Position_Idx] = MAP_BLACK;
             locations[currentLocation].Hero_Position_Idx = 798;
@@ -262,6 +287,25 @@ class Location
             locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO; //<>// //<>// //<>// //<>// 
             calculateFire();
           }             
+        }
+        if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_FIRE1 || menuopenreason.equals("") && theMap[newHeroIdx] == MAP_FIRE2 || menuopenreason.equals("") && theMap[newHeroIdx] == MAP_FIRE3)
+        {
+          if(bucketcount == 2)
+          {
+            menukind = MENUKIND_EXTINGUISHINGFIRE;
+            menuopenreason = "Do you want to extinguish the Fire?";
+            gatheringIdx = newHeroIdx;
+          }
+          else
+          {
+            menuopenreason = "The Fire burns too fiercly to walk through.";
+          }
+        }
+        if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_BUCKET)
+        {
+          menukind = MENUKIND_PICKINGUPBUCKET;
+          menuopenreason = "A Bucket. \nDo you want to pick it up?";
+          gatheringIdx = newHeroIdx;
         }
         if(menuopenreason.equals(""))
         {
@@ -271,8 +315,12 @@ class Location
     }
   }
   void calculateFire()
-  {
-    int fires = 8;
+  {    
+    firescalculated++;
+    if(firescalculated == 4)
+    {
+      firescalculated = 1;
+    }
     byte burnablesaround = 0;
     final int BURNABLEX = 0;
     final int BURNABLEY = 1;
@@ -328,27 +376,69 @@ class Location
     }
     if(burnablesaround != 0)
     {
-      random = (byte)random(0, burnablesaround);
-      fires++;
+      random = (byte)random(0, burnablesaround);      
       theFires[fires][FIREX] = burnablesaroundidx[random][BURNABLEX];
       theFires[fires][FIREY] = burnablesaroundidx[random][BURNABLEY];
+      fires++;
+      if(firescalculated == 3)
+      {
+        random = (byte)random(0,fires);
+        theMap[theFires[random][FIREY] * MAP_WIDTH + theFires[random][FIREX]] = MAP_BURNABLE;
+        theFires[random][FIREX] = theFires[fires-1][FIREX];
+        theFires[random][FIREY] = theFires[fires-1][FIREY]; 
+        theFires[fires-1][FIREY] = 0;
+        theFires[fires-1][FIREX] = 0;
+        fires--;
+      }
     }
-    for(int i = 0; i < theFires.length; i++)
+    else
+    {
+      functioncancelled = true;
+      return;
+    }
+    drawFire(true);
+  }
+  void drawFire(boolean fromcalculator)
+  {
+    for(int i = 0; i < fires; i++)
     {
       if(theFires[i][FIREX] != 0)
       {
-        random = (byte)random(1,4);
-        if(random == 1)
+        if((theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] == MAP_EXTINGUISHED1 || theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] == MAP_EXTINGUISHED2 || theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] == MAP_EXTINGUISHED3) && fromcalculator)
         {
-          theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] = MAP_FIRE1;
+          if(theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] == MAP_EXTINGUISHED1)
+          {
+            theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] = MAP_BURNABLE;
+            theFires[i][FIREX] = theFires[fires-1][FIREX];
+            theFires[i][FIREY] = theFires[fires-1][FIREY]; 
+            theFires[fires-1][FIREY] = 0;
+            theFires[fires-1][FIREX] = 0;
+            fires--;
+          }
+          if(theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] == MAP_EXTINGUISHED2)
+          {
+            theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] = MAP_EXTINGUISHED1;
+          }
+          if(theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] == MAP_EXTINGUISHED3)
+          {
+            theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] = MAP_EXTINGUISHED2;
+          }
         }
-        if(random == 2)
+        if(theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] != MAP_EXTINGUISHED1 && theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] != MAP_EXTINGUISHED2 && theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] != MAP_EXTINGUISHED3)
         {
-          theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] = MAP_FIRE2;
-        }
-        if(random == 3)
-        {
-          theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] = MAP_FIRE3;
+          int random = (byte)random(1,4);
+          if(random == 1)
+          {
+            theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] = MAP_FIRE1;
+          }
+          if(random == 2)
+          {
+            theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] = MAP_FIRE2;
+          }
+          if(random == 3)
+          {
+            theMap[theFires[i][FIREY] * MAP_WIDTH + theFires[i][FIREX]] = MAP_FIRE3;
+          }
         }
       }
     }
@@ -808,6 +898,15 @@ class Location
    }
    if(currentLocation == LOCATION_FIRE)
    {
+     if((frameCount %60) == 0)
+     {
+       drawFire(false);
+     }
+     if(functioncancelled)
+     {
+       functioncancelled = false;
+       calculateFire();
+     }
      if((frameCount %300) == 0)
      {
        calculateFire();
