@@ -3,9 +3,9 @@ byte[] createSavanna()
 {
   byte A = MAP_SAVANNA1;
   byte B = MAP_SAVANNA2;
-  byte H = MAP_HIVETRANSFER;
+  byte C = MAP_CLIFFENTRY;
   byte[]theSavanna =
-  {1,1,2,B,A,7,A,B,A,B,A,B,A,B,A,H,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
+  {1,1,2,B,A,7,A,B,A,B,A,B,A,B,A,C,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
    3,B,2,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,
    A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
    1,1,2,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,
@@ -98,7 +98,8 @@ final byte MAP_BUCKET = 37;
 final byte MAP_EXTINGUISHED1 = 38;
 final byte MAP_EXTINGUISHED2 = 39;
 final byte MAP_EXTINGUISHED3 = 40;
-final byte MAP_TILE_NUM = 41;
+final byte MAP_HIVE = 41;
+final byte MAP_TILE_NUM = 42;
 final int MAP_WIDTH = 40;
 final int MAP_HEIGHT = 20;
 int TILE_WIDTH = 16;
@@ -158,6 +159,8 @@ final int MENUKIND_PLACINGFLOWER = 12;
 final int MENUKIND_FILLINGBUCKET = 13;
 final int MENUKIND_EXTINGUISHINGFIRE = 14;
 final int MENUKIND_PICKINGUPBUCKET = 15;
+final int MENUKIND_ITEMS = 16;
+final int MENUKIND_MATERIALS = 17;
 Location[] locations =
 {
   new Location(), new Location(), new Location(), new Location(), new Location(), new Location()
@@ -201,7 +204,7 @@ byte[] createCave()
 byte[] theCave;
 byte[] createHive()
 {
-  byte F = MAP_FLOWER;
+  byte H = MAP_HIVE;
   byte B = MAP_BURNABLE;
   byte T = MAP_BURNABLETRANSFER;
   byte[]theHive = 
@@ -214,7 +217,7 @@ byte[] createHive()
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,F,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -223,13 +226,13 @@ byte[] createHive()
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     B,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    B,B,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    B,B,0,0,H,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     T,B,B,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   return theHive;
 }
 byte[] theHive;
-byte FlowerY = 9;
-byte FlowerX = 20;
+byte FlowerY = 18;
+byte FlowerX = 4;
 byte[]createFire()
 {
 	byte B = MAP_BURNABLE;
@@ -263,6 +266,7 @@ byte[]createFire()
 byte[]theFire;
 byte[] createCliff()
 {
+  byte F = MAP_FLOWER;
   byte C = MAP_CLIFFSIDE;
   byte S = MAP_SAND;
   byte T = MAP_SANDTRANSFER;
@@ -286,7 +290,7 @@ byte[] createCliff()
     C,S,B,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
     C,S,S,S,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,S,C,C,C,C,S,S,S,S,S,S,S,S,S,C,
     C,S,B,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,V,V,S,S,S,S,C,S,S,S,S,S,S,S,S,S,C,
-    C,S,S,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,V,S,S,S,C,S,C,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,C,F,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,V,S,S,S,C,S,C,S,S,S,S,S,S,S,S,S,C,
     C,S,B,S,C,H,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,V,V,C,S,C,S,C,S,S,S,S,S,S,S,S,S,C,
     C,S,S,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,C,C,C,S,S,S,C,S,S,S,S,S,S,S,S,S,C,
     T,S,S,S,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C};
@@ -509,6 +513,7 @@ void setup()
   tiles[i++] = loadImage("TileExtinguished1.jpg");
   tiles[i++] = loadImage("TileExtinguished2.jpg");
   tiles[i++] = loadImage("TileExtinguished3.jpg");
+  tiles[i++] = loadImage("TileHive.jpg");
   i = 0;
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT); 
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
@@ -551,15 +556,36 @@ void setup()
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   initAnimals();
 }
+Menu menu;
 void openInventoryMenu()
 {
-  menukind = MENUKIND_INVENTORY;
-  menuopenreason = "Inventory \n Stones = "+stonecount+"  Snakeskins = " + snakecount + " \n Wood = "+woodcount +"  Flowers = " + flowercount;
+  menu = new Menu();
+  menu.items = new Menu_Item[] {new Menu_Item("Inventory", null ,-1 ,null),
+                                new Menu_Item("Stones = " + stonecount, null ,-1 ,null),
+                                new Menu_Item("Snakeskins = " +snakecount, null ,-1 ,null),
+                                new Menu_Item("Wood =" + woodcount, null ,-1 ,null),
+                                new Menu_Item("Flowers = "+ flowercount, null ,-1 ,null),
+                                new Menu_Item(null, "O.K.", Menu.OK, null),
+                                new Menu_Item(null, "Items", Menu.ITEMS, "i")};
+}
+void openItemsMenu()
+{
+  menu = new Menu();
+  menu.items = new Menu_Item[] {new Menu_Item("A", null ,-1 ,null),
+                                new Menu_Item("B", null ,-1 ,null),
+                                new Menu_Item(null, "O.K.", Menu.OK, null)};
 }
 void mousePressed()
 {
+  if(menu != null)
+  {
+    int action = menu.onMouseDownButtonHit();
+    handleMenuAction(action);
+    return;
+  }
   int newHeroIdx = locations[currentLocation].Hero_Position_Idx;
   int HeroY = newHeroIdx/MAP_WIDTH;
   int HeroX = newHeroIdx-(HeroY*MAP_WIDTH);
@@ -629,6 +655,10 @@ void mousePressed()
   {
     if(mouseX >= 60 && mouseX <= 280 && mouseY >= 100 && mouseY <= 240)
     {
+      if(menukind == MENUKIND_INVENTORY)
+      {
+        menukind = MENUKIND_MATERIALS;
+      }
       if(menukind == MENUKIND_GATHERINGWOOD)
       {
         woodcount++;
@@ -639,7 +669,7 @@ void mousePressed()
       {
         flowercount++;
         menukind = MENUKIND_NOMENU;
-        locations[currentLocation].theMap[gatheringIdx] = MAP_BLACK;
+        locations[currentLocation].theMap[gatheringIdx] = MAP_SAND;
       }
       if(menukind == MENUKIND_PLACINGFLOWER)
       {
@@ -745,6 +775,10 @@ void mousePressed()
     }
     if(mouseX >= 290 && mouseX <= 510 && mouseY >= 100 && mouseY <= 240)
     {
+      if(menukind == MENUKIND_INVENTORY)
+      {
+        menukind = MENUKIND_ITEMS;
+      }
       menukind = MENUKIND_NOMENU;
       return;
     }
@@ -755,8 +789,28 @@ void mousePressed()
     return;
   }
 }
+void handleMenuAction(int action)
+{
+  if(action != Menu.NOTHING)
+  {
+    if(action == Menu.OK)
+    {
+      menu = null;
+    }
+    if(action == Menu.ITEMS)
+    {
+      openItemsMenu();
+    }
+  }
+}
 void keyPressed()
 {
+  if(menu != null)
+  {
+    int action = menu.onKeyPressisShortcutchoosen();
+    handleMenuAction(action);
+    return;
+  }
   menukind = MENUKIND_NOMENU;
   if(key == CODED)
   {
@@ -879,6 +933,11 @@ void keyPressed()
 }
 void draw()
 {
+  if(menu != null)
+  {
+    menu.onDrawMenu();
+    return;
+  }
   if(menukind == MENUKIND_NOMENU)
   {
     locations[currentLocation].draw_savanna();
@@ -893,7 +952,14 @@ void drawmenu()
   fill(0,0,0);
   rect(50, 50, 480, 200);
   fill(255,255,255);
-  text(menuopenreason, 60, 70);
+  if(menukind == MENUKIND_INVENTORY)
+  {
+    
+  }
+  else
+  {
+    text(menuopenreason, 60, 70);
+  }
   if(menukind == MENUKIND_WANTTOEXIT)
   {
     rect(60, 100, 220, 140);
@@ -902,18 +968,20 @@ void drawmenu()
     text("Y", 170, 170);
     text("N", 400, 170);
   }
-  if(menukind == MENUKIND_INVENTORY || menukind == MENUKIND_COLLISION)
+  if(menukind == MENUKIND_COLLISION)
   {
     rect(60, 100, 220, 140);
     fill(0,0,0);
     text("O.K.", 170, 170);
-    if(menukind == MENUKIND_INVENTORY)
-    {
-      fill(255,255,255);
-      rect(290, 100, 220, 140);
-      fill(0,0,0);
-      text("Open Settings", 400, 170);      
-    }
+  }
+  if(menukind == MENUKIND_INVENTORY)
+  {
+    fill(255,255,255);
+    rect(290, 100, 220, 140);
+    rect(60, 100, 220, 140);
+    fill(0,0,0);
+    text("Materials", 170, 170);
+    text("Items", 400, 170);
   }
   if(menukind == MENUKIND_BUILDINGBRIDGE || menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSNAKE || menukind == MENUKIND_BUILDINGBOAT || menukind == MENUKIND_ENTERINGBOAT || menukind == MENUKIND_LEAVINGBOAT || menukind == MENUKIND_GATHERINGFLOWER || menukind == MENUKIND_PLACINGFLOWER || menukind == MENUKIND_FILLINGBUCKET || menukind == MENUKIND_EXTINGUISHINGFIRE || menukind == MENUKIND_PICKINGUPBUCKET)
   {
