@@ -274,7 +274,7 @@ class Location
             currentLocation = LOCATION_HIVE;
             theMap[Hero_Position_Idx] = MAP_BLACK;
             locations[currentLocation].Hero_Position_Idx = 761;
-            locations[currentLocation].Hero_Previous = MAP_BURNABLE;
+            locations[currentLocation].Hero_Previous = MAP_BLACK;
             locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO; //<>// //<>// //<>// //<>//            
           }   
           if(currentLocation == LOCATION_HIVE)
@@ -871,7 +871,7 @@ class Location
         throw new java.lang.UnsupportedOperationException("newBeeIdx == beepreviousidx");
       }
       if (((newBeeIdx) <= 0
-        || (newBeeIdx) >= ((MAP_WIDTH) * (MAP_HEIGHT-1) - 1))
+        || (newBeeIdx) >= ((MAP_WIDTH) * (MAP_HEIGHT) - 1))
         || theMap[newBeeIdx] != MAP_BLACK
         || newBeeX < 0
         || newBeeX > MAP_WIDTH-1)
@@ -904,7 +904,7 @@ class Location
    }
    if(currentLocation == LOCATION_FIRE)
    {
-     if((frameCount %60) == 0)
+     if((frameCount %30) == 0)
      {
        drawFire(false);
      }
