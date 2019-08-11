@@ -99,7 +99,8 @@ final byte MAP_EXTINGUISHED1 = 38;
 final byte MAP_EXTINGUISHED2 = 39;
 final byte MAP_EXTINGUISHED3 = 40;
 final byte MAP_HIVE = 41;
-final byte MAP_TILE_NUM = 42;
+final byte MAP_CACTUS = 42;
+final byte MAP_TILE_NUM = 43;
 final int MAP_WIDTH = 40;
 final int MAP_HEIGHT = 20;
 int TILE_WIDTH = 16;
@@ -130,6 +131,7 @@ int[][]theFires = {{3,4,0}, {4,4,0}, {5,4,0}, {3,5,0}, {5,5,0}, {3,6,0}, {4,6,0}
 String menuopenreason;
 int supersecretcheatcode = 0;
 int stonecount = 0;
+int needlecount = 0;
 int woodcount = 0;
 int snakecount = 0;
 int flowercount = 0;
@@ -159,8 +161,7 @@ final int MENUKIND_PLACINGFLOWER = 12;
 final int MENUKIND_FILLINGBUCKET = 13;
 final int MENUKIND_EXTINGUISHINGFIRE = 14;
 final int MENUKIND_PICKINGUPBUCKET = 15;
-final int MENUKIND_ITEMS = 16;
-final int MENUKIND_MATERIALS = 17;
+final int MENUKIND_GATHERINGNEEDLES = 16;
 Location[] locations =
 {
   new Location(), new Location(), new Location(), new Location(), new Location(), new Location()
@@ -241,7 +242,7 @@ byte[]createFire()
   byte V = MAP_BUCKET;
 	byte[]theFire =
 	{
-		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,V,W,W,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,W,W,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,W,
 		0,0,0,B,B,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,B,B,B,B,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -273,11 +274,12 @@ byte[] createCliff()
   byte B = MAP_BOULDER;
   byte V = MAP_SAVANNA1;
   byte H = MAP_HIVETRANSFER;
+  byte K = MAP_CACTUS;
   byte[]theCliff = 
    {C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,
     C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
     C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,K,S,K,S,K,S,K,S,K,S,S,S,S,S,S,S,S,S,S,S,C,
     C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
     C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
     C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
@@ -514,6 +516,7 @@ void setup()
   tiles[i++] = loadImage("TileExtinguished2.jpg");
   tiles[i++] = loadImage("TileExtinguished3.jpg");
   tiles[i++] = loadImage("TileHive.jpg");
+  tiles[i++] = loadImage("TileCactus.jpg");
   i = 0;
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT); 
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
@@ -557,6 +560,7 @@ void setup()
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   initAnimals();
 }
 Menu menu;
@@ -567,16 +571,58 @@ void openInventoryMenu()
                                 new Menu_Item("Stones = " + stonecount, null ,-1 ,null),
                                 new Menu_Item("Snakeskins = " +snakecount, null ,-1 ,null),
                                 new Menu_Item("Wood =" + woodcount, null ,-1 ,null),
-                                new Menu_Item("Flowers = "+ flowercount, null ,-1 ,null),
+                                new Menu_Item("Needles = "+ needlecount, null ,-1 ,null),
                                 new Menu_Item(null, "O.K.", Menu.OK, null),
-                                new Menu_Item(null, "Items", Menu.ITEMS, "i")};
+                                new Menu_Item(null, "Items", Menu.ITEMS, "i"),
+                                new Menu_Item(null, "Casting", Menu.CASTING, "c")};
 }
 void openItemsMenu()
 {
   menu = new Menu();
-  menu.items = new Menu_Item[] {new Menu_Item("A", null ,-1 ,null),
-                                new Menu_Item("B", null ,-1 ,null),
-                                new Menu_Item(null, "O.K.", Menu.OK, null)};
+  if(bucketcount == 1)
+  {
+    menu.items = new Menu_Item[] {new Menu_Item("A Bucket", null, -1, null),
+  new Menu_Item(null, "O.K.", Menu.OK, null)};
+  }
+  if(bucketcount == 2)
+  {
+    menu.items = new Menu_Item[] {new Menu_Item("A Bucket with Water in it", null, -1, null),
+  new Menu_Item(null, "O.K.", Menu.OK, null)};
+  }
+  if(flowercount == 1)
+  {
+    menu.items = new Menu_Item[] {new Menu_Item(null, "A Flower with a strong scent. Click to drop.", Menu.FLOWER, null),
+  new Menu_Item(null, "O.K.", Menu.OK, null)};
+  }
+  if(flowercount == 1 && bucketcount == 2)
+  {
+    menu.items = new Menu_Item[] {new Menu_Item(null, "A Flower with a strong scent. Click to drop.", Menu.FLOWER, null),
+    new Menu_Item("A Bucket with Water in it", null, -1, null),
+  new Menu_Item(null, "O.K.", Menu.OK, null)};
+  }
+  if(flowercount == 1 && bucketcount == 1)
+  {
+    menu.items = new Menu_Item[] {new Menu_Item(null, "A Flower with a strong scent. Click to drop.", Menu.FLOWER, null),
+    new Menu_Item("A Bucket with Water in it", null, -1, null),
+  new Menu_Item(null, "O.K.", Menu.OK, null)};
+  }
+  if(flowercount == 0 && bucketcount == 0)
+  {
+    menu.items = new Menu_Item[] {new Menu_Item(null, "O.K.", Menu.OK, null)};
+  }
+}
+void openCastingMenu()
+{
+  menu = new Menu();
+  if(snakecount >= 5 && needlecount >= 5)
+  {
+    menu.items = new Menu_Item[] {new Menu_Item(null, "Cast Bucket? (-5 Needles, -5 Snakeskins)", Menu.CASTBUCKET ,null),
+  new Menu_Item(null, "O.K.", Menu.OK, null)};
+  }
+  else
+  {
+    menu.items = new Menu_Item[] {new Menu_Item(null, "O.K.", Menu.OK, null)};
+  }
 }
 void mousePressed()
 {
@@ -651,14 +697,11 @@ void mousePressed()
   || menukind == MENUKIND_PLACINGFLOWER
   || menukind == MENUKIND_EXTINGUISHINGFIRE
   || menukind == MENUKIND_FILLINGBUCKET
-  || menukind == MENUKIND_PICKINGUPBUCKET)
+  || menukind == MENUKIND_PICKINGUPBUCKET
+  || menukind == MENUKIND_GATHERINGNEEDLES)
   {
     if(mouseX >= 60 && mouseX <= 280 && mouseY >= 100 && mouseY <= 240)
     {
-      if(menukind == MENUKIND_INVENTORY)
-      {
-        menukind = MENUKIND_MATERIALS;
-      }
       if(menukind == MENUKIND_GATHERINGWOOD)
       {
         woodcount++;
@@ -765,20 +808,16 @@ void mousePressed()
         menukind = MENUKIND_NOMENU;
         return;
       }
-      if(menukind == MENUKIND_PICKINGUPBUCKET)
+      if(menukind == MENUKIND_GATHERINGNEEDLES)
       {
-        bucketcount++;
-        locations[currentLocation].theMap[gatheringIdx] = MAP_BLACK;
+        needlecount++;
+        locations[currentLocation].theMap[gatheringIdx] = MAP_SAND;
         menukind = MENUKIND_NOMENU;
         return;
       }
     }
     if(mouseX >= 290 && mouseX <= 510 && mouseY >= 100 && mouseY <= 240)
     {
-      if(menukind == MENUKIND_INVENTORY)
-      {
-        menukind = MENUKIND_ITEMS;
-      }
       menukind = MENUKIND_NOMENU;
       return;
     }
@@ -800,6 +839,33 @@ void handleMenuAction(int action)
     if(action == Menu.ITEMS)
     {
       openItemsMenu();
+    }
+    if(action == Menu.CASTING)
+    {
+      openCastingMenu();
+    }
+    if(action == Menu.CASTBUCKET)
+    {
+      if(snakecount >= 5 && needlecount >= 5)
+      {
+        if(bucketcount == 0)
+        {
+          snakecount = snakecount - 5;
+          needlecount = needlecount - 5;        
+          bucketcount++;
+          menu = null;
+        }
+      }
+    }
+    if(action == Menu.FLOWER)
+    {
+      flowercount--;
+      menukind = MENUKIND_NOMENU;
+      locations[currentLocation].Hero_Previous = MAP_FLOWER;
+      FlowerY = (byte)(locations[currentLocation].Hero_Position_Idx/MAP_WIDTH);
+      FlowerX = (byte)(locations[currentLocation].Hero_Position_Idx-(FlowerY*MAP_WIDTH));
+      println(FlowerX + " = X; " + FlowerY + " = Y;");
+      menu = null;
     }
   }
 }
@@ -923,12 +989,16 @@ void keyPressed()
     woodcount = woodcount + 5;
     stonecount = stonecount + 5;
     snakecount = snakecount + 5;
+    needlecount = needlecount +5;
     supersecretcheatcode = 0;
   }
   if(key == 69 || key == 101) //Upper- & Lowercase E
   {
-    menukind = MENUKIND_PLACINGFLOWER;
-    menuopenreason = "Do you want to leave the Flower lying on the floor?";
+    if(flowercount != 0)
+    {
+      menukind = MENUKIND_PLACINGFLOWER;
+      menuopenreason = "Do you want to leave the Flower lying on the floor?";
+    }
   }
 }
 void draw()
@@ -983,7 +1053,7 @@ void drawmenu()
     text("Materials", 170, 170);
     text("Items", 400, 170);
   }
-  if(menukind == MENUKIND_BUILDINGBRIDGE || menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSNAKE || menukind == MENUKIND_BUILDINGBOAT || menukind == MENUKIND_ENTERINGBOAT || menukind == MENUKIND_LEAVINGBOAT || menukind == MENUKIND_GATHERINGFLOWER || menukind == MENUKIND_PLACINGFLOWER || menukind == MENUKIND_FILLINGBUCKET || menukind == MENUKIND_EXTINGUISHINGFIRE || menukind == MENUKIND_PICKINGUPBUCKET)
+  if(menukind == MENUKIND_BUILDINGBRIDGE || menukind == MENUKIND_GATHERINGSTONES || menukind == MENUKIND_GATHERINGWOOD || menukind == MENUKIND_GATHERINGSNAKE || menukind == MENUKIND_BUILDINGBOAT || menukind == MENUKIND_ENTERINGBOAT || menukind == MENUKIND_LEAVINGBOAT || menukind == MENUKIND_GATHERINGFLOWER || menukind == MENUKIND_PLACINGFLOWER || menukind == MENUKIND_FILLINGBUCKET || menukind == MENUKIND_EXTINGUISHINGFIRE || menukind == MENUKIND_PICKINGUPBUCKET || menukind == MENUKIND_GATHERINGNEEDLES)
   {
     rect(60, 100, 220, 140);
     rect(290, 100, 220, 140);
@@ -1015,6 +1085,10 @@ void drawmenu()
     if(menukind == MENUKIND_LEAVINGBOAT|| menukind == MENUKIND_PLACINGFLOWER)
     {
       text("Leave", 170, 170);
+    }
+    if(menukind == MENUKIND_GATHERINGNEEDLES)
+    {
+      text("Remove", 170, 170);
     }
     if(menukind != MENUKIND_LEAVINGBOAT && menukind != MENUKIND_PLACINGFLOWER)
     {

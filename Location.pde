@@ -307,6 +307,12 @@ class Location
           menuopenreason = "A Bucket. \nDo you want to pick it up?";
           gatheringIdx = newHeroIdx;
         }
+        if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_CACTUS)
+        {
+          menuopenreason = "This Cactus has many needles in it. Do you want to remove some of them?";
+          menukind = MENUKIND_GATHERINGNEEDLES;
+          gatheringIdx = newHeroIdx;
+        }
         if(menuopenreason.equals(""))
         {
           menukind = MENUKIND_NOMENU;
