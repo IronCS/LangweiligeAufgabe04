@@ -641,9 +641,21 @@ void openItemsMenu()
     new Menu_Item("A Bucket with Water in it", null, -1, null),
   new Menu_Item(null, "O.K.", Menu.OK, null)};
   }
+  if(torchcount == 1 && bucketcount == 2)
+  {
+    menu.items = new Menu_Item[] {new Menu_Item("A Torch", null, -1, null),
+    new Menu_Item("A Bucket with Water in it", null, -1, null),
+  new Menu_Item(null, "O.K.", Menu.OK, null)};
+  }
   if(flowercount == 1 && bucketcount == 1)
   {
     menu.items = new Menu_Item[] {new Menu_Item(null, "A Flower with a strong scent. Click to drop.", Menu.FLOWER, null),
+    new Menu_Item("A Bucket with Water in it", null, -1, null),
+  new Menu_Item(null, "O.K.", Menu.OK, null)};
+  }
+  if(torchcount == 1 && bucketcount == 1)
+  {
+    menu.items = new Menu_Item[] {new Menu_Item("A Torch", null, -1, null),
     new Menu_Item("A Bucket with Water in it", null, -1, null),
   new Menu_Item(null, "O.K.", Menu.OK, null)};
   }
@@ -680,7 +692,7 @@ void openCastingMenu()
     new Menu_Item(null, "Cast Torch (-5 Wood, -5 Stones)", Menu.CASTTORCH, null),
     new Menu_Item(null, "O.K.", Menu.OK, null)};
   }
-  if((snakecount <= 5 || needlecount <= 5) && (woodcount <= 5 || stonecount <= 5))
+  if((snakecount < 5 || needlecount < 5) && (woodcount < 5 || stonecount < 5))
   {
     menu.items = new Menu_Item[] {new Menu_Item(null, "O.K.", Menu.OK, null)};
   }
