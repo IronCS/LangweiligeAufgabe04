@@ -966,40 +966,6 @@ void keyPressed()
     return;
   }
   menukind = MENUKIND_NOMENU;
-  if(key == CODED)
-  {
-    int newHeroIdx = locations[currentLocation].Hero_Position_Idx;
-    int HeroY = newHeroIdx/MAP_WIDTH;
-    int HeroYnew;
-    boolean HeroWrongY = false;
-    if(keyCode == UP)
-    {
-      newHeroIdx = newHeroIdx - MAP_WIDTH;    
-    }
-    if(keyCode == LEFT)
-    {
-      newHeroIdx--;
-      HeroYnew = newHeroIdx/MAP_WIDTH;
-      if(HeroYnew != HeroY)
-      {
-        HeroWrongY = true;
-      }
-    }
-    if(keyCode == RIGHT)
-    {
-      newHeroIdx++;
-      HeroYnew = newHeroIdx/MAP_WIDTH;
-      if(HeroYnew != HeroY)
-      {
-        HeroWrongY = true;
-      }
-    }
-    if(keyCode == DOWN)
-    {
-      newHeroIdx = newHeroIdx + MAP_WIDTH;
-    }
-    locations[currentLocation].heroMoveChecker(newHeroIdx, HeroWrongY);
-  }
   if(key == 121 || key == 89)//Upper- & Lowercase Y
   {
     if(menukind == MENUKIND_WANTTOEXIT)
@@ -1089,8 +1055,49 @@ void keyPressed()
     }
   }
 }
+void HeroAutoRepeat()
+{
+  if(keyPressed && key == CODED)
+  {
+    int newHeroIdx = locations[currentLocation].Hero_Position_Idx;
+    int HeroY = newHeroIdx/MAP_WIDTH;
+    int HeroYnew;
+    boolean HeroWrongY = false;
+    if(keyCode == UP)
+    {
+      newHeroIdx = newHeroIdx - MAP_WIDTH;    
+    }
+    if(keyCode == LEFT)
+    {
+      newHeroIdx--;
+      HeroYnew = newHeroIdx/MAP_WIDTH;
+      if(HeroYnew != HeroY)
+      {
+        HeroWrongY = true;
+      }
+    }
+    if(keyCode == RIGHT)
+    {
+      newHeroIdx++;
+      HeroYnew = newHeroIdx/MAP_WIDTH;
+      if(HeroYnew != HeroY)
+      {
+        HeroWrongY = true;
+      }
+    }
+    if(keyCode == DOWN)
+    {
+      newHeroIdx = newHeroIdx + MAP_WIDTH;
+    }
+    locations[currentLocation].heroMoveChecker(newHeroIdx, HeroWrongY);
+  }
+}
 void draw()
 {
+  if((frameCount%3) == 0)
+  {
+    HeroAutoRepeat();
+  }
   if(menu != null)
   {
     menu.onDrawMenu();
