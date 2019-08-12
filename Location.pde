@@ -313,6 +313,16 @@ class Location
           menukind = MENUKIND_GATHERINGNEEDLES;
           gatheringIdx = newHeroIdx;
         }
+        if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_BURNABLETRANSFER)
+        {
+          menuopenreason = "You are entering the Labyrinth.";
+          currentLocation = LOCATION_LABYRINTH;
+          theMap[Hero_Position_Idx] = MAP_BURNABLE;
+          locations[currentLocation].Hero_Position_Idx = 798;
+          locations[currentLocation].Hero_Previous = MAP_SAND;
+          locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO; //<>// //<>// //<>// //<>// 
+          calculateFire();           
+        }
         if(menuopenreason.equals(""))
         {
           menukind = MENUKIND_NOMENU;

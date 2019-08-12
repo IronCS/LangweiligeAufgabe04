@@ -89,4 +89,5 @@ class Menu
   static final int CASTING = 2;
   static final int CASTBUCKET = 3;
   static final int FLOWER = 4;
+  static final int CASTTORCH = 5;
 }

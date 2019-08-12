@@ -100,7 +100,8 @@ final byte MAP_EXTINGUISHED2 = 39;
 final byte MAP_EXTINGUISHED3 = 40;
 final byte MAP_HIVE = 41;
 final byte MAP_CACTUS = 42;
-final byte MAP_TILE_NUM = 43;
+final byte MAP_LABYRINTH = 43;
+final byte MAP_TILE_NUM = 44;
 final int MAP_WIDTH = 40;
 final int MAP_HEIGHT = 20;
 int TILE_WIDTH = 16;
@@ -136,6 +137,7 @@ int woodcount = 0;
 int snakecount = 0;
 int flowercount = 0;
 int bucketcount = 0;
+int torchcount = 0;
 int gatheringIdx;
 int menukind;
 int snakeIdx;
@@ -164,7 +166,7 @@ final int MENUKIND_PICKINGUPBUCKET = 15;
 final int MENUKIND_GATHERINGNEEDLES = 16;
 Location[] locations =
 {
-  new Location(), new Location(), new Location(), new Location(), new Location(), new Location()
+  new Location(), new Location(), new Location(), new Location(), new Location(), new Location(), new Location()
 };
 final int LOCATION_SAVANNA = 0;
 final int LOCATION_CAVE = 1;
@@ -172,6 +174,7 @@ final int LOCATION_BEACH = 2;
 final int LOCATION_CLIFF = 3;
 final int LOCATION_HIVE = 4;
 final int LOCATION_FIRE = 5;
+final int LOCATION_LABYRINTH = 6;
 int currentLocation = LOCATION_SAVANNA;
 int currentSnakePart;
 byte[] createCave()
@@ -239,6 +242,7 @@ byte[]createFire()
 	byte B = MAP_BURNABLE;
   byte T = MAP_BURNABLETRANSFER;
   byte W = MAP_WATER;
+  byte L = MAP_LABYRINTH;
 	byte[]theFire =
 	{
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,W,W,
@@ -247,7 +251,7 @@ byte[]createFire()
 		0,0,B,B,B,B,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,B,B,B,B,B,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,B,B,B,B,B,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-		0,0,B,B,B,B,B,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,B,B,L,B,B,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,B,B,B,B,B,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,B,0,0,B,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,B,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -298,6 +302,35 @@ byte[] createCliff()
   return theCliff;
 }
 byte[] theCliff;
+byte[] createLabyrinth()
+{
+  byte C = MAP_CLIFFSIDE;
+  byte S = MAP_SAND;
+  byte M = MAP_CAVE;
+  byte[]theLabyrinth = 
+   {C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
+    C,S,S,S,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,S,C,C,C,C,S,S,C,S,S,S,S,S,S,C,
+    C,S,S,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,S,S,C,S,S,S,S,S,S,C,
+    C,S,S,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,C,S,C,S,S,C,S,C,C,C,C,S,C,
+    C,S,S,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,C,S,C,S,C,S,S,C,S,C,S,S,S,S,C,
+    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,C,C,C,S,S,S,C,S,S,C,S,C,C,C,C,C,C,
+    C,S,S,S,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,S,S,S,S,S,S,M};
+  return theLabyrinth;
+}
+byte[] theLabyrinth;
 PImage[]tiles = new PImage [MAP_TILE_NUM];
 void initAnimals()
 {
@@ -462,6 +495,7 @@ void setup()
   theCliff = createCliff();
   theHive = createHive();
   theFire = createFire();
+  theLabyrinth = createLabyrinth();
   locations[currentLocation].theMap = theSavanna; 
   locations[currentLocation].Hero_Position_Idx = 10;
   locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
@@ -470,6 +504,7 @@ void setup()
   locations[LOCATION_CLIFF].theMap = theCliff;
   locations[LOCATION_HIVE].theMap = theHive;
   locations[LOCATION_FIRE].theMap = theFire;
+  locations[LOCATION_LABYRINTH].theMap = theLabyrinth;
   TILE_WIDTH = width/MAP_WIDTH;
   TILE_HEIGHT = height/MAP_HEIGHT;
   int i = 0;
@@ -516,6 +551,7 @@ void setup()
   tiles[i++] = loadImage("TileExtinguished3.jpg");
   tiles[i++] = loadImage("TileHive.jpg");
   tiles[i++] = loadImage("TileCactus.jpg");
+  tiles[i++] = loadImage("TileLabyrinth.jpg");
   i = 0;
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT); 
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
@@ -529,6 +565,7 @@ void setup()
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);  
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);   
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
@@ -578,6 +615,11 @@ void openInventoryMenu()
 void openItemsMenu()
 {
   menu = new Menu();
+  if(torchcount >= 1)
+  {
+    menu.items = new Menu_Item[] {new Menu_Item("A Torch", null, -1, null),
+    new Menu_Item(null, "O.K.", Menu.OK, null)};
+  }
   if(bucketcount == 1)
   {
     menu.items = new Menu_Item[] {new Menu_Item("A Bucket", null, -1, null),
@@ -605,9 +647,23 @@ void openItemsMenu()
     new Menu_Item("A Bucket with Water in it", null, -1, null),
   new Menu_Item(null, "O.K.", Menu.OK, null)};
   }
-  if(flowercount == 0 && bucketcount == 0)
+  if(flowercount == 0 && bucketcount == 0 && torchcount == 0)
   {
     menu.items = new Menu_Item[] {new Menu_Item(null, "O.K.", Menu.OK, null)};
+  }
+  if(flowercount == 1 && bucketcount == 2 && torchcount >= 1)
+  {
+    menu.items = new Menu_Item[] {new Menu_Item(null, "A Flower with a strong scent. Click to drop.", Menu.FLOWER, null),
+    new Menu_Item("A Torch", null, -1, null),
+    new Menu_Item("A Bucket with Water in it", null, -1, null),
+  new Menu_Item(null, "O.K.", Menu.OK, null)};
+  }
+  if(flowercount == 1 && bucketcount == 1 && torchcount >= 1)
+  {
+    menu.items = new Menu_Item[] {new Menu_Item(null, "A Flower with a strong scent. Click to drop.", Menu.FLOWER, null),
+    new Menu_Item("A Torch", null, -1, null),
+    new Menu_Item("A Bucket", null, -1, null),
+  new Menu_Item(null, "O.K.", Menu.OK, null)};
   }
 }
 void openCastingMenu()
@@ -615,10 +671,16 @@ void openCastingMenu()
   menu = new Menu();
   if(snakecount >= 5 && needlecount >= 5)
   {
-    menu.items = new Menu_Item[] {new Menu_Item(null, "Cast Bucket? (-5 Needles, -5 Snakeskins)", Menu.CASTBUCKET ,null),
-  new Menu_Item(null, "O.K.", Menu.OK, null)};
+    menu.items = new Menu_Item[] {new Menu_Item(null, "Cast Bucket? (-5 Needles, -5 Snakeskins)", Menu.CASTBUCKET , "b"),
+    new Menu_Item(null, "O.K.", Menu.OK, null)};
   }
-  else
+  if(snakecount >= 5 && needlecount >= 5 && woodcount >= 5 && stonecount >= 5)
+  {
+    menu.items = new Menu_Item[] {new Menu_Item(null, "Cast Bucket? (-5 Needles, -5 Snakeskins)", Menu.CASTBUCKET , "t"),
+    new Menu_Item(null, "Cast Torch (-5 Wood, -5 Stones)", Menu.CASTTORCH, null),
+    new Menu_Item(null, "O.K.", Menu.OK, null)};
+  }
+  if((snakecount <= 5 || needlecount <= 5) && (woodcount <= 5 || stonecount <= 5))
   {
     menu.items = new Menu_Item[] {new Menu_Item(null, "O.K.", Menu.OK, null)};
   }
@@ -865,6 +927,16 @@ void handleMenuAction(int action)
       FlowerX = (byte)(locations[currentLocation].Hero_Position_Idx-(FlowerY*MAP_WIDTH));
       println(FlowerX + " = X; " + FlowerY + " = Y;");
       menu = null;
+    }
+    if(action == Menu.CASTTORCH)
+    {
+      if(woodcount >= 5 && stonecount >= 5)
+      {
+        stonecount = stonecount - 5;
+        woodcount = woodcount - 5;        
+        torchcount++;
+        menu = null;
+      }
     }
   }
 }
