@@ -686,6 +686,11 @@ void openCastingMenu()
     menu.items = new Menu_Item[] {new Menu_Item(null, "Cast Bucket? (-5 Needles, -5 Snakeskins)", Menu.CASTBUCKET , "b"),
     new Menu_Item(null, "O.K.", Menu.OK, null)};
   }
+  if(woodcount >= 5 && stonecount >= 5)
+  {
+    menu.items = new Menu_Item[] {new Menu_Item(null, "Cast Torch (-5 Wood, -5 Stones)", Menu.CASTTORCH, null),
+    new Menu_Item(null, "O.K.", Menu.OK, null)};
+  }
   if(snakecount >= 5 && needlecount >= 5 && woodcount >= 5 && stonecount >= 5)
   {
     menu.items = new Menu_Item[] {new Menu_Item(null, "Cast Bucket? (-5 Needles, -5 Snakeskins)", Menu.CASTBUCKET , "t"),
