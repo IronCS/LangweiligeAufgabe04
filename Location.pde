@@ -313,7 +313,7 @@ class Location
           menukind = MENUKIND_GATHERINGNEEDLES;
           gatheringIdx = newHeroIdx;
         }
-        if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_BURNABLETRANSFER)
+        if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_LABYRINTH)
         {
           menuopenreason = "You are entering the Labyrinth.";
           currentLocation = LOCATION_LABYRINTH;
