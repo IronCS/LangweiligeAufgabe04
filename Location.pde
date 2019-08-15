@@ -316,12 +316,18 @@ class Location
         if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_LABYRINTH)
         {
           menuopenreason = "You are entering the Labyrinth.";
-          currentLocation = LOCATION_LABYRINTH;
+          if(currentLocation == LOCATION_LABYRINTH)
+          {
+            currentLocation = LOCATION_LABYRINTH2;
+          }
+          else
+          {
+            currentLocation = LOCATION_LABYRINTH;
+          }
           theMap[Hero_Position_Idx] = MAP_BURNABLE;
           locations[currentLocation].Hero_Position_Idx = 798;
           locations[currentLocation].Hero_Previous = MAP_SAND;
-          locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO; //<>// //<>// //<>// //<>// 
-          calculateFire();           
+          locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO; 
         }
         if(menuopenreason.equals(""))
         {

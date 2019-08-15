@@ -166,7 +166,7 @@ final int MENUKIND_PICKINGUPBUCKET = 15;
 final int MENUKIND_GATHERINGNEEDLES = 16;
 Location[] locations =
 {
-  new Location(), new Location(), new Location(), new Location(), new Location(), new Location(), new Location()
+  new Location(), new Location(), new Location(), new Location(), new Location(), new Location(), new Location(), new Location()
 };
 final int LOCATION_SAVANNA = 0;
 final int LOCATION_CAVE = 1;
@@ -175,6 +175,7 @@ final int LOCATION_CLIFF = 3;
 final int LOCATION_HIVE = 4;
 final int LOCATION_FIRE = 5;
 final int LOCATION_LABYRINTH = 6;
+final int LOCATION_LABYRINTH2 = 7;
 int currentLocation = LOCATION_SAVANNA;
 int currentSnakePart;
 byte[] createCave()
@@ -320,7 +321,7 @@ byte[] parseLocationFromString(String locAsString, int [][] mapping)
 }
 byte[] iteratePngLabyrinth()
 {
-  PImage pngLab = loadImage("19-by-9-orthogonal-maz-4e.png");
+  PImage pngLab = loadImage("19-by-9-orthogonal-maz-3e.png");
   pngLab.loadPixels();
   byte []ret2 = new byte[pngLab.pixelHeight * pngLab.pixelWidth];
   for(int y = 0; y < pngLab.pixelHeight; ++y) {
@@ -363,16 +364,22 @@ byte[] createLabyrinth()
   +"O O OOOOO O O   O O O OOO OOO O OOOO   O"
   +"O O     O   O O   O OOO   O   O O  O OOO"
   +"O OO    OOO O OOOOO O   OOO   O O OO O O"
-  +"O  O        O       O O     O   O      O"
+  +"L  O        O       O O     O   O      O"
   +"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO M"
    ;
 
-  //byte[]thelocalLabyrinth = parseLocationFromString(labStr, new int[][] { {'O', MAP_CLIFFSIDE}, {' ', MAP_SAND}, {'M', MAP_CAVE} });
+  byte[]thelocalLabyrinth = parseLocationFromString(labStr, new int[][] { {'O', MAP_CLIFFSIDE}, {' ', MAP_SAND}, {'M', MAP_CAVE}, {'L', MAP_LABYRINTH} });
   
-  byte[]thelocalLabyrinth = iteratePngLabyrinth();
+  //byte[]thelocalLabyrinth = iteratePngLabyrinth();
   return(thelocalLabyrinth);
 }
 byte[] theLabyrinth;
+byte[] createLabyrinth2()
+{ 
+  byte[]thelocalLabyrinth = iteratePngLabyrinth();
+  return(thelocalLabyrinth);
+}
+byte[] theLabyrinth2;
 PImage[]tiles = new PImage [MAP_TILE_NUM];
 void initAnimals()
 {
@@ -538,6 +545,7 @@ void setup()
   theHive = createHive();
   theFire = createFire();
   theLabyrinth = createLabyrinth();
+  theLabyrinth2 = createLabyrinth2();
   locations[currentLocation].theMap = theSavanna; 
   locations[currentLocation].Hero_Position_Idx = 10;
   locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
@@ -547,6 +555,7 @@ void setup()
   locations[LOCATION_HIVE].theMap = theHive;
   locations[LOCATION_FIRE].theMap = theFire;
   locations[LOCATION_LABYRINTH].theMap = theLabyrinth;
+  locations[LOCATION_LABYRINTH2].theMap = theLabyrinth2;
   TILE_WIDTH = width/MAP_WIDTH;
   TILE_HEIGHT = height/MAP_HEIGHT;
   int i = 0;
