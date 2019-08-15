@@ -302,33 +302,75 @@ byte[] createCliff()
   return theCliff;
 }
 byte[] theCliff;
+byte[] parseLocationFromString(String locAsString, int [][] mapping)
+{
+  byte []ret = new byte[locAsString.length()];
+  for(int i = 0; i < ret.length; i++)
+  {
+    for(int o = 0; o < mapping.length; o++)
+    {
+      if(locAsString.charAt(i) == mapping[o][0])
+      {
+        ret[i] = (byte)mapping[o][1];
+        break;
+      }
+    }
+  }
+  return ret;
+}
+byte[] iteratePngLabyrinth()
+{
+  PImage pngLab = loadImage("19-by-9-orthogonal-maz-4e.png");
+  pngLab.loadPixels();
+  byte []ret2 = new byte[pngLab.pixelHeight * pngLab.pixelWidth];
+  for(int y = 0; y < pngLab.pixelHeight; ++y) {
+    System.out.println("----"); // new line separator every y-jump
+    for(int x = 0; x < pngLab.pixelWidth; ++x) {
+      int addr = y*pngLab.pixelWidth + x;
+      if (pngLab.pixels[addr] == color(255,255,255)) {
+        System.out.print(" "); // white
+        ret2[y*MAP_WIDTH + x] = MAP_SAND;
+      } if (pngLab.pixels[addr] == color(255,0,0)) {
+        System.out.print("M"); // something else
+        ret2[y*MAP_WIDTH + x] = MAP_CAVE;
+      }
+      if (pngLab.pixels[addr] == color(0,0,0)) {
+        System.out.print("O"); // something else
+        ret2[y*MAP_WIDTH + x] = MAP_CLIFFSIDE;
+      }
+    }
+  }
+  return ret2;
+}
 byte[] createLabyrinth()
 {
-  byte C = MAP_CLIFFSIDE;
-  byte S = MAP_SAND;
-  byte M = MAP_CAVE;
-  byte[]theLabyrinth = 
-   {C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,
-    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,
-    C,S,S,S,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,S,C,C,C,C,S,S,C,S,S,S,S,S,S,C,
-    C,S,S,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,S,S,C,S,S,C,S,S,S,S,S,S,C,
-    C,S,S,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,S,S,C,S,C,S,S,C,S,C,C,C,C,S,C,
-    C,S,S,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,S,S,C,S,C,S,C,S,S,C,S,C,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,C,C,C,S,S,S,C,S,S,C,S,C,C,C,C,C,C,
-    C,S,S,S,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,S,S,S,S,S,S,M};
-  return theLabyrinth;
+  String labStr = 
+   "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+  +"O           O     O                O   O"
+  +"O OOOOOOOOOOO   O O OO  OOOOOO  O  O O O"
+  +"O O         O  OO O O   O    OO O OOOO O"
+  +"O OO  OO      OO  OOOO  O O  O  O    O O"
+  +"O O    OOOOOOOO  OO    OO O  OOOOOOO O O"
+  +"O O OO      O       O   O O       O  O O"
+  +"O OOO       O OOOOOOOOOOO OOOOOOO O OO O"
+  +"O     OOOOO O O     O  O  O       O  O O"
+  +"OOOOOOO   O O O     O  O OO  OOOOOOO O O"
+  +"O         O O OOO O O  O  O       O  O O"
+  +"OOOOO     O O O   OOOO OO OOOOOOO O OO O"
+  +"O   O   OOO O O   O  O    O   O   O  O O"
+  +"O O O   O   O   O O  OOOOOO   O OOO OO O"
+  +"O O     O OOOOOOO O       O O O O      O"
+  +"O O OOOOO O O   O O O OOO OOO O OOOO   O"
+  +"O O     O   O O   O OOO   O   O O  O OOO"
+  +"O OO    OOO O OOOOO O   OOO   O O OO O O"
+  +"O  O        O       O O     O   O      O"
+  +"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO M"
+   ;
+
+  //byte[]thelocalLabyrinth = parseLocationFromString(labStr, new int[][] { {'O', MAP_CLIFFSIDE}, {' ', MAP_SAND}, {'M', MAP_CAVE} });
+  
+  byte[]thelocalLabyrinth = iteratePngLabyrinth();
+  return(thelocalLabyrinth);
 }
 byte[] theLabyrinth;
 PImage[]tiles = new PImage [MAP_TILE_NUM];
