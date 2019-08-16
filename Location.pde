@@ -1093,10 +1093,47 @@ class Location
    {
      for(int cx = 0; cx < MAP_WIDTH; ++cx)
      {
-         byte currentTileIdx = locations[currentLocation].theMap[MAP_WIDTH * cy + cx];
+         int currentIdx = MAP_WIDTH * cy + cx;
+         byte currentTileIdx = locations[currentLocation].theMap[currentIdx];
          int x = x0 + cx * tileWidth;
          int y = y0 + cy * tileHeight;
-         image(tiles[currentTileIdx], x, y);
+         if(currentLocation != LOCATION_LABYRINTH && currentLocation != LOCATION_LABYRINTH2)
+         {
+           image(tiles[currentTileIdx], x, y);
+         }
+         else
+         {
+           if(torchcount == 0)
+           {
+             if(locations[currentLocation].theMap[currentIdx] != MAP_HERO && locations[currentLocation].theMap[currentIdx] != MAP_CAVE)
+             {
+               image(tiles[MAP_VOID], x, y);
+             }
+             else
+             {
+               image(tiles[currentTileIdx], x, y);
+             }
+           }
+           else
+           {
+             if(currentIdx == locations[currentLocation].Hero_Position_Idx - MAP_WIDTH - 1 
+             || currentIdx == locations[currentLocation].Hero_Position_Idx - MAP_WIDTH 
+             || currentIdx == locations[currentLocation].Hero_Position_Idx - MAP_WIDTH + 1
+             || currentIdx == locations[currentLocation].Hero_Position_Idx - 1 
+             || currentIdx == locations[currentLocation].Hero_Position_Idx 
+             || currentIdx == locations[currentLocation].Hero_Position_Idx + 1
+             || currentIdx == locations[currentLocation].Hero_Position_Idx + MAP_WIDTH - 1 
+             || currentIdx == locations[currentLocation].Hero_Position_Idx + MAP_WIDTH 
+             || currentIdx == locations[currentLocation].Hero_Position_Idx + MAP_WIDTH + 1)
+             {
+               image(tiles[currentTileIdx], x, y);
+             }
+             else
+             {
+               image(tiles[MAP_VOID], x, y);
+             }
+           }
+         }
      }
    }
    fill(255,255,255);
