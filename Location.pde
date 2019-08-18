@@ -33,6 +33,7 @@ class Location
       || theMap[newHeroIdx] == MAP_EXTINGUISHED1
       || theMap[newHeroIdx] == MAP_EXTINGUISHED2
       || theMap[newHeroIdx] == MAP_EXTINGUISHED3
+      || theMap[newHeroIdx] == MAP_TORCH
       || theBoat[INBOAT] == 1)
       {
         if(theBoat[INBOAT] == 0)
@@ -1103,6 +1104,7 @@ class Location
          }
          else
          {
+           float MaxRadius = 6;
            if(torchcount == 0)
            {
              if(locations[currentLocation].theMap[currentIdx] != MAP_HERO && locations[currentLocation].theMap[currentIdx] != MAP_CAVE)
@@ -1114,7 +1116,7 @@ class Location
                image(tiles[currentTileIdx], x, y);
              }
            }
-           else
+           /*else
            {
              if(currentIdx == locations[currentLocation].Hero_Position_Idx - MAP_WIDTH - 1 
              || currentIdx == locations[currentLocation].Hero_Position_Idx - MAP_WIDTH 
@@ -1131,7 +1133,55 @@ class Location
              else
              {
                image(tiles[MAP_VOID], x, y);
+             }             
+           }
+           for(int i = 0; i < torches; i++)
+           {
+             if(currentIdx == theTorches[i] - MAP_WIDTH - 1 
+             || currentIdx == theTorches[i] - MAP_WIDTH 
+             || currentIdx == theTorches[i] - MAP_WIDTH + 1
+             || currentIdx == theTorches[i] - 1 
+             || currentIdx == theTorches[i]
+             || currentIdx == theTorches[i] + 1
+             || currentIdx == theTorches[i] + MAP_WIDTH - 1 
+             || currentIdx == theTorches[i] + MAP_WIDTH 
+             || currentIdx == theTorches[i] + MAP_WIDTH + 1)
+             {
+               image(tiles[currentTileIdx], x, y);
+               break;
              }
+           }*/
+           image(tiles[MAP_VOID], x, y);
+           for(int i = 0; i < torches; i++)
+           {
+             float DistanceBetween = distanceBetween(theTorches[i], currentIdx);
+             if(DistanceBetween < 0)
+             {
+               DistanceBetween = DistanceBetween * (-1);
+             }
+             if(DistanceBetween <= MaxRadius/2)
+             {
+               image(tiles[currentTileIdx], x, y);
+               break;
+             }
+             else
+             {
+               image(tiles[MAP_VOID], x, y);
+             }
+           }
+           float DistanceBetween = distanceBetween(Hero_Position_Idx, currentIdx);
+           if(DistanceBetween < 0)
+           {
+             DistanceBetween = DistanceBetween * (-1);
+           }
+           float localRadius = 0;
+           for(int i = 1; i < torchcount + 1; i++)
+           {             
+             localRadius = localRadius + MaxRadius / (i*2);
+           }
+           if(DistanceBetween <= localRadius)
+           {
+             image(tiles[currentTileIdx], x, y);
            }
          }
      }
@@ -1148,4 +1198,13 @@ class Location
      text(animalInfo[0].animalName + " sleeping? "+ animalInfo[0].animal_sleeping, animalInfo[0].getanimalX(), animalInfo[0].getanimalY());   
    }
   }
-}  
+}
+float distanceBetween(int Idx1, int Idx2)
+{
+  int Y1 = Idx1/MAP_WIDTH;
+  int X1 = Idx1-(Y1*MAP_WIDTH);
+  int Y2 = Idx2/MAP_WIDTH;
+  int X2 = Idx2-(Y2*MAP_WIDTH);
+  float DistanceBetween = sqrt((Y1-Y2) * (Y1-Y2) + (X1 - X2) * (X1 - X2));
+  return DistanceBetween;
+}

@@ -44,12 +44,9 @@ class Menu
         }
       }
     }
-    for(int i = 0; i < items.length; i++)
+    if(defaultButtonIdx != -1)
     {
-      if(items[i].Label == null && items[i].Shortcut == null)
-      {
-        return(items[i].action);
-      }
+      return(items[defaultButtonIdx].action);
     }
     return(-1);
   }
@@ -57,7 +54,7 @@ class Menu
   {
     for(int i = 0; i < items.length; i++)
     {
-      if(items[i].Shortcut != null)
+      if(items[i].Label == null)
       {
         int itemheight = (RBY-LTY)/items.length;
         for(int o = 0; o < items.length; o++)
@@ -73,16 +70,9 @@ class Menu
         }
       }
     }
-    for(int i = 0; i < items.length; i++)
-    {
-      if(items[i].Label == null && items[i].Shortcut == null)
-      {
-        return(items[i].action);
-      }
-    }
     return(-1);
   }
-  int defaultButtonIdx;
+  int defaultButtonIdx = -1;
   static final int NOTHING = -1;
   static final int OK = 0;
   static final int ITEMS = 1;
@@ -90,4 +80,5 @@ class Menu
   static final int CASTBUCKET = 3;
   static final int FLOWER = 4;
   static final int CASTTORCH = 5;
+  static final int TORCH = 6;
 }

@@ -101,7 +101,8 @@ final byte MAP_EXTINGUISHED3 = 40;
 final byte MAP_HIVE = 41;
 final byte MAP_CACTUS = 42;
 final byte MAP_LABYRINTH = 43;
-final byte MAP_TILE_NUM = 44;
+final byte MAP_TORCH = 44;
+final byte MAP_TILE_NUM = 45;
 final int MAP_WIDTH = 40;
 final int MAP_HEIGHT = 20;
 int TILE_WIDTH = 16;
@@ -178,6 +179,9 @@ final int LOCATION_LABYRINTH = 6;
 final int LOCATION_LABYRINTH2 = 7;
 int currentLocation = LOCATION_SAVANNA;
 int currentSnakePart;
+final int TORCHIDX = 0;
+int torches = 0;
+int theTorches[] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 byte[] createCave()
 {
   byte A = MAP_VOID;
@@ -603,6 +607,7 @@ void setup()
   tiles[i++] = loadImage("TileHive.jpg");
   tiles[i++] = loadImage("TileCactus.jpg");
   tiles[i++] = loadImage("TileLabyrinth.jpg");
+  tiles[i++] = loadImage("TileTorch.jpg");
   i = 0;
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT); 
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
@@ -616,6 +621,7 @@ void setup()
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);  
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);   
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
@@ -666,91 +672,56 @@ void openInventoryMenu()
 void openItemsMenu()
 {
   menu = new Menu();
+  Menu_Item[]localitems;
+  int itemidx = 0;
+  localitems = new Menu_Item[100];
   if(torchcount >= 1)
   {
-    menu.items = new Menu_Item[] {new Menu_Item("A Torch", null, -1, null),
-    new Menu_Item(null, "O.K.", Menu.OK, null)};
+    for(int i = 0; i < torchcount; i++)
+    {
+      localitems[itemidx++] = new Menu_Item(null, "A Torch. Click to drop.", Menu.TORCH, null);
+    }
   }
   if(bucketcount == 1)
   {
-    menu.items = new Menu_Item[] {new Menu_Item("A Bucket", null, -1, null),
-  new Menu_Item(null, "O.K.", Menu.OK, null)};
+    localitems[itemidx++] = new Menu_Item("A Bucket", null, -1, null);
   }
   if(bucketcount == 2)
   {
-    menu.items = new Menu_Item[] {new Menu_Item("A Bucket with Water in it", null, -1, null),
-  new Menu_Item(null, "O.K.", Menu.OK, null)};
+    localitems[itemidx++] = new Menu_Item("A Bucket with Water in it", null, -1, null);
   }
   if(flowercount == 1)
   {
-    menu.items = new Menu_Item[] {new Menu_Item(null, "A Flower with a strong scent. Click to drop.", Menu.FLOWER, null),
-  new Menu_Item(null, "O.K.", Menu.OK, null)};
+    localitems[itemidx++] = new Menu_Item(null, "A Flower with a strong scent. Click to drop.", Menu.FLOWER, null);
   }
-  if(flowercount == 1 && bucketcount == 2)
+  menu.defaultButtonIdx = itemidx;
+  localitems[itemidx++] = new Menu_Item(null, "O.K.", Menu.OK, null);
+  menu.items = new Menu_Item[itemidx];
+  for(int i = 0; i < itemidx; i++)
   {
-    menu.items = new Menu_Item[] {new Menu_Item(null, "A Flower with a strong scent. Click to drop.", Menu.FLOWER, null),
-    new Menu_Item("A Bucket with Water in it", null, -1, null),
-  new Menu_Item(null, "O.K.", Menu.OK, null)};
-  }
-  if(torchcount == 1 && bucketcount == 2)
-  {
-    menu.items = new Menu_Item[] {new Menu_Item("A Torch", null, -1, null),
-    new Menu_Item("A Bucket with Water in it", null, -1, null),
-  new Menu_Item(null, "O.K.", Menu.OK, null)};
-  }
-  if(flowercount == 1 && bucketcount == 1)
-  {
-    menu.items = new Menu_Item[] {new Menu_Item(null, "A Flower with a strong scent. Click to drop.", Menu.FLOWER, null),
-    new Menu_Item("A Bucket with Water in it", null, -1, null),
-  new Menu_Item(null, "O.K.", Menu.OK, null)};
-  }
-  if(torchcount == 1 && bucketcount == 1)
-  {
-    menu.items = new Menu_Item[] {new Menu_Item("A Torch", null, -1, null),
-    new Menu_Item("A Bucket with Water in it", null, -1, null),
-  new Menu_Item(null, "O.K.", Menu.OK, null)};
-  }
-  if(flowercount == 0 && bucketcount == 0 && torchcount == 0)
-  {
-    menu.items = new Menu_Item[] {new Menu_Item(null, "O.K.", Menu.OK, null)};
-  }
-  if(flowercount == 1 && bucketcount == 2 && torchcount >= 1)
-  {
-    menu.items = new Menu_Item[] {new Menu_Item(null, "A Flower with a strong scent. Click to drop.", Menu.FLOWER, null),
-    new Menu_Item("A Torch", null, -1, null),
-    new Menu_Item("A Bucket with Water in it", null, -1, null),
-  new Menu_Item(null, "O.K.", Menu.OK, null)};
-  }
-  if(flowercount == 1 && bucketcount == 1 && torchcount >= 1)
-  {
-    menu.items = new Menu_Item[] {new Menu_Item(null, "A Flower with a strong scent. Click to drop.", Menu.FLOWER, null),
-    new Menu_Item("A Torch", null, -1, null),
-    new Menu_Item("A Bucket", null, -1, null),
-  new Menu_Item(null, "O.K.", Menu.OK, null)};
+    menu.items[i] = localitems[i];
   }
 }
 void openCastingMenu()
 {
   menu = new Menu();
+  Menu_Item[]localitems;
+  int itemidx = 0;
+  localitems = new Menu_Item[100];
   if(snakecount >= 5 && needlecount >= 5)
   {
-    menu.items = new Menu_Item[] {new Menu_Item(null, "Cast Bucket? (-5 Needles, -5 Snakeskins)", Menu.CASTBUCKET , "b"),
-    new Menu_Item(null, "O.K.", Menu.OK, null)};
+    localitems[itemidx++] = new Menu_Item(null, "Cast Bucket? (-5 Needles, -5 Snakeskins)", Menu.CASTBUCKET , "b");
   }
   if(woodcount >= 5 && stonecount >= 5)
   {
-    menu.items = new Menu_Item[] {new Menu_Item(null, "Cast Torch (-5 Wood, -5 Stones)", Menu.CASTTORCH, null),
-    new Menu_Item(null, "O.K.", Menu.OK, null)};
+    localitems[itemidx++] = new Menu_Item(null, "Cast Torch (-5 Wood, -5 Stones)", Menu.CASTTORCH, null);
   }
-  if(snakecount >= 5 && needlecount >= 5 && woodcount >= 5 && stonecount >= 5)
+  menu.defaultButtonIdx = itemidx;
+  localitems[itemidx++] = new Menu_Item(null, "O.K.", Menu.OK, null);
+  menu.items = new Menu_Item[itemidx];
+  for(int i = 0; i < itemidx; i++)
   {
-    menu.items = new Menu_Item[] {new Menu_Item(null, "Cast Bucket? (-5 Needles, -5 Snakeskins)", Menu.CASTBUCKET , "t"),
-    new Menu_Item(null, "Cast Torch (-5 Wood, -5 Stones)", Menu.CASTTORCH, null),
-    new Menu_Item(null, "O.K.", Menu.OK, null)};
-  }
-  if((snakecount < 5 || needlecount < 5) && (woodcount < 5 || stonecount < 5))
-  {
-    menu.items = new Menu_Item[] {new Menu_Item(null, "O.K.", Menu.OK, null)};
+    menu.items[i] = localitems[i];
   }
 }
 void mousePressed()
@@ -963,7 +934,7 @@ void handleMenuAction(int action)
   {
     if(action == Menu.OK)
     {
-      menu = null;
+      menu = null; //<>//
     }
     if(action == Menu.ITEMS)
     {
@@ -1003,6 +974,16 @@ void handleMenuAction(int action)
         stonecount = stonecount - 5;
         woodcount = woodcount - 5;        
         torchcount++;
+        menu = null;
+      }
+    }
+    if(action == Menu.TORCH)
+    {
+      if(currentLocation == LOCATION_LABYRINTH || currentLocation == LOCATION_LABYRINTH2)
+      {
+        torchcount--;
+        theTorches[torches++] = locations[currentLocation].Hero_Position_Idx;
+        locations[currentLocation].Hero_Previous = MAP_TORCH;
         menu = null;
       }
     }
