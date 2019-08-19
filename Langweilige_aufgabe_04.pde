@@ -936,9 +936,10 @@ void mouseReleased()
 {
   endTime = System.nanoTime();
   long timeElapsed = (endTime - startTime)/1000000;
+  int msl = 300;
   if(supersecretcheatcode2 == 14)
   {
-    if(timeElapsed <= 100)
+    if(timeElapsed <= msl)
     {
       openCheatMenu();
       supersecretcheatcode2 = 0;
@@ -952,7 +953,7 @@ void mouseReleased()
   
   if(supersecretcheatcode2 == 13)
   {
-    if(timeElapsed <= 100)
+    if(timeElapsed <= msl)
     {
       supersecretcheatcode2 = 14;
       println(timeElapsed + "; " + supersecretcheatcode2);
@@ -966,7 +967,7 @@ void mouseReleased()
   
   if(supersecretcheatcode2 == 12)
   {
-    if(timeElapsed > 100)
+    if(timeElapsed > msl)
     {
       supersecretcheatcode2 = 13; 
       println(timeElapsed + "; " + supersecretcheatcode2);
@@ -980,7 +981,7 @@ void mouseReleased()
   
   if(supersecretcheatcode2 == 11)
   {
-    if(timeElapsed > 100)
+    if(timeElapsed > msl)
     {
       supersecretcheatcode2 = 12; 
       println(timeElapsed + "; " + supersecretcheatcode2);
@@ -994,7 +995,7 @@ void mouseReleased()
   
   if(supersecretcheatcode2 == 10)
   {
-    if(timeElapsed <= 100)
+    if(timeElapsed <= msl)
     {
       supersecretcheatcode2 = 11;
       println(timeElapsed + "; " + supersecretcheatcode2);
@@ -1008,7 +1009,7 @@ void mouseReleased()
   
   if(supersecretcheatcode2 == 9)
   {
-    if(timeElapsed > 100)
+    if(timeElapsed > msl)
     {
       supersecretcheatcode2 = 10; 
       println(timeElapsed + "; " + supersecretcheatcode2);
@@ -1022,7 +1023,7 @@ void mouseReleased()
   
   if(supersecretcheatcode2 == 8)
   {
-    if(timeElapsed > 100)
+    if(timeElapsed > msl)
     {
       supersecretcheatcode2 = 9;
       println(timeElapsed + "; " + supersecretcheatcode2);
@@ -1036,7 +1037,7 @@ void mouseReleased()
   
   if(supersecretcheatcode2 == 7)
   {
-    if(timeElapsed <= 100)
+    if(timeElapsed <= msl)
     {
       supersecretcheatcode2 = 8;
       println(timeElapsed + "; " + supersecretcheatcode2);
@@ -1050,7 +1051,7 @@ void mouseReleased()
   
   if(supersecretcheatcode2 == 6)
   {
-    if(timeElapsed <= 100)
+    if(timeElapsed <= msl)
     {
       supersecretcheatcode2 = 7;
       println(timeElapsed + "; " + supersecretcheatcode2);
@@ -1064,7 +1065,7 @@ void mouseReleased()
   
   if(supersecretcheatcode2 == 5)
   {
-    if(timeElapsed > 100)
+    if(timeElapsed > msl)
     {
       supersecretcheatcode2 = 6; 
       println(timeElapsed + "; " + supersecretcheatcode2);
@@ -1078,7 +1079,7 @@ void mouseReleased()
   
   if(supersecretcheatcode2 == 4)
   {
-    if(timeElapsed <= 100)
+    if(timeElapsed <= msl)
     {
       supersecretcheatcode2 = 5;
       println(timeElapsed + "; " + supersecretcheatcode2);
@@ -1092,7 +1093,7 @@ void mouseReleased()
   
   if(supersecretcheatcode2 == 3)
   {
-    if(timeElapsed <= 100)
+    if(timeElapsed <= msl)
     {
       supersecretcheatcode2 = 4;
       println(timeElapsed + "; " + supersecretcheatcode2);
@@ -1106,7 +1107,7 @@ void mouseReleased()
   
   if(supersecretcheatcode2 == 2)
   {
-    if(timeElapsed > 100)
+    if(timeElapsed > msl)
     {
       supersecretcheatcode2 = 3; 
       println(timeElapsed + "; " + supersecretcheatcode2);
@@ -1120,7 +1121,7 @@ void mouseReleased()
   
   if(supersecretcheatcode2 == 1)
   {
-    if(timeElapsed <= 100)
+    if(timeElapsed <= msl)
     {
       supersecretcheatcode2 = 2;
       println(timeElapsed + "; " + supersecretcheatcode2);
@@ -1132,7 +1133,7 @@ void mouseReleased()
     }
   }
   
-  if(timeElapsed <= 100 && supersecretcheatcode == 0)
+  if(timeElapsed <= msl && supersecretcheatcode == 0)
   {
     supersecretcheatcode2 = 1;
     println(timeElapsed + "; " + supersecretcheatcode2);
