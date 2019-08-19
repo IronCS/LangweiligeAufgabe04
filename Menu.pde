@@ -81,4 +81,5 @@ class Menu
   static final int FLOWER = 4;
   static final int CASTTORCH = 5;
   static final int TORCH = 6;
+  static final int GIVERESOURCES = 7;
 }

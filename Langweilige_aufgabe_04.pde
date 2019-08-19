@@ -132,6 +132,7 @@ final byte FIREEXTINGUISHED = 2;
 int[][]theFires = {{3,4,0}, {4,4,0}, {5,4,0}, {3,5,0}, {5,5,0}, {3,6,0}, {4,6,0}, {5,6,0}, {0,0,0}, {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}};
 String menuopenreason;
 int supersecretcheatcode = 0;
+int supersecretcheatcode2 = 0;
 int stonecount = 0;
 int needlecount = 0;
 int woodcount = 0;
@@ -724,6 +725,8 @@ void openCastingMenu()
     menu.items[i] = localitems[i];
   }
 }
+long startTime;
+long endTime;
 void mousePressed()
 {
   if(menu != null)
@@ -732,6 +735,7 @@ void mousePressed()
     handleMenuAction(action);
     return;
   }
+  startTime = System.nanoTime();
   int newHeroIdx = locations[currentLocation].Hero_Position_Idx;
   int HeroY = newHeroIdx/MAP_WIDTH;
   int HeroX = newHeroIdx-(HeroY*MAP_WIDTH);
@@ -928,6 +932,219 @@ void mousePressed()
     return;
   }
 }
+void mouseReleased()
+{
+  endTime = System.nanoTime();
+  long timeElapsed = (endTime - startTime)/1000000;
+  if(supersecretcheatcode2 == 14)
+  {
+    if(timeElapsed <= 100)
+    {
+      openCheatMenu();
+      supersecretcheatcode2 = 0;
+      println(timeElapsed + "; " + supersecretcheatcode2);
+    }
+    else
+    {
+      supersecretcheatcode2 = 0;
+    }
+  }
+  
+  if(supersecretcheatcode2 == 13)
+  {
+    if(timeElapsed <= 100)
+    {
+      supersecretcheatcode2 = 14;
+      println(timeElapsed + "; " + supersecretcheatcode2);
+      return;
+    }
+    else
+    {
+      supersecretcheatcode2 = 0;
+    }
+  }
+  
+  if(supersecretcheatcode2 == 12)
+  {
+    if(timeElapsed > 100)
+    {
+      supersecretcheatcode2 = 13; 
+      println(timeElapsed + "; " + supersecretcheatcode2);
+      return;
+    }
+    else
+    {
+      supersecretcheatcode2 = 0;
+    }
+  }
+  
+  if(supersecretcheatcode2 == 11)
+  {
+    if(timeElapsed > 100)
+    {
+      supersecretcheatcode2 = 12; 
+      println(timeElapsed + "; " + supersecretcheatcode2);
+      return;
+    }
+    else
+    {
+      supersecretcheatcode2 = 0;
+    }
+  }
+  
+  if(supersecretcheatcode2 == 10)
+  {
+    if(timeElapsed <= 100)
+    {
+      supersecretcheatcode2 = 11;
+      println(timeElapsed + "; " + supersecretcheatcode2);
+      return;
+    }
+    else
+    {
+      supersecretcheatcode2 = 0;
+    }
+  }
+  
+  if(supersecretcheatcode2 == 9)
+  {
+    if(timeElapsed > 100)
+    {
+      supersecretcheatcode2 = 10; 
+      println(timeElapsed + "; " + supersecretcheatcode2);
+      return;
+    }
+    else
+    {
+      supersecretcheatcode2 = 0;
+    }
+  }
+  
+  if(supersecretcheatcode2 == 8)
+  {
+    if(timeElapsed > 100)
+    {
+      supersecretcheatcode2 = 9;
+      println(timeElapsed + "; " + supersecretcheatcode2);
+      return;
+    }
+    else
+    {
+      supersecretcheatcode2 = 0;
+    }
+  }
+  
+  if(supersecretcheatcode2 == 7)
+  {
+    if(timeElapsed <= 100)
+    {
+      supersecretcheatcode2 = 8;
+      println(timeElapsed + "; " + supersecretcheatcode2);
+      return;
+    }
+    else
+    {
+      supersecretcheatcode2 = 0;
+    }
+  }
+  
+  if(supersecretcheatcode2 == 6)
+  {
+    if(timeElapsed <= 100)
+    {
+      supersecretcheatcode2 = 7;
+      println(timeElapsed + "; " + supersecretcheatcode2);
+      return;
+    }
+    else
+    {
+      supersecretcheatcode2 = 0;
+    }
+  }
+  
+  if(supersecretcheatcode2 == 5)
+  {
+    if(timeElapsed > 100)
+    {
+      supersecretcheatcode2 = 6; 
+      println(timeElapsed + "; " + supersecretcheatcode2);
+      return;
+    }
+    else
+    {
+      supersecretcheatcode2 = 0;
+    }
+  }
+  
+  if(supersecretcheatcode2 == 4)
+  {
+    if(timeElapsed <= 100)
+    {
+      supersecretcheatcode2 = 5;
+      println(timeElapsed + "; " + supersecretcheatcode2);
+      return;  
+    }
+    else
+    {
+      supersecretcheatcode2 = 0;
+    }
+  }
+  
+  if(supersecretcheatcode2 == 3)
+  {
+    if(timeElapsed <= 100)
+    {
+      supersecretcheatcode2 = 4;
+      println(timeElapsed + "; " + supersecretcheatcode2);
+      return;
+    }
+    else
+    {
+      supersecretcheatcode2 = 0;
+    }
+  }
+  
+  if(supersecretcheatcode2 == 2)
+  {
+    if(timeElapsed > 100)
+    {
+      supersecretcheatcode2 = 3; 
+      println(timeElapsed + "; " + supersecretcheatcode2);
+      return;
+    }
+    else
+    {
+      supersecretcheatcode2 = 0;
+    }
+  }
+  
+  if(supersecretcheatcode2 == 1)
+  {
+    if(timeElapsed <= 100)
+    {
+      supersecretcheatcode2 = 2;
+      println(timeElapsed + "; " + supersecretcheatcode2);
+      return;
+    }
+    else
+    {
+      supersecretcheatcode2 = 0;
+    }
+  }
+  
+  if(timeElapsed <= 100 && supersecretcheatcode == 0)
+  {
+    supersecretcheatcode2 = 1;
+    println(timeElapsed + "; " + supersecretcheatcode2);
+    return;
+  }
+}
+void openCheatMenu()
+{
+  menu = new Menu();
+  menu.items = new Menu_Item[] {new Menu_Item(null, "Give all Resources", Menu.GIVERESOURCES, null),
+                                new Menu_Item(null, "O.K.", Menu.OK, null)};
+}
 void handleMenuAction(int action)
 {
   if(action != Menu.NOTHING)
@@ -986,6 +1203,13 @@ void handleMenuAction(int action)
         locations[currentLocation].Hero_Previous = MAP_TORCH;
         menu = null;
       }
+    }
+    if(action == Menu.GIVERESOURCES)
+    {
+      woodcount = woodcount + 5;
+      stonecount = stonecount + 5;
+      snakecount = snakecount + 5;
+      needlecount = needlecount +5;
     }
   }
 }
@@ -1071,12 +1295,9 @@ void keyPressed()
     supersecretcheatcode = 1;
   }
   if(supersecretcheatcode == 5)
-  {
-    woodcount = woodcount + 5;
-    stonecount = stonecount + 5;
-    snakecount = snakecount + 5;
-    needlecount = needlecount +5;
+  {    
     supersecretcheatcode = 0;
+    openCheatMenu();
   }
   if(key == 69 || key == 101) //Upper- & Lowercase E
   {
