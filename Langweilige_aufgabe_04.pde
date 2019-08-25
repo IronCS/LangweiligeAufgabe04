@@ -1,11 +1,12 @@
 //Copyright Papa & Roman
+boolean onTree = false;
 byte[] createSavanna()
 {
   byte A = MAP_SAVANNA1;
   byte B = MAP_SAVANNA2;
   byte C = MAP_CLIFFENTRY;
   byte[]theSavanna =
-  {1,1,2,B,A,7,A,B,A,B,A,B,A,B,A,C,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
+  {1,1,2,B,A,7,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
    3,B,2,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,
    A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,
    1,1,2,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,B,A,
@@ -102,7 +103,23 @@ final byte MAP_HIVE = 41;
 final byte MAP_CACTUS = 42;
 final byte MAP_LABYRINTH = 43;
 final byte MAP_TORCH = 44;
-final byte MAP_TILE_NUM = 45;
+final byte MAP_TREE = 45;
+final byte MAP_TREEPART1 = 46;
+final byte MAP_TREEPART2 = 47;
+final byte MAP_TREEPART3 = 48;
+final byte MAP_TREEPART4 = 49;
+final byte MAP_TREEPART5 = 50;
+final byte MAP_TREEPART6 = 51;
+final byte MAP_TREEPART7 = 52;
+final byte MAP_TREEPART8 = 53;
+final byte MAP_TREEPART9 = 54;
+final byte MAP_TREEPART10 = 55;
+final byte MAP_TREEPART11 = 56;
+final byte MAP_TREEPART12 = 57;
+final byte MAP_TREEPART13 = 58;
+final byte MAP_TELEPORTMARK = 59;
+final byte MAP_TILE_NUM = 60;
+final byte MAP_NOTHING = (byte)255;
 final int MAP_WIDTH = 40;
 final int MAP_HEIGHT = 20;
 int TILE_WIDTH = 16;
@@ -130,6 +147,11 @@ final byte FIREX = 0;
 final byte FIREY = 1;
 final byte FIREEXTINGUISHED = 2;
 int[][]theFires = {{3,4,0}, {4,4,0}, {5,4,0}, {3,5,0}, {5,5,0}, {3,6,0}, {4,6,0}, {5,6,0}, {0,0,0}, {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}};
+final int TREEX = 0;
+final int TREEY = 1;
+final int TREELASTX = 2;
+final int TREELASTY = 3;
+int[][]theTree = {{11,2,11,2}, {22,11,22,11}};
 String menuopenreason;
 int supersecretcheatcode = 0;
 int supersecretcheatcode2 = 0;
@@ -168,7 +190,7 @@ final int MENUKIND_PICKINGUPBUCKET = 15;
 final int MENUKIND_GATHERINGNEEDLES = 16;
 Location[] locations =
 {
-  new Location(), new Location(), new Location(), new Location(), new Location(), new Location(), new Location(), new Location()
+  new Location(), new Location(), new Location(), new Location(), new Location(), new Location(), new Location(), new Location(), new Location()
 };
 final int LOCATION_SAVANNA = 0;
 final int LOCATION_CAVE = 1;
@@ -178,6 +200,7 @@ final int LOCATION_HIVE = 4;
 final int LOCATION_FIRE = 5;
 final int LOCATION_LABYRINTH = 6;
 final int LOCATION_LABYRINTH2 = 7;
+final int LOCATION_TREE = 8;
 int currentLocation = LOCATION_SAVANNA;
 int currentSnakePart;
 final int TORCHIDX = 0;
@@ -303,7 +326,7 @@ byte[] createCliff()
     C,S,B,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,V,V,S,S,S,S,C,S,S,S,S,S,S,S,S,S,C,
     C,S,S,S,C,F,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,V,S,S,S,C,S,C,S,S,S,S,S,S,S,S,S,C,
     C,S,B,S,C,H,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,V,V,C,S,C,S,C,S,S,S,S,S,S,S,S,S,C,
-    C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,C,C,C,S,S,S,C,S,S,S,S,S,S,S,S,S,C,
+    C,S,S,S,C,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,S,C,C,C,C,S,S,S,C,S,S,S,S,S,S,S,S,S,C,
     T,S,S,S,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C};
   return theCliff;
 }
@@ -324,30 +347,34 @@ byte[] parseLocationFromString(String locAsString, int [][] mapping)
   }
   return ret;
 }
-byte[] iteratePngLabyrinth()
+byte[] iteratePngLabyrinth(String FileName, int[][]ColorsToTiles)
 {
-  PImage pngLab = loadImage("19-by-9-orthogonal-maz-3e.png");
+  PImage pngLab = loadImage(FileName);
   pngLab.loadPixels();
   byte []ret2 = new byte[pngLab.pixelHeight * pngLab.pixelWidth];
   for(int y = 0; y < pngLab.pixelHeight; ++y) {
     System.out.println("----"); // new line separator every y-jump
     for(int x = 0; x < pngLab.pixelWidth; ++x) {
       int addr = y*pngLab.pixelWidth + x;
-      if (pngLab.pixels[addr] == color(255,255,255)) {
-        System.out.print(" "); // white
-        ret2[y*MAP_WIDTH + x] = MAP_SAND;
-      } if (pngLab.pixels[addr] == color(255,0,0)) {
-        System.out.print("M"); // something else
-        ret2[y*MAP_WIDTH + x] = MAP_CAVE;
-      }
-      if (pngLab.pixels[addr] == color(0,0,0)) {
-        System.out.print("O"); // something else
-        ret2[y*MAP_WIDTH + x] = MAP_CLIFFSIDE;
+      for(int i = 0; i < ColorsToTiles.length; i++)
+      {
+        if (pngLab.pixels[addr] == color(ColorsToTiles[i][0],ColorsToTiles[i][1],ColorsToTiles[i][2])) 
+        {
+          ret2[y*pngLab.pixelWidth + x] = (byte)ColorsToTiles[i][3];
+          break;
+        }
       }
     }
   }
   return ret2;
 }
+byte[] createTree()
+{ 
+  int[][]ColorsToTiles = {{255,255,255, MAP_SAVANNA2}, {0,255,0,MAP_GREEN}, {0,0,0,MAP_CLIFFSIDE}, {67,16,13,MAP_WOOD}, {9,39,57, MAP_BRICK}};
+  byte[]thelocalLabyrinth = iteratePngLabyrinth("Trees.png", ColorsToTiles);
+  return(thelocalLabyrinth);
+}
+byte[]theTrees;
 byte[] createLabyrinth()
 {
   String labStr = 
@@ -381,7 +408,8 @@ byte[] createLabyrinth()
 byte[] theLabyrinth;
 byte[] createLabyrinth2()
 { 
-  byte[]thelocalLabyrinth = iteratePngLabyrinth();
+  int[][]ColorsToTiles = {{255,255,255,MAP_SAND}, {255,0,0,MAP_CAVE}, {0,255,0,MAP_TREE}, {0,0,0,MAP_CLIFFSIDE}};
+  byte[]thelocalLabyrinth = iteratePngLabyrinth("19-by-9-orthogonal-maz-4e.png", ColorsToTiles);
   return(thelocalLabyrinth);
 }
 byte[] theLabyrinth2;
@@ -539,9 +567,24 @@ void initAnimals()
   animalY = (byte)l.animalInfo[1].animalRoute[0][1];
   l.animalInfo[1].animalSteppedOn = locations[LOCATION_CAVE].getByteOn(animalX, animalY);
 }
+byte[]theTreeTemplate;
 void setup()
 {
   size(1280, 640, P3D);
+  int [][]colors={{255,255,255, MAP_NOTHING}, {10,0,0,MAP_TREEPART1}, 
+                                              {20,0,0,MAP_TREEPART2}, 
+                                              {30,0,0,MAP_TREEPART3}, 
+                                              {40,0,0,MAP_TREEPART4}, 
+                                              {50,0,0,MAP_TREEPART5}, 
+                                              {60,0,0,MAP_TREEPART6}, 
+                                              {70,0,0,MAP_TREEPART7}, 
+                                              {80,0,0,MAP_TREEPART8}, 
+                                              {90,0,0,MAP_TREEPART9}, 
+                                              {100,0,0,MAP_TREEPART10}, 
+                                              {110,0,0,MAP_TREEPART11}, 
+                                              {120,0,0,MAP_TREEPART12}, 
+                                              {130,0,0,MAP_TREEPART13}};   
+  theTreeTemplate = iteratePngLabyrinth("TreeTemplate4.png", colors);
   menukind = MENUKIND_NOMENU;
   theCave = createCave();
   theSavanna = createSavanna();
@@ -551,6 +594,7 @@ void setup()
   theFire = createFire();
   theLabyrinth = createLabyrinth();
   theLabyrinth2 = createLabyrinth2();
+  theTrees = createTree();
   locations[currentLocation].theMap = theSavanna; 
   locations[currentLocation].Hero_Position_Idx = 10;
   locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
@@ -561,6 +605,7 @@ void setup()
   locations[LOCATION_FIRE].theMap = theFire;
   locations[LOCATION_LABYRINTH].theMap = theLabyrinth;
   locations[LOCATION_LABYRINTH2].theMap = theLabyrinth2;
+  locations[LOCATION_TREE].theMap = theTrees;
   TILE_WIDTH = width/MAP_WIDTH;
   TILE_HEIGHT = height/MAP_HEIGHT;
   int i = 0;
@@ -609,6 +654,21 @@ void setup()
   tiles[i++] = loadImage("TileCactus.jpg");
   tiles[i++] = loadImage("TileLabyrinth.jpg");
   tiles[i++] = loadImage("TileTorch.jpg");
+  tiles[i++] = loadImage("TileTree.png");
+  tiles[i++] = loadImage("TreePart1.png");
+  tiles[i++] = loadImage("TreePart2.png");
+  tiles[i++] = loadImage("TreePart3.png");
+  tiles[i++] = loadImage("TreePart4.png");
+  tiles[i++] = loadImage("TreePart5.png");
+  tiles[i++] = loadImage("TreePart6.png");
+  tiles[i++] = loadImage("TreePart7.png");
+  tiles[i++] = loadImage("TreePart8.png");
+  tiles[i++] = loadImage("TreePart9.png");
+  tiles[i++] = loadImage("TreePart10.png");
+  tiles[i++] = loadImage("TreePart11.png");
+  tiles[i++] = loadImage("TreePart12.png");
+  tiles[i++] = loadImage("TreePart13.png");
+  tiles[i++] = loadImage("TileVoid.jpg");
   i = 0;
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT); 
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
@@ -622,6 +682,21 @@ void setup()
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);  
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);   
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
+  tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
   tiles[i++].resize(TILE_WIDTH, TILE_HEIGHT);
@@ -1144,6 +1219,15 @@ void openCheatMenu()
 {
   menu = new Menu();
   menu.items = new Menu_Item[] {new Menu_Item(null, "Give all Resources", Menu.GIVERESOURCES, null),
+                                new Menu_Item(null, "Teleport to Savanna", Menu.SAVANNA, null),
+                                new Menu_Item(null, "Teleport to Cave", Menu.CAVE, null),
+                                new Menu_Item(null, "Teleport to Beach", Menu.BEACH, null),
+                                new Menu_Item(null, "Teleport to Cliff", Menu.CLIFF, null),
+                                new Menu_Item(null, "Teleport to Hive", Menu.HIVE, null),
+                                new Menu_Item(null, "Teleport to Fire", Menu.FIRE, null),
+                                new Menu_Item(null, "Teleport to the first Labyrinth", Menu.LABYRINTH, null),
+                                new Menu_Item(null, "Teleport to the second Labyrinth", Menu.LABYRINTH2, null),
+                                new Menu_Item(null, "Teleport to the Trees", Menu.TREE, null),
                                 new Menu_Item(null, "O.K.", Menu.OK, null)};
 }
 void handleMenuAction(int action)
@@ -1211,6 +1295,80 @@ void handleMenuAction(int action)
       stonecount = stonecount + 5;
       snakecount = snakecount + 5;
       needlecount = needlecount +5;
+    }
+    if(action == Menu.SAVANNA)
+    {
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_TELEPORTMARK;
+      currentLocation = LOCATION_SAVANNA;
+      locations[currentLocation].Hero_Position_Idx = 4;
+      locations[currentLocation].Hero_Previous = MAP_SAVANNA1;
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
+    }
+    if(action == Menu.CAVE)
+    {
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_TELEPORTMARK;
+      currentLocation = LOCATION_CAVE;
+      locations[currentLocation].Hero_Position_Idx = 631;
+      locations[currentLocation].Hero_Previous = MAP_BLACK;   
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
+    }
+    if(action == Menu.BEACH)
+    {
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_TELEPORTMARK;
+      currentLocation = LOCATION_BEACH;      
+      locations[currentLocation].Hero_Position_Idx = 761;
+      locations[currentLocation].Hero_Previous = MAP_SAND;
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
+    }
+    if(action == Menu.CLIFF)
+    {
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_TELEPORTMARK;
+      currentLocation = LOCATION_CLIFF;
+      locations[currentLocation].Hero_Position_Idx = 761;
+      locations[currentLocation].Hero_Previous = MAP_SAND;
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
+    }
+    if(action == Menu.HIVE)
+    {
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_TELEPORTMARK;
+      currentLocation = LOCATION_HIVE;
+      locations[currentLocation].Hero_Position_Idx = 631;
+      locations[currentLocation].Hero_Previous = MAP_BLACK;   
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
+    }
+    if(action == Menu.FIRE)
+    {
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_TELEPORTMARK;
+      currentLocation = LOCATION_FIRE;
+      locations[currentLocation].Hero_Position_Idx = 798;
+      locations[currentLocation].Hero_Previous = MAP_BLACK;
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
+      locations[currentLocation].calculateFire();
+    }
+    if(action == Menu.LABYRINTH)
+    {
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_TELEPORTMARK;
+      currentLocation = LOCATION_LABYRINTH;
+      locations[currentLocation].Hero_Position_Idx = 798;
+      locations[currentLocation].Hero_Previous = MAP_SAND;
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO; 
+    }
+    if(action == Menu.LABYRINTH2)
+    {
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_TELEPORTMARK;
+      currentLocation = LOCATION_LABYRINTH2;
+      locations[currentLocation].Hero_Position_Idx = 798;
+      locations[currentLocation].Hero_Previous = MAP_SAND;
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO;
+    }
+    if(action == Menu.TREE)
+    {
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_TELEPORTMARK;
+      currentLocation = LOCATION_TREE;
+      locations[currentLocation].Hero_Position_Idx = 0;
+      locations[currentLocation].Hero_Previous = MAP_SAVANNA2;
+      locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO; 
+      locations[currentLocation].drawTree();
     }
   }
 }
@@ -1306,6 +1464,70 @@ void keyPressed()
     {
       menukind = MENUKIND_PLACINGFLOWER;
       menuopenreason = "Do you want to leave the Flower lying on the floor?";
+    }
+  }
+  if(key == 119 || key == 87)//Upper- & Lowercase W
+  {
+    if(theTree[0][1]-1 != -1)
+    {
+      if(currentLocation == LOCATION_TREE)
+      {
+        theTree[0][3]=theTree[0][1];
+        theTree[0][1]--;
+        if(onTree)
+        {
+          locations[currentLocation].Hero_Position_Idx = locations[currentLocation].Hero_Position_Idx - MAP_WIDTH;
+        }
+        locations[currentLocation].drawTree();
+      }
+    }
+  }
+  if(key == 115 || key == 83)//Upper- & Lowercase S
+  {
+    if(theTree[0][1]+1 != MAP_HEIGHT-5)
+    {
+      if(currentLocation == LOCATION_TREE)
+      {
+        theTree[0][3]=theTree[0][1];
+        theTree[0][1]++;
+        if(onTree)
+        {
+          locations[currentLocation].Hero_Position_Idx = locations[currentLocation].Hero_Position_Idx + MAP_WIDTH;
+        }
+        locations[currentLocation].drawTree();
+      }
+    }
+  }
+  if(key == 100 || key == 68)//Upper- & Lowercase D
+  {
+    if(theTree[0][0]+1 != MAP_WIDTH-5)
+    {
+      if(currentLocation == LOCATION_TREE)
+      {
+        theTree[0][2]=theTree[0][0];
+        theTree[0][0]++;
+        if(onTree)
+        {
+          locations[currentLocation].Hero_Position_Idx++;
+        }
+        locations[currentLocation].drawTree();
+      }
+    }
+  }
+  if(key == 97 || key == 65)//Upper- & Lowercase A
+  {
+    if(theTree[0][0]-1 != -1)
+    {  
+      if(currentLocation == LOCATION_TREE)
+      {
+        theTree[0][2]=theTree[0][0];
+        theTree[0][0]--;
+        if(onTree)
+        {
+          locations[currentLocation].Hero_Position_Idx--;
+        }
+        locations[currentLocation].drawTree();
+      }
     }
   }
 }

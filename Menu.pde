@@ -82,4 +82,13 @@ class Menu
   static final int CASTTORCH = 5;
   static final int TORCH = 6;
   static final int GIVERESOURCES = 7;
+  static final int SAVANNA = 8;
+  static final int CAVE = 9;
+  static final int BEACH = 10;
+  static final int CLIFF = 12;
+  static final int HIVE = 13;
+  static final int FIRE = 14;
+  static final int LABYRINTH = 15;
+  static final int LABYRINTH2 = 16;
+  static final int TREE = 17;
 }

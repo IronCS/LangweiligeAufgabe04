@@ -34,6 +34,7 @@ class Location
       || theMap[newHeroIdx] == MAP_EXTINGUISHED2
       || theMap[newHeroIdx] == MAP_EXTINGUISHED3
       || theMap[newHeroIdx] == MAP_TORCH
+      || theMap[newHeroIdx] == MAP_TELEPORTMARK
       || theBoat[INBOAT] == 1)
       {
         if(theBoat[INBOAT] == 0)
@@ -42,6 +43,7 @@ class Location
           Hero_Previous = theMap[newHeroIdx];
           theMap[newHeroIdx] = MAP_HERO;
           Hero_Position_Idx = newHeroIdx;
+          onTree = false;
         }
         else
         {
@@ -329,6 +331,35 @@ class Location
           locations[currentLocation].Hero_Position_Idx = 798;
           locations[currentLocation].Hero_Previous = MAP_SAND;
           locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO; 
+        }
+        if(menuopenreason.equals("") && theMap[newHeroIdx] == MAP_TREE)
+        {
+          menuopenreason = "You are entering the Trees.";
+          currentLocation = LOCATION_TREE;
+          theMap[Hero_Position_Idx] = MAP_SAND;
+          locations[currentLocation].Hero_Position_Idx = 0;
+          locations[currentLocation].Hero_Previous = MAP_SAVANNA2;
+          locations[currentLocation].theMap[locations[currentLocation].Hero_Position_Idx] = MAP_HERO; 
+        }
+        if(menuopenreason.equals("") && (theMap[newHeroIdx] == MAP_TREEPART1 
+                                     ||  theMap[newHeroIdx] == MAP_TREEPART2 
+                                     ||  theMap[newHeroIdx] == MAP_TREEPART3 
+                                     ||  theMap[newHeroIdx] == MAP_TREEPART4 
+                                     ||  theMap[newHeroIdx] == MAP_TREEPART5 
+                                     ||  theMap[newHeroIdx] == MAP_TREEPART6 
+                                     ||  theMap[newHeroIdx] == MAP_TREEPART7 
+                                     ||  theMap[newHeroIdx] == MAP_TREEPART8 
+                                     ||  theMap[newHeroIdx] == MAP_TREEPART9 
+                                     ||  theMap[newHeroIdx] == MAP_TREEPART10
+                                     ||  theMap[newHeroIdx] == MAP_TREEPART11 
+                                     ||  theMap[newHeroIdx] == MAP_TREEPART12 
+                                     ||  theMap[newHeroIdx] == MAP_TREEPART13))
+        {
+          theMap[Hero_Position_Idx] = Hero_Previous;
+          Hero_Previous = theMap[newHeroIdx];
+          theMap[newHeroIdx] = MAP_HERO;
+          Hero_Position_Idx = newHeroIdx;
+          onTree = true;
         }
         if(menuopenreason.equals(""))
         {
@@ -901,6 +932,28 @@ class Location
       theMap[newBeeIdx] = MAP_BEE;
     }
   }
+  byte[][]savedBackground = null;
+  void drawTree()
+  {
+    if(savedBackground == null)
+    {
+      savedBackground = new byte[2][theTreeTemplate.length];
+      savedBackground[0][0] = MAP_NOTHING;
+      savedBackground[1][0] = MAP_NOTHING;
+    }
+    if(savedBackground[0][0] != MAP_NOTHING)
+    {
+      putObjectMS(theTree[0][TREELASTX], theTree[0][TREELASTY], savedBackground[0]);
+    }
+    theTree[0][TREELASTX] = theTree[0][TREEX];
+    theTree[0][TREELASTY] = theTree[0][TREEY]; 
+    savedBackground[0]=getObjectMS(theTree[0][TREEX], theTree[0][TREEY], 5, 5);
+    putObjectMS(theTree[0][TREEX], theTree[0][TREEY], theTreeTemplate);
+    if(onTree)
+    {
+      theMap[Hero_Position_Idx] = MAP_HERO;
+    }
+  }
   void draw_savanna()
   {
    int x0 = 0;
@@ -908,6 +961,13 @@ class Location
    int tileWidth = tiles[0].pixelWidth;
    int tileHeight = tiles[0].pixelHeight;
    int snakeNewIdx;
+   if(currentLocation == LOCATION_TREE)
+   {
+     if((frameCount%60) == 0)
+     {
+       drawTree();
+     }
+   }
    if(currentLocation == LOCATION_BEACH)
    {
      if((frameCount%12) == 0)
@@ -1197,6 +1257,32 @@ class Location
      text(animalInfo[1].animalName + " sleeping? "+ animalInfo[1].animal_sleeping, animalInfo[1].getanimalX(), animalInfo[1].getanimalY());
      text(animalInfo[0].animalName + " sleeping? "+ animalInfo[0].animal_sleeping, animalInfo[0].getanimalX(), animalInfo[0].getanimalY());   
    }
+  }
+  void putObjectMS(int x, int y, byte[]MSObject)
+  {
+    for(int i = 0; i < 5; i++)
+    {
+      for(int o = 0; o < 5; o++)
+      {
+        if(MSObject[i*5+o] != MAP_NOTHING)
+        {
+          theMap[(y+i) * MAP_WIDTH + x+o] = MSObject[i*5+o];
+        }
+      }
+    }
+  }
+  byte[]getObjectMS(int x, int y, int w, int h)
+  {  
+    byte[]Obj;
+    Obj = new byte[w*h];
+    for(int i = 0; i < h; i++)
+    {
+      for(int o = 0; o < w; o++)
+      {
+        Obj[i*w + o] = theMap[(y+i) * MAP_WIDTH + x+o];
+      }
+    }
+    return Obj;
   }
 }
 float distanceBetween(int Idx1, int Idx2)
