@@ -155,6 +155,8 @@ int[][]theTree = {{11,2,11,2}, {22,11,22,11}};
 final int VIEW_MODE_2D = 0;
 final int VIEW_MODE_3D = 1;
 int viewMode = VIEW_MODE_3D;
+Util3D u3d = new Util3D();
+PVector mouseHitAtBoard = null; // board coordinates of last mouse hit
 boolean guessProjectionParams = false;
 float alphaX = PI*2/360*20;
 float translateByZ = -227;
@@ -581,7 +583,13 @@ byte[]theTreeTemplate;
 void setup()
 {
   size(1280, 640, P3D);
-  zProjectionPoint = pixelWidth/(2*cos(40*PI/180))*sin(40*PI/180);
+
+  u3d.testUtil3D();
+
+  // in my records found a value 40.3645... perhaps it is good number ??? :)
+  float projectionAngle = 40.5; // angle used to calculate "deepness" of projection point (zProjectionPoint)
+  zProjectionPoint = pixelWidth/(2*cos(projectionAngle*PI/180))*sin(projectionAngle*PI/180);
+
   int [][]colors={{255,255,255, MAP_NOTHING}, {10,0,0,MAP_TREEPART1}, 
                                               {20,0,0,MAP_TREEPART2}, 
                                               {30,0,0,MAP_TREEPART3}, 
@@ -815,11 +823,43 @@ long startTime;
 long endTime;
 
 /////////////////////////////////////////
-PVector computeMouseCellCoords3D(int z0x, int z0y)
+PVector computeMouseCoords3D(int z0x, int z0y)
 {
   PVector ppoint = new PVector(pixelWidth/2, pixelHeight/2, zProjectionPoint);
-  PVector pZ0 = new PVector(z0x, z0y, 0);
-  return pZ0; // just to make compilable
+  PVector hit = u3d.intersectPlaneWithLineSelfmade(
+      // 3 corners of the board as a0, b0, c0
+      modelPoints[0],
+      modelPoints[1],
+      modelPoints[2],
+      // d-e: z0x
+      ppoint,
+      new PVector(z0x, z0y, 0)
+      );
+  // hit = coordinates of the hit on board
+  System.out.println(String.format("hit @ %s", hit));
+  // compute distance between corners and hit
+  float c1 = (float) u3d.distance(modelPoints[0], hit);
+  float c2 = (float) u3d.distance(modelPoints[1], hit);
+
+  float w = pixelWidth;
+
+  // hit @ board coordinate system
+  PVector hb = new PVector(0,0,0);
+  hb.z = 0;
+  hb.x = (c1*c1 - c2*c2 + w*w) / (2*w);
+  hb.y = (float) Math.sqrt(c1*c1 - hb.x*hb.x);
+  mouseHitAtBoard = hb;
+
+  System.out.println(String.format("   > mp[0]=%s,mp[1]=%s,c1=%f,c2=%f,w=%f",
+        modelPoints[0].toString(), modelPoints[1].toString(), c1, c2, w));
+
+
+
+  PVector [] hitCorners = new PVector [4];
+  hitCorners[0] = new PVector(0,0,0);
+  // TODO: continue here with hitCorners !!
+
+  return hb; 
 }
 
 void mousePressed()
@@ -841,9 +881,11 @@ void mousePressed()
 
   if (viewMode == VIEW_MODE_3D)
   {
-    PVector mouseCellCoords = computeMouseCellCoords3D(mouseX, mouseY);
-    mouseXC = (int) mouseCellCoords.x;
-    mouseYC = (int) mouseCellCoords.y;
+    PVector mouseCoords = computeMouseCoords3D(mouseX, mouseY);
+    mouseXC = int(mouseCoords.x)/TILE_WIDTH;
+    mouseYC = int(mouseCoords.y)/TILE_HEIGHT;
+    System.out.println(String.format("mouseCoords (from computeMouseCoords3D): %s, mouse XC=%d, YC=%d",
+          mouseCoords.toString(), mouseXC, mouseYC));
   }
 
   if(menukind == MENUKIND_NOMENU)
@@ -1604,6 +1646,23 @@ void HeroAutoRepeat()
     locations[currentLocation].heroMoveChecker(newHeroIdx, HeroWrongY);
   }
 }
+
+void setUpMatrix() {
+  /*
+  translate(MAP_WIDTH*TILE_WIDTH/2,MAP_HEIGHT*TILE_HEIGHT/2);
+  rotateZ(PI/3);
+  translate(-MAP_WIDTH*TILE_WIDTH/2,-MAP_HEIGHT*TILE_HEIGHT/2);
+  translate(0,MAP_HEIGHT*TILE_HEIGHT/2);
+  rotateX(PI/5);
+  translate(0,-MAP_HEIGHT*TILE_HEIGHT/2);
+  translate(0,0,-200);
+  */ 
+  //translate(0,0,translateByZ);
+  translate(0, MAP_HEIGHT*TILE_HEIGHT,0);
+  rotateX(alphaX);
+  translate(0,-MAP_HEIGHT*TILE_HEIGHT,0);
+}
+
 void draw()
 {
   if((frameCount%3) == 0)
@@ -1621,22 +1680,44 @@ void draw()
     if (viewMode == VIEW_MODE_3D)
     {
       pushMatrix();
-      /*
-      translate(MAP_WIDTH*TILE_WIDTH/2,MAP_HEIGHT*TILE_HEIGHT/2);
-      rotateZ(PI/3);
-      translate(-MAP_WIDTH*TILE_WIDTH/2,-MAP_HEIGHT*TILE_HEIGHT/2);
-      translate(0,MAP_HEIGHT*TILE_HEIGHT/2);
-      rotateX(PI/5);
-      translate(0,-MAP_HEIGHT*TILE_HEIGHT/2);
-      translate(0,0,-200);
-      */ 
-      //translate(0,0,translateByZ);
-      translate(0, MAP_HEIGHT*TILE_HEIGHT,0);
-      rotateX(alphaX);
-      translate(0,-MAP_HEIGHT*TILE_HEIGHT,0);
+      setUpMatrix();
     }
 
     locations[currentLocation].draw_savanna();
+
+    if (mouseHitAtBoard != null) {
+      fill(255,0,0);
+      noStroke();
+      ellipseMode(CORNERS);
+      PVector hb = mouseHitAtBoard;
+      ellipse(hb.x-6,hb.y-6,hb.x+6,hb.y+6);
+      int mouseXC = int(hb.x) / TILE_WIDTH;
+      int mouseYC = int(hb.y) / TILE_HEIGHT;
+      PVector [] cellCorners = new PVector[] {
+        new PVector(0,0,0),
+        new PVector(0,0,0),
+        new PVector(0,0,0),
+        new PVector(0,0,0)
+      };
+      // lt
+      cellCorners[0].x = mouseXC * TILE_WIDTH;
+      cellCorners[0].y = mouseYC * TILE_HEIGHT;
+      // rt
+      cellCorners[1].x = (mouseXC + 1) * TILE_WIDTH;
+      cellCorners[1].y = mouseYC * TILE_HEIGHT;
+      // rb
+      cellCorners[2].x = (mouseXC + 1) * TILE_WIDTH;
+      cellCorners[2].y = (mouseYC + 1) * TILE_HEIGHT;
+      // lb
+      cellCorners[3].x = mouseXC * TILE_WIDTH;
+      cellCorners[3].y = (mouseYC + 1) * TILE_HEIGHT;
+      // TODO - test draw rectangle with cellCorners array
+      noFill();
+      stroke(0,255,0);
+      rectMode(CORNERS);
+      PVector []cc = cellCorners;
+      rect(cc[0].x,cc[0].y,cc[2].x,cc[2].y);
+    }
 
     if (viewMode == VIEW_MODE_3D)
     {
@@ -1686,6 +1767,7 @@ void draw()
   {
     drawmenu();
   }
+
 }
 
 /////////////////////////////////////////
