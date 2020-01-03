@@ -17,7 +17,7 @@ class Location
   };
   void heroMoveChecker(int newHeroIdx, boolean HeroWrongY)
   {
-    println(newHeroIdx + "; " + HeroWrongY + "; " + Hero_Position_Idx);
+    //println(newHeroIdx + "; " + HeroWrongY + "; " + Hero_Position_Idx);
     if(newHeroIdx == Hero_Position_Idx)
     {
       return;

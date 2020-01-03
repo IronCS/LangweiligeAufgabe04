@@ -152,18 +152,25 @@ final int TREEY = 1;
 final int TREELASTX = 2;
 final int TREELASTY = 3;
 int[][]theTree = {{11,2,11,2}, {22,11,22,11}};
+// VIEW_MODE_3D {
 final int VIEW_MODE_2D = 0;
 final int VIEW_MODE_3D = 1;
 int viewMode = VIEW_MODE_3D;
 Util3D u3d = new Util3D();
-PVector mouseHitAtBoard = null; // board coordinates of last mouse hit
 boolean guessProjectionParams = false;
 float alphaX = PI*2/360*20;
-float translateByZ = -227;
+CameraParams camPars = new CameraParams();
+CameraParams camParsDragStart = new CameraParams();
 //float zProjectionPoint = 272; // for screen size 640
 //float zProjectionPoint = 544; // for screen size 1280
 float zProjectionPoint = 0;
 PVector []modelPoints = null; // corners of the "board"
+PVector mouseDragStarted = new PVector(0, 0, 0);
+final int CONTROL_MODE_CAMERA = 0;
+final int CONTROL_MODE_HERO = 1;
+int controlMode = CONTROL_MODE_HERO;
+// VIEW_MODE_3D }
+PVector mouseHitAtBoard = null; // board coordinates of last mouse hit
 String menuopenreason;
 int supersecretcheatcode = 0;
 int supersecretcheatcode2 = 0;
@@ -365,7 +372,7 @@ byte[] iteratePngLabyrinth(String FileName, int[][]ColorsToTiles)
   pngLab.loadPixels();
   byte []ret2 = new byte[pngLab.pixelHeight * pngLab.pixelWidth];
   for(int y = 0; y < pngLab.pixelHeight; ++y) {
-    System.out.println("----"); // new line separator every y-jump
+    //System.out.println("----"); // new line separator every y-jump
     for(int x = 0; x < pngLab.pixelWidth; ++x) {
       int addr = y*pngLab.pixelWidth + x;
       for(int i = 0; i < ColorsToTiles.length; i++)
@@ -836,7 +843,7 @@ PVector computeMouseCoords3D(int z0x, int z0y)
       new PVector(z0x, z0y, 0)
       );
   // hit = coordinates of the hit on board
-  System.out.println(String.format("hit @ %s", hit));
+  //println(String.format("hit @ %s", hit));
   // compute distance between corners and hit
   float c1 = (float) u3d.distance(modelPoints[0], hit);
   float c2 = (float) u3d.distance(modelPoints[1], hit);
@@ -848,16 +855,9 @@ PVector computeMouseCoords3D(int z0x, int z0y)
   hb.z = 0;
   hb.x = (c1*c1 - c2*c2 + w*w) / (2*w);
   hb.y = (float) Math.sqrt(c1*c1 - hb.x*hb.x);
-  mouseHitAtBoard = hb;
 
   System.out.println(String.format("   > mp[0]=%s,mp[1]=%s,c1=%f,c2=%f,w=%f",
         modelPoints[0].toString(), modelPoints[1].toString(), c1, c2, w));
-
-
-
-  PVector [] hitCorners = new PVector [4];
-  hitCorners[0] = new PVector(0,0,0);
-  // TODO: continue here with hitCorners !!
 
   return hb; 
 }
@@ -870,6 +870,18 @@ void mousePressed()
     handleMenuAction(action);
     return;
   }
+
+  if(controlMode == CONTROL_MODE_CAMERA)
+  {
+    // further handling happens in the "position changed" of the mouse
+    // (mouseDragged)
+    println("mousePressed("+mouseX+","+mouseY+")");
+    camParsDragStart = new CameraParams(camPars);
+    mouseDragStarted.x = mouseX;
+    mouseDragStarted.y = mouseY;
+    return;
+  }
+
   startTime = System.nanoTime();
   int newHeroIdx = locations[currentLocation].Hero_Position_Idx;
   int HeroY = newHeroIdx/MAP_WIDTH;
@@ -878,14 +890,15 @@ void mousePressed()
   boolean HeroWrongY = false;
   int mouseXC = mouseX/TILE_WIDTH;
   int mouseYC = mouseY/TILE_HEIGHT;
+  mouseHitAtBoard = new PVector(mouseX, mouseY, 0); // for non-3D we take it directly
 
   if (viewMode == VIEW_MODE_3D)
   {
-    PVector mouseCoords = computeMouseCoords3D(mouseX, mouseY);
-    mouseXC = int(mouseCoords.x)/TILE_WIDTH;
-    mouseYC = int(mouseCoords.y)/TILE_HEIGHT;
-    System.out.println(String.format("mouseCoords (from computeMouseCoords3D): %s, mouse XC=%d, YC=%d",
-          mouseCoords.toString(), mouseXC, mouseYC));
+    mouseHitAtBoard = computeMouseCoords3D(mouseX, mouseY);
+    mouseXC = int(mouseHitAtBoard.x)/TILE_WIDTH;
+    mouseYC = int(mouseHitAtBoard.y)/TILE_HEIGHT;
+    System.out.println(String.format("mouseHitAtBoard (from computeMouseCoords3D): %s, mouse XC=%d, YC=%d",
+          mouseHitAtBoard.toString(), mouseXC, mouseYC));
   }
 
   if(menukind == MENUKIND_NOMENU)
@@ -1075,6 +1088,29 @@ void mousePressed()
   {
     menukind = MENUKIND_NOMENU;
     return;
+  }
+}
+void mouseDragged()
+{
+  if (controlMode == CONTROL_MODE_CAMERA)
+  {
+
+    float dAngleRoll = map(mouseX - mouseDragStarted.x,
+        0,pixelWidth/2,0,PI/2);
+    camPars.angleRoll = camParsDragStart.angleRoll - dAngleRoll;
+
+    float dAngleRaise = map(mouseY - mouseDragStarted.y,
+        0,pixelHeight/2,0,PI/2);
+    camPars.angleRaise = camParsDragStart.angleRaise - dAngleRaise;
+
+    pushMatrix();
+    setUpMatrix();
+    recalcModelPoints();
+    popMatrix();
+    System.out.println("x="+mouseX+",x0="+mouseDragStarted.x
+        +",dRoll="+(dAngleRoll*180./PI)
+        +",dRaise="+(dAngleRaise*180./PI)
+        +"/"+camPars.toString()+" ( "+camParsDragStart.toString()+" )");
   }
 }
 void mouseReleased()
@@ -1608,6 +1644,17 @@ void keyPressed()
   {
     zProjectionPoint-=1;
   }
+  if (key == 'c')
+  {
+    controlMode = CONTROL_MODE_CAMERA;
+  }
+}
+void keyReleased()
+{
+  if (key == 'c')
+  {
+    controlMode = CONTROL_MODE_HERO;
+  }
 }
 void HeroAutoRepeat()
 {
@@ -1648,19 +1695,58 @@ void HeroAutoRepeat()
 }
 
 void setUpMatrix() {
-  /*
-  translate(MAP_WIDTH*TILE_WIDTH/2,MAP_HEIGHT*TILE_HEIGHT/2);
-  rotateZ(PI/3);
-  translate(-MAP_WIDTH*TILE_WIDTH/2,-MAP_HEIGHT*TILE_HEIGHT/2);
-  translate(0,MAP_HEIGHT*TILE_HEIGHT/2);
-  rotateX(PI/5);
-  translate(0,-MAP_HEIGHT*TILE_HEIGHT/2);
-  translate(0,0,-200);
-  */ 
-  //translate(0,0,translateByZ);
+  // roll_left, roll_right handling for the camera
+  float ax = MAP_WIDTH * TILE_WIDTH / 2;
+  float ay = MAP_HEIGHT * TILE_HEIGHT / 2;
+
+  translate(ax, ay, 0);
+  rotateZ(camPars.angleRoll);
+  translate(-ax, -ay, 0);
+
+  translate(ax, ay, +zProjectionPoint);
+  rotateX(camPars.angleRaise);
+  translate(-ax, -ay, -zProjectionPoint);
+
   translate(0, MAP_HEIGHT*TILE_HEIGHT,0);
   rotateX(alphaX);
   translate(0,-MAP_HEIGHT*TILE_HEIGHT,0);
+
+  
+}
+
+void recalcModelPoints() {
+
+  modelPoints = new PVector[4]; // lt, rt, lb, rb
+  int i = 0;
+  float x;
+  float y;
+  float z;
+
+  x = 0; y = 0; z = 0;
+  modelPoints[i] = new PVector(modelX(x, y, z),modelY(x, y, z), modelZ(x,y,z));
+//println("LeftTop: ("+modelPoints[i]+")");
+  i++;
+
+  x = MAP_WIDTH*TILE_WIDTH;
+  y = 0;
+  z = 0;
+  modelPoints[i] = new PVector(modelX(x, y, z),modelY(x, y, z), modelZ(x,y,z));
+//println("RightTop: ("+modelPoints[i]+")");
+  i++;
+
+  x = 0;
+  y = MAP_HEIGHT*TILE_HEIGHT;
+  z = 0;
+  modelPoints[i] = new PVector(modelX(x, y, z),modelY(x, y, z), modelZ(x,y,z));
+//println("LeftBottom: ("+modelPoints[i]+")");
+  i++;
+
+  x = MAP_WIDTH*TILE_WIDTH;
+  y = MAP_HEIGHT*TILE_HEIGHT;
+  z = 0;
+  modelPoints[i] = new PVector(modelX(x, y, z),modelY(x, y, z), modelZ(x,y,z));
+//println("RightBottom: ("+modelPoints[i]+")");
+
 }
 
 void draw()
@@ -1679,6 +1765,16 @@ void draw()
 
     if (viewMode == VIEW_MODE_3D)
     {
+      // clear screen
+      noStroke();
+      fill(127,127,0);
+      rectMode(CORNERS);
+      pushMatrix();
+      translate(0,0,-1000);
+      rect(-100000,-100000,100000,100000);
+      popMatrix();
+
+      // setup matrix
       pushMatrix();
       setUpMatrix();
     }
@@ -1722,36 +1818,7 @@ void draw()
     if (viewMode == VIEW_MODE_3D)
     {
       if (modelPoints == null) {
-        modelPoints = new PVector[4]; // lt, rt, lb, rb
-        int i = 0;
-        float x;
-        float y;
-        float z;
-
-        x = 0; y = 0; z = 0;
-        modelPoints[i] = new PVector(modelX(x, y, z),modelY(x, y, z), modelZ(x,y,z));
-        println("LeftTop: ("+modelPoints[i]+")");
-        i++;
-
-        x = MAP_WIDTH*TILE_WIDTH;
-        y = 0;
-        z = 0;
-        modelPoints[i] = new PVector(modelX(x, y, z),modelY(x, y, z), modelZ(x,y,z));
-        println("RightTop: ("+modelPoints[i]+")");
-        i++;
-
-        x = 0;
-        y = MAP_HEIGHT*TILE_HEIGHT;
-        z = 0;
-        modelPoints[i] = new PVector(modelX(x, y, z),modelY(x, y, z), modelZ(x,y,z));
-        println("LeftBottom: ("+modelPoints[i]+")");
-        i++;
-
-        x = MAP_WIDTH*TILE_WIDTH;
-        y = MAP_HEIGHT*TILE_HEIGHT;
-        z = 0;
-        modelPoints[i] = new PVector(modelX(x, y, z),modelY(x, y, z), modelZ(x,y,z));
-        println("RightBottom: ("+modelPoints[i]+")");
+        recalcModelPoints();
       }
 
       popMatrix();
