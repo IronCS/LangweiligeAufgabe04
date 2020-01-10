@@ -3,6 +3,10 @@ class Util3D {
   }
   
   private void check_vector(PVector exp, PVector act) {
+    check_vector(exp,act,null);
+  }
+
+  private void check_vector(PVector exp, PVector act, String msg) {
     String notMatch = null;
     if (Math.abs(exp.x - act.x) > 1e-6) {
       notMatch = "x";
@@ -15,8 +19,12 @@ class Util3D {
     }
     if (notMatch != null) {
       throw new java.lang.UnsupportedOperationException(
-          String.format("%s do not match: exp=%s, act=%s", notMatch, exp.toString(), act.toString()));
+          String.format("%s: %s do not match: exp=%s, act=%s", msg, notMatch, exp.toString(), act.toString()));
     }
+  }
+
+  private void check_equal(PVector exp, PVector act, String msg) {
+    check_vector(exp, act, msg);
   }
 
   private void check_equal(double exp, double act, String msg) {
@@ -245,6 +253,45 @@ class Util3D {
     check_equal(Util3DTrafo.U3DT_TYP_ROTATE_Y, trfs[1].trafoTyp, "trafoTyp[1] differs");
     check_equal(-Math.PI/2, trfs[1].angRotateY, "angRotateY differs");
 
+    CameraParams cpar0 = new CameraParams();
+    cpar0.nose = new PVector(0,0,-1);
+    cpar0.wing = new PVector(1,0,0);
+
+    CameraParams cpar;
+    PVector wtmp;
+    PVector ntmp;
+
+    cpar = rollLeftRight(-Math.PI/2, cpar0);
+    wtmp = new PVector(0,-1,0);
+    check_equal(wtmp, cpar.wing, "wing differs in roll check#1");
+
+    cpar = rollLeftRight(+Math.PI/2, cpar0);
+    wtmp = new PVector(0,+1,0);
+    check_equal(wtmp, cpar.wing, "wing differs in roll check#2");
+
+    // re-orient nose, check rotation around other axis
+    cpar0.nose = new PVector(1,0,0);
+    cpar0.wing = new PVector(0,0,1);
+
+    cpar = rollLeftRight(-Math.PI/2, cpar0);
+    wtmp = new PVector(0,1,0);
+    check_equal(wtmp, cpar.wing, "wing differs in roll check#3");
+
+    cpar = rollLeftRight(+Math.PI/2, cpar0);
+    wtmp = new PVector(0,-1,0);
+    check_equal(wtmp, cpar.wing, "wing differs in roll check#4");
+
+    // re-orient nose to original position
+    cpar0.nose = new PVector(0,0,-1);
+    cpar0.wing = new PVector(1,0,0);
+
+    cpar = raiseUpDown(-Math.PI/2, cpar0);
+    ntmp = new PVector(0,1,0);
+    check_equal(ntmp, cpar.nose, "nose differs in raise check#1");
+
+    cpar = raiseUpDown(+Math.PI/2, cpar0);
+    ntmp = new PVector(0,-1,0);
+    check_equal(ntmp, cpar.nose, "nose differs in raise check#2");
   }
 
   private void assertNotNaN(PVector a, String where) {
@@ -374,6 +421,96 @@ class Util3D {
     rotY.angRotateY = -alphaN1E;
     ret[1] = rotY;
 
+    return ret;
+  }
+
+  /////////////////////////////////////////
+  // roll_{left|right}
+  // Use for roll_left rollStepAngle < 0
+  // Use for roll_right rollStepAngle > 0
+  /////////////////////////////////////////
+  public CameraParams rollLeftRight(double rollStepAngle, CameraParams nw) {
+    pushMatrix();
+    System.out.println("Matrix, before rollLeftRight trafo applied:");
+    printMatrix();
+    Util3DTrafo []trfs = getTrfN2E(nw.nose);
+    Util3DTrafo []trfsReverse = getTrfReverse(trfs);
+    //for (int i = 0; i < trfs.length; ++i) {
+    //  trfs[i].applyTrf();
+    //}
+    for (int i = trfsReverse.length - 1; i >= 0; --i) {
+      trfsReverse[i].applyTrf();
+    }
+    rotateX((float)rollStepAngle);
+    System.out.println(" >> rotateX("+rollStepAngle+")");
+    //for (int i = 0; i < trfsReverse.length; ++i) {
+    //  trfsReverse[i].applyTrf();
+    //}
+    for (int i = trfs.length - 1; i >= 0; --i) {
+      trfs[i].applyTrf();
+    }
+    System.out.println("Matrix, after rollLeftRight trafo applied:");
+    printMatrix();
+    CameraParams ret = new CameraParams(nw);
+    System.out.println("nw.wing="+nw.wing);
+    ret.wing = getWorldPointTransformed(nw.wing);
+    System.out.println("ret.wing="+ret.wing);
+    popMatrix();
+    return ret;
+  }
+
+  public PVector getWorldPointTransformed(PVector worldPoint) {
+    System.out.println("..worldPoint: "+worldPoint);
+    PVector ret = new PVector(
+        modelX(worldPoint.x, worldPoint.y, worldPoint.z),
+        modelY(worldPoint.x, worldPoint.y, worldPoint.z),
+        modelZ(worldPoint.x, worldPoint.y, worldPoint.z)
+    );
+    System.out.println("..worldPoint': "+ret);
+    return ret;
+  }
+
+  Util3DTrafo [] getTrfReverse(Util3DTrafo []trfs) {
+    Util3DTrafo [] ret = new Util3DTrafo[trfs.length];
+    for (int i = 0; i < trfs.length; ++i) {
+      int j = trfs.length - 1 - i;
+      ret[j] = trfs[i].reverseTrf();
+    }
+    return ret;
+  }
+
+  /////////////////////////////////////////
+  // raise_{up|down}
+  // Use for raise_up raiseStepAngle > 0
+  // Use for raise_down raiseStepAngle < 0
+  /////////////////////////////////////////
+  public CameraParams raiseUpDown(double raiseStepAngle, CameraParams nw) {
+    pushMatrix();
+    System.out.println("Matrix, before raiseUpDown trafo applied:");
+    printMatrix();
+    Util3DTrafo []trfs = getTrfN2E(nw.wing);
+    Util3DTrafo []trfsReverse = getTrfReverse(trfs);
+    //for (int i = 0; i < trfs.length; ++i) {
+    //  trfs[i].applyTrf();
+    //}
+    for (int i = trfsReverse.length - 1; i >= 0; --i) {
+      trfsReverse[i].applyTrf();
+    }
+    rotateX((float)raiseStepAngle);
+    System.out.println(" >> rotateX("+raiseStepAngle+")");
+    //for (int i = 0; i < trfsReverse.length; ++i) {
+    //  trfsReverse[i].applyTrf();
+    //}
+    for (int i = trfs.length - 1; i >= 0; --i) {
+      trfs[i].applyTrf();
+    }
+    System.out.println("Matrix, after raiseUpDown trafo applied:");
+    printMatrix();
+    CameraParams ret = new CameraParams(nw);
+    System.out.println("nw.nose="+nw.nose);
+    ret.nose = getWorldPointTransformed(nw.nose);
+    System.out.println("ret.nose="+ret.nose);
+    popMatrix();
     return ret;
   }
 

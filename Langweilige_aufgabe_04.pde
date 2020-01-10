@@ -587,10 +587,52 @@ void initAnimals()
   l.animalInfo[1].animalSteppedOn = locations[LOCATION_CAVE].getByteOn(animalX, animalY);
 }
 byte[]theTreeTemplate;
+
+/////////////////////////////////////////
+// needed to test how model{X|Y|Z} works from setup()
+void testModelPointsComputationFromSetup()
+{
+  pushMatrix();
+  translate(0, MAP_HEIGHT*TILE_HEIGHT,0);
+  rotateX(alphaX);
+  translate(0,-MAP_HEIGHT*TILE_HEIGHT,0);
+  recalcModelPoints();
+  popMatrix();
+  System.out.println("modelPoints: "
+      +modelPoints[0]
+      +modelPoints[1]
+      +modelPoints[2]
+      +modelPoints[3]
+  );
+
+
+  modelPoints = null;
+
+  pushMatrix();
+  System.out.println("matrix before w1 calc in L_A_4:");
+  printMatrix();
+  rotateX(3.141592653589793);
+  rotateY(-1.5707963267948966);
+  rotateX(-1.5707963267948966);
+  rotateY(1.5707963267948966);
+  rotateX(-3.141592653589793);
+  float x = 1;
+  float y = 0;
+  float z = 0;
+  PVector w1 = new PVector(
+    modelX(x, y, z),modelY(x, y, z), modelZ(x,y,z)
+  );
+  System.out.println("w1="+w1);
+  System.out.println("matrix after w1 calc in L_A_4:");
+  printMatrix();
+  popMatrix();
+}
+
 void setup()
 {
   size(1280, 640, P3D);
 
+  testModelPointsComputationFromSetup();
   u3d.testUtil3D();
 
   // in my records found a value 40.3645... perhaps it is good number ??? :)
