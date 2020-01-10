@@ -1094,14 +1094,15 @@ void mouseDragged()
 {
   if (controlMode == CONTROL_MODE_CAMERA)
   {
-
+    throw new java.lang.UnsupportedOperationException("not yet implemented");
+    /*
     float dAngleRoll = map(mouseX - mouseDragStarted.x,
         0,pixelWidth/2,0,PI/2);
-    camPars.angleRoll = camParsDragStart.angleRoll - dAngleRoll;
+    //camPars.angleRoll = camParsDragStart.angleRoll - dAngleRoll;
 
     float dAngleRaise = map(mouseY - mouseDragStarted.y,
         0,pixelHeight/2,0,PI/2);
-    camPars.angleRaise = camParsDragStart.angleRaise - dAngleRaise;
+    //camPars.angleRaise = camParsDragStart.angleRaise - dAngleRaise;
 
     pushMatrix();
     setUpMatrix();
@@ -1111,6 +1112,7 @@ void mouseDragged()
         +",dRoll="+(dAngleRoll*180./PI)
         +",dRaise="+(dAngleRaise*180./PI)
         +"/"+camPars.toString()+" ( "+camParsDragStart.toString()+" )");
+        */
   }
 }
 void mouseReleased()
@@ -1700,11 +1702,11 @@ void setUpMatrix() {
   float ay = MAP_HEIGHT * TILE_HEIGHT / 2;
 
   translate(ax, ay, 0);
-  rotateZ(camPars.angleRoll);
+  //rotateZ(camPars.angleRoll);
   translate(-ax, -ay, 0);
 
   translate(ax, ay, +zProjectionPoint);
-  rotateX(camPars.angleRaise);
+  //rotateX(camPars.angleRaise);
   translate(-ax, -ay, -zProjectionPoint);
 
   translate(0, MAP_HEIGHT*TILE_HEIGHT,0);

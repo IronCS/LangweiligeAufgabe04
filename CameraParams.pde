@@ -12,9 +12,10 @@ class CameraParams
     wing = new PVector(0,0,0);
   }
   public CameraParams(CameraParams oth) {
-    position = new PVector(oth.position);
-    nose = new PVector(oth.nose);
-    wing = new PVector(oth.wing);
+    Util3D u3d = new Util3D();
+    position = u3d.PVectorCtor(oth.position);
+    nose = u3d.PVectorCtor(oth.nose);
+    wing = u3d.PVectorCtor(oth.wing);
   }
   public String toString() {
     String ret = String.format("position=%s,nose=%s,wing=%s", position.toString(), nose.toString(), wing.toString());

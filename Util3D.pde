@@ -19,9 +19,9 @@ class Util3D {
     }
   }
 
-  private void check_equal(float exp, float act, String msg) {
-    if (  ( Float.isNaN(exp) && !Float.isNaN(act))
-        ||(!Float.isNaN(exp) &&  Float.isNaN(act))) {
+  private void check_equal(double exp, double act, String msg) {
+    if (  ( Double.isNaN(exp) && !Double.isNaN(act))
+        ||(!Double.isNaN(exp) &&  Double.isNaN(act))) {
       throw new java.lang.UnsupportedOperationException(
           String.format("%s: expected=%f, actual=%f", msg, exp, act));
     }
@@ -224,6 +224,27 @@ class Util3D {
     PVector rtmp = b; // must intersect @ b
     check_vector(rtmp, r);
 
+    PVector N;
+    Util3DTrafo []trfs;
+
+    N = new PVector(0.7,0,0.7);
+    trfs = getTrfN2E(N);
+
+    check_equal(Util3DTrafo.U3DT_TYP_ROTATE_X, trfs[0].trafoTyp, "trafoTyp[0] differs");
+    check_equal(Math.PI*2, trfs[0].angRotateX, "angRotateX differs");
+
+    check_equal(Util3DTrafo.U3DT_TYP_ROTATE_Y, trfs[1].trafoTyp, "trafoTyp[1] differs");
+    check_equal(-Math.PI/4, trfs[1].angRotateY, "angRotateY differs");
+
+    N = new PVector(0,0,-1);
+    trfs = getTrfN2E(N);
+
+    check_equal(Util3DTrafo.U3DT_TYP_ROTATE_X, trfs[0].trafoTyp, "trafoTyp[0] differs");
+    check_equal(Math.PI, trfs[0].angRotateX, "angRotateX differs");
+
+    check_equal(Util3DTrafo.U3DT_TYP_ROTATE_Y, trfs[1].trafoTyp, "trafoTyp[1] differs");
+    check_equal(-Math.PI/2, trfs[1].angRotateY, "angRotateY differs");
+
   }
 
   private void assertNotNaN(PVector a, String where) {
@@ -319,6 +340,41 @@ class Util3D {
     PVector dXYZ = PVector.sub(b, a);
     double d = Math.sqrt(dXYZ.x*dXYZ.x + dXYZ.y*dXYZ.y + dXYZ.z*dXYZ.z);
     return d;
+  }
+
+  public PVector PVectorCtor(PVector oth) {
+    return new PVector(oth.x, oth.y, oth.z);
+  }
+
+  // [ALG_TRF_N_2_E]
+  public Util3DTrafo[] getTrfN2E(PVector N) {
+    Util3DTrafo []ret = new Util3DTrafo[2];
+
+    // determine 1st operation - rotateX
+    double alphaNBA = Math.atan2(-N.y, -N.z);
+    //System.out.println("alphaNBA="+alphaNBA);
+    double alphaNBN1 = Math.PI - alphaNBA;
+    //System.out.println("alphaNBN1="+alphaNBN1);
+
+    Util3DTrafo rotX = new Util3DTrafo();
+    rotX.trafoTyp = Util3DTrafo.U3DT_TYP_ROTATE_X;
+    rotX.angRotateX = alphaNBN1;
+    ret[0] = rotX;
+
+    // determine N1z after 1st rotation
+    double N1z = Math.sqrt(N.z*N.z + N.y*N.y);
+    double N1x = N.x;
+
+    // determine 2nd operation - rotateY
+    double alphaN1E = Math.atan2(N1z, N1x);
+    System.out.println("N1z="+N1z+", N1x="+N1x+", alphaN1E="+alphaN1E);
+
+    Util3DTrafo rotY = new Util3DTrafo();
+    rotY.trafoTyp = Util3DTrafo.U3DT_TYP_ROTATE_Y;
+    rotY.angRotateY = -alphaN1E;
+    ret[1] = rotY;
+
+    return ret;
   }
 
 }
